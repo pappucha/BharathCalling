@@ -1,0 +1,39 @@
+<a ng-if="action.displayType=='link' && action.actionType=='link'" class="{{action.customClass}}" href="{{grid.getURL(action.action)}}" title="{{action.name}}">
+			            <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+			            <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+			         </a>
+			        
+                    <a ng-if="action.displayType=='link' && action.actionType=='modal'" class="{{action.customClass}}" href="{{grid.getURL(action.action)}}" modal-popup="action.modalSettings" modal-popup-title="{{action.name}}" title="{{action.name}}">
+                        <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+                        <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                    </a>
+
+                    <a ng-if="action.displayType=='link' && action.actionType=='aside'" class="{{action.customClass}}" href="{{grid.getURL(action.action)}}" aside="action.modalSettings" aside-title="{{action.name}}" title="{{action.name}}">
+                        <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+                        <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                    </a>
+			        
+                    <a ng-if="action.displayType=='link' && action.actionType=='function'" class="{{action.customClass}}" href="" ng-click="grid.actionHandler($event, !!action.isGeneralAction, action.action, row)" title="{{action.name}}">
+                        <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+                        <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                    </a>
+			        
+			        <a ng-if="action.displayType=='button' && action.actionType=='link'" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action)}}" title="{{action.name}}">
+                        <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+                        <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                    </a>
+                    
+                    <a ng-if="action.displayType=='button' && action.actionType=='modal'" modal-popup="action.modalSettings" modal-popup-title="{{action.name}}" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action)}}" title="{{action.name}}">
+                        <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+                        <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                    </a>
+
+                    <a ng-if="action.displayType=='button' && action.actionType=='aside'" aside="action.modalProperties" aside-title="{{aside.name}}" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action)}}" title="{{action.name}}">
+                        <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+                        <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                    </a>
+                    
+                    <a ng-if="action.displayType=='button' && action.actionType=='function'" ng-click="grid.actionHandler($event, !!action.isGeneralAction, action.action, row)" class="btn btn-default {{action.customClass}}" href="" title="{{action.name}}">
+                        <span ng-if="action.textTemplate" ng-bind-html="action.textTemplate"></span>
+                        <span ng-if="!action.textTemplate"><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                    </a>

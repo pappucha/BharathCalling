@@ -1,0 +1,91 @@
+<div ng-if="grid.groupActions.length" class="text-right gridaction">
+    <span ng-repeat="action in grid.groupActions" class="grid-action" ng-include="grid.getActionTemplate()"></span>
+</div>
+<table class="_grid-tbl">
+	<thead>
+		<tr ng-show="showHeaders">
+			<th class="expand"></th>
+			<th ng-repeat="col in grid.columns track by $index" ng-click="orderby(col.value)" ng-style="col.style">
+				{{col.name}} 
+				<i class="_sort-icon fa fa-sort-amount-{{sort.reverse?'desc':'asc'}}" ng-show="sort.column==col.value"></i>
+			</th>
+			<th ng-if="grid.rowActions.length"> Actions</th>
+		</tr>		
+		<tr class="col-filter" ng-show="filter.columnFilter" class="col-filter">
+			<td class="expand"></td>
+			<td ng-repeat="col in grid.columns track by $index" ng-style="col.style">
+				<input type="text" class="form-control" ng-model="filter.columns[col.value]" ng-if="!col.filter.type || col.filter.type=='text'"/>
+				<input type="number" class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='number' && !col.filter.fromTo"/>
+				<div ng-if="col.filter.type=='number' && col.filter.fromTo" class="row">
+                    <div class="col-sm-6">
+				        From:<input type="number" class="form-control" ng-model="filter.columns[col.value][0]"/>
+				    </div>
+				    <div class="col-sm-6">
+				        To:<input type="number" class="form-control" ng-model="filter.columns[col.value][1]"/>
+				    </div>
+				</div>
+				
+				<input type="text" datepicker-popup datepicker-append-to-body="true" class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='date' && !col.filter.fromTo"/>
+				<div ng-if="col.filter.type=='date' && col.filter.fromTo" class="row">
+                    <div class="col-sm-6">
+				        From:<input type="text" datepicker-popup="dd-MMM-yyyy" datepicker-append-to-body="true" class="form-control" ng-model="filter.columns[col.value][0]"/>
+				    </div>
+				    <div class="col-sm-6">
+				        To:<input type="text" datepicker-popup datepicker-append-to-body="true" class="form-control" ng-model="filter.columns[col.value][1]"/>
+				    </div>
+				</div>
+				
+				<select class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='dropdown'">
+				    <option value=""></option>
+				    <option ng-repeat="cval in grid.getUniqueColumnValues(col)" value="{{cval}}">{{cval}}</option>
+				</select>
+			</td>
+			<td ng-if="grid.rowActions.length"></td>
+		</tr>
+	</thead>
+	<tbody>		
+		<tr ng-repeat-start="row in grid.rows |  orderBy:sort.column:sort.reverse | columnFilter:filter.columns | gridfilter:filter.search:pagination.pageSize:pagination.currentPage" ng-init="row.$$hactive=!!row.$$hactive"  ng-class="{odd:$odd,even:$even,selected: grid.inSelection(row)>=0}">
+			<td class="expand" ng-click="grid.loadHierarchy(row)"><i ng-if="grid.hierarchy" class="fa fa-chevron-{{row.$$hactive?'down':'right'}}"></i></td>
+			<td ng-click="grid.selectRow(row)" ng-repeat="c in grid.columns" style="background-color:{{row._rowColor}}">			
+				<a href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='link'"> {{row[c.value]}}</a>
+				<a href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='modal'" modal-popup="c.modalProperties" modal-popup-title="{{c.modalTitle}}"> {{row[c.value]}}</a>
+				<a href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='aside'" aside="c.asideProperties" aside-title="{{c.asideTitle}}"> {{row[c.value]}}</a>
+				<i class="{{row[c.value]}}" ng-if="c.type=='icon'"></i>
+				<img ng-src="{{grid.getURL(c.url, row)}}" ng-if="c.type=='image'"/>
+				<span ng-if="c.type==''">{{row[c.value]}}</span>
+			</td>
+			<td ng-if="grid.rowActions.length" ng-click="$event.stopPropagation()" style="background-color:{{row._rowColor}}">
+                <span ng-repeat="action in grid.rowActions" class="grid-action" ng-include="grid.getActionTemplate()"></span>
+			</td>
+		</tr>
+		<tr ng-repeat-end ng-show="row.$$hactive" class="hierarchy" ng-if="grid.hierarchy">
+			<td colspan="{{grid.columns.length+1+(grid.rowActions.length?1:0)}}">
+				<div ng-include="grid.getHierarchyTemplate()"></div>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="{{grid.columns.length+1+(grid.rowActions.length?1:0)}}">
+				<ul class="pagination" ng-if="pagination.showPaging && pagination.pages.length>1">
+					<li ng-class="{ disabled : pagination.currentPage == 0 }">
+						<a href="" ng-click="pagination.setCurrentPage(0)"><i class="fa fa-angle-double-left"></i></a>
+					</li>
+					<li  ng-class="{ disabled : pagination.currentPage == 0 }">
+						<a href="" ng-click="pagination.setCurrentPage(pagination.currentPage - 1)" class="ng-binding"><i class="fa fa-angle-left"></i></a>
+					</li>
+					<li ng-repeat="p in pagination.getPages() track by $index" ng-class="{active:(pagination.currentPage == p)}">
+						<a href="" ng-click="pagination.setCurrentPage(p)">{{p+1}}</a>
+					</li>
+					<li  ng-class="{ disabled : pagination.currentPage == pagination.lastPage }">
+						<a href="" ng-click="pagination.setCurrentPage(pagination.currentPage + 1)" class="ng-binding"><i class="fa fa-angle-right"></i></a>
+					</li>
+					<li  ng-class="{ disabled : pagination.currentPage == pagination.lastPage }">
+						<a href="" ng-click="pagination.setCurrentPage(pagination.lastPage)"><i class="fa fa-angle-double-right"></i></a>
+					</li>
+				</ul>
+				showing {{((pagination.currentPage+1) * pagination.pageSize)>pagination.totalRecords?pagination.totalRecords:((pagination.currentPage+1) * pagination.pageSize)}} of {{pagination.totalRecords}} records
+			</td>
+		</tr>
+	</tfoot>
+</table>

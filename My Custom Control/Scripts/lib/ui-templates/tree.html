@@ -1,0 +1,9 @@
+<ul>
+    <li ng-repeat="tree in tree.tree" ng-class="{expand:tree._expand, haschild:tree.tree.length}" class="_tree" ng-init="tree._expand=!!tree._expand">
+        <i class="collapse-icon fa fa-{{tree._expand?'minus':'plus'}}" ng-click="tree._expand=!tree._expand" ng-if="tree.tree.length"></i> 
+        <div cscope="this" dynamic-html="getDataTemplate()"></div>
+        <div ng-if="tree.tree.length" ng-show="tree._expand">
+            <div ng-include="getTreeTemplate()"></div>
+        </div>
+    </li>
+</ul>

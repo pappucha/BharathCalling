@@ -1,0 +1,27 @@
+﻿.pgTable {
+    border: solid 1px #95B8E7;
+    border-spacing: 0;
+    font-size:12px;
+    width:100%;
+}
+.pgTable select, input[type="text"]{
+    width:100%;
+    border:0px;
+}
+
+.pgGroupRow {
+    background-color: #E0ECFF;
+    font-weight: bold;
+}
+
+.pgGroupCell {
+    padding: 2px;
+}
+
+.pgRow {
+}
+
+.pgCell {
+    border: dotted 1px #ccc;
+    padding: 3px;
+}
