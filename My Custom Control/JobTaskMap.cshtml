@@ -1,0 +1,7 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+
+<div ng-init="item=(@JsonConvert.SerializeObject(Model.Items[0]))">
+    <grid-renderer ng-model="item.Properties.selectedItem" config="item"></grid-renderer>
+</div>
+

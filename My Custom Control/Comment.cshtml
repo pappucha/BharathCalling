@@ -1,0 +1,492 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+
+<style type="text/css">
+    ._tree .comment {
+        display: inline-block;
+    }
+
+    ._tree-container ._tree {
+        padding: 0px;
+    }
+
+        ._tree-container ._tree ._tree {
+            padding-left: 30px;
+        }
+
+    .comment-subject {
+        font-size: 14px;
+        font-weight: bold;
+        background: #f9f9f9;
+        padding: 5px 10px;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 5px;
+    }
+
+    ._tree .action {
+        margin-top: 0px;
+        line-height: 24px;
+    }
+
+    ._tree .time {
+        font-size: 11px;
+        color: #ccc;
+        margin-right: 20px;
+    }
+
+    ._tree .comment-template {
+        width: 100%;
+        padding-left: 10px;
+    }
+
+        ._tree .comment-template:after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+</style>
+<script type="text/ng-template" id="tree.html">
+    <div class="comment-template">
+        <div class="comment"><strong>{{tree.CreatedBy}}: </strong> {{tree.Comment}}</div>
+        <div class="action"><span class="time">{{tree.CreatedOn}}</span> <a href="" ng-click="ReplyToComment(tree)" title="Reply"><i class="fa fa-reply"></i> </a></div>
+    </div>
+    <div class="_tree" ng-repeat="tree in tree.tree" ng-include="'tree.html'"></div>
+</script>
+
+<script type="text/ng-template" id="ReplyComment.html">
+    <div>
+        <!--Comment Type-->
+        <div class="form-group" ng-if="ddlPostCommnetType.Properties.Visible">
+            <label class="col-sm-12 control-label">{{ddlPostCommnetType.Properties.Label}}</label>
+            <div class="col-sm-12">
+                <select custom-select ng-model="ddlPostCommnetType.Properties.Value" ng-change="checkIsSubCategory(ddlPostCommnetType.Properties.Value)">
+                    <option ng-repeat="opt in ddlPostCommnetType.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" ng-if="IsSubCategory.Properties.Visible">
+            <label class="col-sm-12 control-label">Sub Category</label>
+            <div class="col-sm-12">
+                <select custom-select ng-model="subCategory.ID" ng-disabled="disableControl">
+                    <option ng-repeat="opt in subCategory" value="{{opt.ID}}">{{opt.Name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <!--Comment Subject-->
+        <div class="form-group" ng-if="txtCommentSubject.Properties.Visible">
+            <label class="col-sm-12 control-label">{{txtCommentSubject.Properties.Label}}</label>
+            <div class="col-sm-12">
+                <input type="text" ng-model="txtCommentSubject.Properties.Value" maxlength="{{txtCommentSubject.Properties.MaxLength}}"
+                       size="{{txtCommentSubject.Properties.Size}}" class="form-control" name="{{txtCommentSubject.Properties.Name}}" placeholder="{{txtCommentSubject.Properties.WaterMarkText}}">
+            </div>
+        </div>
+
+        <!--Comment-->
+        <div class="form-group">
+            <label class="col-sm-12 control-label">{{txtComment.Properties.Label}}</label>
+            <div class="col-sm-12">
+                <input type="text" ng-model="txtComment.Properties.Value" maxlength="{{txtComment.Properties.MaxLength}}"
+                       size="{{txtComment.Properties.Size}}" class="form-control" name="{{txtComment.Properties.Name}}" placeholder="{{txtComment.Properties.WaterMarkText}}">
+            </div>
+        </div>
+
+        <div ng-if="chkSendMail.Properties.Visible">
+
+
+            @*<i>Send this Comment as Email </i>*@
+            <div class="form-group">
+                <div class="text-right">
+                    <a href="#" class="btn btn-xs btn-default" ng-click="sendCommentAsMail()"><i class="fa fa-envelope"></i> Send this Comment as Email</a>
+                </div>
+            </div>
+
+            <div ng-show="showmailWindow" style="background:#FFFFFF;border:1px solid #FFFFFF;padding:20px 0 10px 0">
+                <div class="form-group" id="showMail">
+                    <label class="col-sm-12 control-label">{{mgCmtGroupType.Properties.Label}}</label>
+                    <div class="col-sm-12">
+                        <select custom-select="mgCmtGroupType.Properties.Options" ng-if="mgCmtGroupType.Properties.Multiple" multiple ng-change="ChangeUsers()" ng-model="mgCmtGroupType.Properties.Value">
+                            <option ng-repeat="opt in mgCmtGroupType.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                        </select>
+                        <select custom-select ng-if="!mgCmtGroupType.Properties.Multiple" ng-model="mgCmtGroupType.Properties.Value" ng-change="ChangeUsers()">
+                            <option ng-repeat="opt in mgCmtGroupType.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!--Comment Users-->
+                <div class="form-group">
+                    <label class="col-sm-12 control-label">{{cmtUsers.Properties.Label}}</label>
+                    <div class="col-sm-12">
+                        <select custom-select="cmtUsers.Properties.Options" multiple ng-model="cmtUsers.Properties.Value">
+                            <option ng-repeat="opt in cmtUsers.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="text-center">
+            <input type="button" ng-if="btnSumbit.Properties.Visible" class="btn btn-primary" value="{{btnSumbit.Properties.Value}}" ng-click="PostComment()" />
+            <input type="button" ng-if="btnCancel.Properties.Visible" class="btn btn-primary" value="{{btnCancel.Properties.Value}}" ng-click="Close()" />
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    function comentsControl($scope, $compile, $http,$q) {
+
+        var layoutItems = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+
+        $scope.ReplyObj = null;
+        $scope.btnNewComment = layoutItems.Items[0];
+        $scope.ddlFilterCommnetType = layoutItems.Items[1];
+        $scope.ddlPostCommnetType = layoutItems.Items[2];
+        $scope.ddlPostCommnetTypeDuplicate = $.extend(true,{},layoutItems.Items[2]);
+        $scope.txtCommentSubject = layoutItems.Items[3];
+        $scope.txtComment = layoutItems.Items[4];
+        $scope.mgCmtGroupType = layoutItems.Items[5];
+        $scope.cmtUsers = layoutItems.Items[6];
+        $scope.btnSumbit = layoutItems.Items[7];
+        $scope.btnCancel = layoutItems.Items[8];
+        $scope.chkSendMail = layoutItems.Items[9];
+        $scope.IsSubCategory = layoutItems.Items[10];
+        $scope.IsSubCategory = layoutItems.Items[10];
+
+        $scope.subCategory = {
+            value:'',
+            options:[]
+        };
+        $scope.stages = {
+            value:'',
+            options:[]
+        };
+        //$scope.commentFrom=null;
+        $scope.pScope = angular.element('[ng-controller="LayoutRendererCntrl"]').scope();
+
+        $scope.initComments = function () {
+
+            $scope.CommentsCntrl.GetComments();
+            $scope.CommentsCntrl.GetStage();
+            $scope.disableOuterSub=true;
+            $scope.pScope.Utils.getGrousByTypeName('Comment Category').then(function (data){
+
+                $scope.ddlFilterCommnetType.Properties.Options = [];
+
+                $.each(data, function (i, d) {
+                    var option = {
+                        Label: d.Name,
+                        Text: d.Name,
+                        Value: d.ID
+                    };
+                    $scope.ddlFilterCommnetType.Properties.Options.push(option);
+                });
+
+                $scope.ddlPostCommnetType.Properties.Options = $.extend(true,[],$scope.ddlFilterCommnetType.Properties.Options);
+                $scope.ddlFilterCommnetType.Properties.Value = 0;
+
+            });
+
+            if($scope.chkSendMail.Properties.Visible)
+                $scope.pScope.Utils.getUsersGroups($scope.mgCmtGroupType.Properties.Defaults.toString()).then(function (data)
+                {
+                    $scope.mgCmtGroupType.Properties.Options = [];
+
+                    $.each(data, function (i, d) {
+                        var option = {
+                            Label: d.Name,
+                            Text: d.Name,
+                            Value: d.ID
+                        };
+                        $scope.mgCmtGroupType.Properties.Options.push(option);
+                    });
+                });
+        };
+
+
+        $scope.newComment = function(){
+            $scope.ReplyObj = null;
+
+            $scope.cmtUsers.Properties.Options = [];
+            $scope.ddlPostCommnetType.Properties.Value = '';
+            $scope.txtCommentSubject.Properties.Value = '';
+            $scope.subCategory.ID='';
+            $scope.txtComment.Properties.Value = '';
+            $scope.mgCmtGroupType.Properties.Value = '';
+            $scope.disableControl=true;
+            $scope.txtCommentSubject.Properties.Visible = true;
+            if($scope.ddlPostCommnetTypeDuplicate.Properties.Visible){
+                $scope.ddlPostCommnetType.Properties.Visible = true;
+            }
+
+            var elm = $compile('<div ng-include="\'ReplyComment.html\'"></div>')($scope);
+            switch ($scope.btnNewComment.Properties.ModalPosition) {
+                case "right":
+                    $.aside('New Comment', elm[0], {  position: 'right', name:$scope.$id  });
+                    break;
+                case "left":2
+                    $.aside('New Comment', elm[0], {  position: 'left', name:$scope.$id  });
+                    break;
+                case "center":
+                    $.modal('New Comment', elm[0], { name:$scope.$id });
+                    break;
+            }
+        };
+
+        $scope.ReplyToComment = function (c) {
+            $scope.ReplyObj = c;
+            $scope.cmtUsers.Properties.Options = [];
+
+            $scope.txtCommentSubject.Properties.Value = '';
+            $scope.txtComment.Properties.Value = '';
+            $scope.mgCmtGroupType.Properties.Value = '';
+
+            $scope.ddlPostCommnetType.Properties.Value = '';
+            $scope.ddlPostCommnetType.Properties.Visible = false
+            $scope.txtCommentSubject.Properties.Visible = false;
+            $scope.IsSubCategory.Properties.Visible = false;
+
+            var elm = $compile('<div ng-include="\'ReplyComment.html\'"></div>')($scope);
+            switch ($scope.btnNewComment.Properties.ModalPosition) {
+                case "right":
+                    $.aside('New Comment', elm[0], {  position: 'right', name:$scope.$id });
+                    break;
+                case "left":2
+                    $.aside('New Comment', elm[0], {  position: 'left', name:$scope.$id });
+                    break;
+                case "center":
+                    $.modal('New Comment', elm[0], {  name:$scope.$id });
+                    break;
+            }
+            //$scope.commentFrom="1";
+        };
+
+        $scope.ChangeUsers = function(){
+            $scope.cmtUsers.Properties.Options = [];
+
+            $http({
+                url: path + 'api/Service/GetUsersByGroups?id=' + $scope.mgCmtGroupType.Properties.Value,
+                method: 'GET',
+                headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function (data) {
+                $scope.cmtUsers.Properties.Options = [];
+                $scope.cmtUsers.Properties.Value=[];
+                $.each(data,function(i,d){
+                    var option = {
+                        Label : d,
+                        Text : d,
+                        Value : d
+                    };
+
+                    $scope.cmtUsers.Properties.Options.push(option);
+                });
+            });
+        };
+
+        $scope.PostComment = function(){
+            $scope.IsSubCategory.Properties.Visible=true;
+            console.log($scope.subCategory.ID);
+            if($scope.txtComment.Properties.Value=="" ){$.alert('Kindly provide the Details');  return false;}
+            if(!$scope.ddlPostCommnetType.Properties.Value) $scope.ddlPostCommnetType.Properties.Value = $scope.ddlPostCommnetType.Properties.Options[0].Value;
+            console.log($scope.subCategory);
+            var param = {
+                comment: $scope.txtComment.Properties.Value,
+                commentType: ($scope.ReplyObj == null)? $scope.ddlPostCommnetType.Properties.Value : $scope.ReplyObj.CommentType,
+                subject: ($scope.ReplyObj == null)? $scope.txtCommentSubject.Properties.Value : $scope.ReplyObj.Subject,
+                replyID: ($scope.ReplyObj == null)? 0 : $scope.ReplyObj.ID,
+                users: $scope.cmtUsers.Properties.Value ? $scope.cmtUsers.Properties.Value.toString() : null,
+                //subcategory:($scope.ReplyObj == null)?$scope.subCategory.ID:0,
+                //subcategory:($scope.subcategory==null)?0:$scope.subCategory.ID,
+                //isSubCategory:$scope.subCategory.ID,
+                isSubCategory:($scope.ReplyObj == null)? $scope.subCategory.ID : $scope.ReplyObj.SubComment,
+                SendMail: $scope.chkSendMail.Properties.Visible
+            };
+
+            console.log(param);
+            console.log($scope.ReplyObj);
+
+            $http({
+                url: path + 'api/Comment/PostComment',
+                method: 'POST',
+                data: { CommentData: param },
+                headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function (data) {
+                console.log(data);
+                console.log(data==1);
+                if(data==1){$.notify("Comment saved succesfully. But no proof info found", { type: "error" });}
+                window.glams.modal.getByName($scope.$id)[0].close();
+                $scope.ddlPostCommnetType.Properties.Value = "";
+                $scope.ddlFilterCommnetType.Properties.Value = 0;
+                $scope.CommentsCntrl.GetComments();
+                // $scope.GetComments($scope.ddlPostCommnetType.Properties.Value);
+            });
+        };
+
+        $scope.Defunct=function(parentId)
+        {
+            $http({
+                URL:path+'api/Comment/Defunct?parentID'+parentId,
+                method: 'POST',
+                headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){$.notify("Comment has been deleted successfully", { type: "error" });}).error(function(err){$.notify("Kindly Check with admin", { type: "error" });});
+        }
+
+
+        $scope.Close = function(){
+            window.glams.modal.getByName($scope.$id)[0].close();
+            $scope.IsSubCategory.Properties.Visible=true;
+
+        };
+
+        $scope.sendCommentAsMail=function()
+        {
+            $scope.showmailWindow=!!!$scope.showmailWindow;
+
+        }
+
+
+        $scope.checkIsSubCategory=function(id)
+        {
+            $scope.disableControl=false;
+            $http({
+                url:'api/Comment/getSubCategory?parentID='+id,
+                method:'GET',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                //req=path+'api/Comment/GetComments='+id+'&isSubCategory=true&subCategory='+data;dobj.resolve(data);
+                //$scope.subCategory.Options.push(data);//
+                $scope.subCategory=data;
+                if(data==""){
+                    $scope.disableControl=true;
+                }
+            }).error(function(err){$.alert('Error Occured');})
+
+        };
+
+        $scope.CommentsCntrl = {
+            StageID:0,
+            SubCatID:0,
+            GetSubCategory: function(catID){
+                $http({
+                    url:path+'api/Comment/getSubCategory?parentID='+catID,
+                    method:'GET',
+                    headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+                }).success(function(data){
+                    $scope.CommentsCntrl.SubCatID = 0;
+                    $scope.subCategory = data;
+                    $scope.CommentsCntrl.GetComments();
+                }).error(function(data){
+                    console.log('error');
+                });
+            },
+            GetComments:function(){
+
+                var rurl = path + 'api/Comment/GetComments?StageID=' + ($scope.CommentsCntrl.StageID || 0)  + '&commentType=' + ($scope.ddlFilterCommnetType.Properties.Value || 0) + '&subCategory='+ ($scope.CommentsCntrl.SubCatID || 0)
+
+                $http({
+                    url: rurl,
+                    method: 'GET',
+                    headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+                }).success(function (data) {
+                    $scope.showSubCtgy=$scope.IsSubCategory.Properties.Visible;
+
+                    var flat = {};
+                    for (var i = 0; i < data.length; i++) {
+                        var key = 'id' + data[i].ID;
+                        flat[key] = data[i];
+                    }
+
+                    // add child container array to each node
+                    for (var i in flat) {
+                        flat[i].tree = []; // add children container
+                    }
+
+                    // populate the child container arrays
+                    for (var i in flat) {
+                        var parentkey = 'id' + flat[i].ReplyToID;
+                        if (flat[parentkey]) {
+                            flat[parentkey].tree.push(flat[i]);
+                        }
+                    }
+
+                    // find the root nodes (no parent found) and create the hierarchy tree from them
+                    var root = [];
+                    for (var i in flat) {
+                        var parentkey = 'id' + flat[i].ReplyToID;
+                        if (!flat[parentkey]) {
+                            root.push(flat[i]);
+                        }
+                    }
+
+                    $scope.Comments = root;
+                });
+            },
+            GetStage: function(){
+                $http({
+                    url:'api/comment/GetStages',
+                    method:'GET',
+                    headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+                }).success(function (data){
+                    $scope.CommentsCntrl.StageID = 0;
+                    $scope.stages=data[0].Stages;
+                }).error(function(err){console.log('errrr');})
+            }
+        };
+    }
+</script>
+<div ng-controller="comentsControl" ng-init="initComments()">
+    <div class="row">
+        <div class="col-sm-3">
+            <input type="button" ng-if="btnNewComment.Properties.Visible" class="btn btn-primary" value="{{btnNewComment.Properties.Value}}" ng-click="newComment()" />
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="col-sm-12 control-label">Stages</label>
+                <div class="col-sm-12">
+                    <select custom-select ng-model="CommentsCntrl.StageID" ng-change="CommentsCntrl.GetComments()">
+                        <option value="0">All</option>
+                        <option ng-repeat="opt in stages" value="{{opt.ID}}">{{opt.Name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group" ng-if="ddlFilterCommnetType.Properties.Visible">
+                <label class="col-sm-12 control-label">{{ddlFilterCommnetType.Properties.Label}}</label>
+                <div class="col-sm-12">
+                    <select custom-select ng-model="ddlFilterCommnetType.Properties.Value" ng-change="CommentsCntrl.GetSubCategory(ddlFilterCommnetType.Properties.Value)">
+                        <option value="0">All</option>
+                        <option ng-repeat="opt in ddlFilterCommnetType.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3" ng-show="showSubCtgy">
+            <div class="form-group" ng-if="IsSubCategory.Properties.Visible">
+                <label class="col-sm-12 control-label">Sub Category</label>
+                <div class="col-sm-12">
+                    <select custom-select ng-model="CommentsCntrl.SubCatID" ng-change="CommentsCntrl.GetComments()">
+                        <option value="0">All</option>
+                        <option ng-repeat="opt in subCategory" value="{{opt.ID}}">{{opt.Name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="_tree-container">
+        <div class="_tree" ng-repeat="tree in Comments">
+            <div class="comment-subject">{{tree.Subject}}</div>
+            <div class="comment-template">
+                <div class="comment"><strong>{{tree.CreatedBy}}: </strong> {{tree.Comment}}</div>
+                <div class="action"><span class="time">{{tree.CreatedOn}}</span> <a href="" ng-click="ReplyToComment(tree)" title="Reply"><i class="fa fa-reply"></i></a></div>
+            </div>
+            <div class="_tree" ng-repeat="tree in tree.tree" ng-include="'tree.html'"></div>
+        </div>
+    </div>
+</div>

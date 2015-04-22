@@ -1,0 +1,50 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+
+<script type="text/javascript">
+    var customFilter = [];
+    function graphCtrl($scope) {
+        var kpiType='';
+        var layoutItems = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        $scope.KPIType = layoutItems.Items[0];
+        $.each($scope.KPIType.Properties.Options,function(i,o){
+            if(o.Selected) kpiType = o.Value;
+        });
+
+        $scope.config = {
+
+            dataUrl: 'api/kpi/GetKpi',
+            type: 'line',
+            sp:kpiType,
+            filterUrl:'api/KPI/GetKPIFilter',
+            options: {
+                vAxis: {
+                    viewWindowMode: "explicit",
+                    viewWindow:{ min: 0 },
+                    format:'#\'%\''
+                }
+            }
+            /*filters: [
+                {
+                    type: 'combobox',
+                    name: 'Customer',
+                    data: [1, 2, 3, 4],
+                    dataUrl: 'sample.json',
+                    value: ''
+                },
+                {
+                    type: 'combobox',
+                    name: 'Country',
+                    dataUrl: 'sample.json',
+                    value: ''
+                }
+            ]*/
+        };
+    };
+</script>
+
+<div ng-controller="graphCtrl">
+    <div graph="config"></div>
+</div>
+
+

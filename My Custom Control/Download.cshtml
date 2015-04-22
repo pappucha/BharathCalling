@@ -1,0 +1,323 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+
+
+@*<script type="text/javascript">
+        jQuery(function ($) {
+            $('div.btn-group[data-toggle-name]').each(function () {
+                var group = $(this);
+                var form = group.parents('form').eq(0);
+                var name = group.attr('data-toggle-name');
+                var hidden = $('input[name="' + name + '"]', form);
+                $('button', group).each(function () {
+                    var button = $(this);
+                    button.live('click', function () {
+                        hidden.val($(this).val());
+                        alert(hidden.val());
+                        //Make a Call
+                    });
+                    if (button.val() == hidden.val()) {
+                        button.addClass('active');
+                    }
+                });
+            });
+        });
+    </script>*@
+<style type="text/css">
+    .toggler {
+        text-align: right;
+    }
+
+        .toggler .active, .toggler .inactive {
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .toggler i.active {
+            color: #5cb85c;
+        }
+
+        .toggler i.inactive {
+            color: #d9534f;
+        }
+</style>
+<div style="padding:10px;" ng-controller="documentControl">
+    <div ng-init="initFiles()">
+
+
+        <div class="toggler">
+            <i class="fa fa-toggle-on active" title="Show Active Record" ng-class="{active:GridConfig.extendedObject.status, 'fa-rotate-180':!GridConfig.extendedObject.status,inactive:!GridConfig.extendedObject.status}" ng-click="retriveGridData()"></i>
+        </div>
+
+        @*<div class="btn-group" data-toggle-name="sort_options" data-toggle="buttons-radio">
+                <button type="button" value="default" data-toggle="button" class="btn btn-xs btn-success">Active</button>
+                <button type="button" value="distance" data-toggle="button"
+                        class="btn btn-xs btn-danger active">
+                    Inactive
+                </button>
+            </div>
+            <input type="hidden" name="sort_options" value="default">*@
+        <grid-renderer ng-model="SelectedItems" config="dgDocGrids.Item"></grid-renderer>
+        <input type="button" class="btn btn-primary" ng-if="Download.Properties.Visible" value="{{Download.Properties.Value}}" ng-click="download()" />
+        <input type="button" class="btn btn-primary" ng-if="SendMail.Properties.Visible" value="{{SendMail.Properties.Value}}" ng-click="sendMail()" />
+        <input type="button" class="btn btn-primary" ng-if="Upload.Properties.Visible" value="{{Upload.Properties.Value}}" ng-click="upload()" />
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function documentControl($scope, $compile, $http,$q) {
+
+        var layoutItems = @Html.Raw(JsonConvert.SerializeObject(Model));
+
+        $scope.SelectedItems = [];
+        $scope.dgDocGrids = {};
+
+        $scope.Download = layoutItems.Items[0];
+        $scope.SendMail = layoutItems.Items[1];
+        $scope.Upload = layoutItems.Items[2];
+        $scope.DocCategory = layoutItems.Items[3];
+        $scope.dgDocGrids.Item = layoutItems.Items[4];
+        $scope.GroupTypes = layoutItems.Items[5];
+        $scope.Users = layoutItems.Items[6];
+        $scope.SendMailSubmit = layoutItems.Items[7];
+        $scope.SendMailClose = layoutItems.Items[8];
+        $scope.Comments = layoutItems.Items[9];
+        $scope.pScope = angular.element('[ng-controller="LayoutRendererCntrl"]').scope();
+        $scope.files = [];
+        $scope.GridConfig = $scope.dgDocGrids.Item.Properties.GridSettings;
+        var dataUrl = $scope.GridConfig.dataUrl;
+        $scope.GridConfig.dataUrl = dataUrl+'?status=true';
+        $scope.GridActions = $.extend(true, [], $scope.GridConfig.actions);
+        $scope.GridConfig.actions = $scope.GridActions.length?[$scope.GridActions[0]]:[];
+        $scope.GridConfig.extendedObject = {
+            status:true
+        };
+
+
+
+        $scope.initFiles = function () {
+            //$scope.pScope.Handlers.post($scope.Upload);
+            $scope.pScope.Utils.getUsersGroups($scope.GroupTypes.Properties.Defaults.toString()).then(function (data)
+            {
+                $scope.GroupTypes.Properties.Options = [];
+
+                $.each(data, function (i, d) {
+                    var option = {
+                        Label: d.Name,
+                        Text: d.Name,
+                        Value: d.ID
+                    };
+                    $scope.GroupTypes.Properties.Options.push(option);
+                });
+            });
+        };
+
+        $scope.sendMail = function() {
+            var files = $scope.SelectedItems;
+
+            $scope.Users.Properties.Options = [];
+            $scope.Comments.Properties.Value = '';
+            $scope.GroupTypes.Properties.Value = '';
+            $scope.Users.Properties.Value = '';
+
+            if (files.length > 0) {
+                $scope.files = [];
+                $.each(files, function (i, f) {
+                    $scope.files.push(f.ID);
+                });
+
+                var elm = $compile('<div ng-include="\'SendMail.html\'"></div>')($scope);
+                switch ($scope.SendMail.Properties.ModalPosition) {
+                    case "right":
+                        $.aside('Send Mail', elm[0], {  position: 'right', name:$scope.$id  });
+                        break;
+                    case "left":2
+                        $.aside('Send Mail', elm[0], {  position: 'left', name:$scope.$id  });
+                        break;
+                    case "center":
+                        $.modal('Send Mail', elm[0], { name:$scope.$id });
+                        break;
+                }
+
+            } else {
+                $.alert('please select files to send mail');
+            }
+        };
+
+        $scope.sendFile = function(){
+            var mailData = {};
+            mailData.Comment = $scope.Comments.Properties.Value;
+            mailData.Users = $scope.Users.Properties.Value.toString();
+            mailData.Files = $scope.files.toString();
+
+            if(mailData.Users && mailData.Files)
+            {
+                $http({
+                    url: path + 'api/File/SendMailWithAttachements',
+                    method: 'POST',
+                    data: { SendMail: mailData },
+                    headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+                }).success(function () {
+                    window.glams.modal.getByName($scope.$id)[0].close();
+                });
+            }
+        };
+
+        $scope.upload = function ()
+        {
+            var url = path + 'Request?Type=InjectTask&taskName=' + $scope.Upload.Properties.TaskTemplate + '&jobID='+'&FRAME=true';
+            switch ($scope.Upload.Properties.ModalPosition) {
+                case "right":
+                    $.aside('Upload Document', url, {  position: 'right', name:$scope.$id, type:"iframe"  });
+                    break;
+                case "left":2
+                    $.aside('Upload Document', url, {  position: 'left', name:$scope.$id, type:"iframe"  });
+                    break;
+                case "center":
+                    $.modal('Upload Document', url, { name:$scope.$id, type:"iframe" });
+                    break;
+            }
+        };
+
+        $scope.close = function(){
+            window.glams.modal.getByName($scope.$id)[0].close();
+        };
+
+        $scope.download = function(){
+            var files =  $scope.SelectedItems;
+            if (files.length > 0) {
+                var ids = [];
+                $.each(files, function (i, f) {
+                    ids.push(f.ID);
+                });
+                window.location.href = path + 'Download/Files?id=' + ids + '&folder=TheSupportDoc';
+            } else {
+                alert('please select files to download');
+            }
+        };
+
+        $scope.ChangeUsers = function(){
+
+            $scope.Users.Properties.Options = [];
+
+            $http({
+                url: path + 'api/Service/GetUsersByGroups?id=' + $scope.GroupTypes.Properties.Value,
+                method: 'GET',
+                headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function (data) {
+                $scope.Users.Properties.Options = [];
+                $scope.Users.Properties.Value=[];
+                $.each(data,function(i,d){
+                    var option = {
+                        Label : d,
+                        Text : d,
+                        Value : d
+                    };
+
+                    $scope.Users.Properties.Options.push(option);
+                });
+            });
+        };
+
+        $scope.retriveGridData=function()
+        {
+            $scope.GridConfig.extendedObject.status=!$scope.GridConfig.extendedObject.status;
+            $http({
+                url:path+dataUrl+'?status='+$scope.GridConfig.extendedObject.status,
+                method:'GET',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                $scope.GridConfig.actions = $scope.GridConfig.extendedObject.status?[$scope.GridActions[0]||[]]:[$scope.GridActions[1]||[]];
+                $scope.GridConfig.rows = data;
+            }).error(function(data){
+            });
+        }
+    }
+
+    function Delete(event, row) {
+        if(!confirm('Are you Sure you want to delete')) return false;
+        $.ajax({
+            url: path + 'api/file/Defunt?ID=' + row[0].ID,
+            type: 'POST',
+            headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() || "" },
+            success: function () {
+                var pScope = angular.element('[ng-controller="documentControl"]').scope();
+                //pScope.dgDocGrids.Item = {};
+                //pScope.dgDocGrids.Item = pScope.layoutItems.Items[4];
+                var item = angular.element(event.target).parents('.grid-renderer').parent().scope().item;
+                item.Properties.IsPostBack = true;
+                pScope.Handlers.post(item);
+            },
+            error: function () {
+                alert('Action failed');
+            }
+        });
+    }
+
+    function Activate(event, row) {
+        if(!confirm('Are you Sure you want to Re-Active the document ')) return false;
+        $.ajax({
+            url: path + 'api/file/ActiveFile?ID=' + row[0].ID,
+            type: 'POST',
+            headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() || "" },
+            success: function () {
+                var pScope = angular.element('[ng-controller="documentControl"]').scope();
+                //console.log(pScope);
+                //pScope.dgDocGrids.Item = {};
+                //pScope.dgDocGrids.Item = pScope.layoutItems.Items[4];
+                var item = angular.element(event.target).parents('.grid-renderer').parent().scope().item;
+                item.Properties.IsPostBack = true;
+                pScope.Handlers.post(item);
+            },
+            error: function () {
+                alert('Action failed');
+            }
+        });
+    }
+
+    window.glams.Actions.Add('DownloadDelete', Delete);
+    window.glams.Actions.Add('Activate', Activate);
+</script>
+
+<script type="text/ng-template" id="SendMail.html">
+    <div>
+
+        <!--Comment-->
+        <div class="form-group">
+            <label class="col-sm-12 control-label">{{Comments.Properties.Label}}</label>
+            <div class="col-sm-12">
+                <input type="text" ng-model="Comments.Properties.Value" maxlength="{{Comments.Properties.MaxLength}}" size="{{Comments.Properties.Size}}" class="form-control"
+                       name="{{Comments.Properties.Name}}" placeholder="{{Comments.Properties.WaterMarkText}}">
+            </div>
+        </div>
+
+        <!--Comment GroupType-->
+        <div class="form-group">
+            <label class="col-sm-12 control-label">{{GroupTypes.Properties.Label}}</label>
+            <div class="col-sm-12">
+                <select custom-select="GroupTypes.Properties.Options" ng-if="GroupTypes.Properties.Multiple" multiple ng-change="ChangeUsers()" ng-model="GroupTypes.Properties.Value">
+                    <option ng-repeat="opt in GroupTypes.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                </select>
+                <select custom-select ng-if="!GroupTypes.Properties.Multiple" ng-model="GroupTypes.Properties.Value" ng-change="ChangeUsers()">
+                    <option ng-repeat="opt in GroupTypes.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                </select>
+            </div>
+        </div>
+
+        <!--Comment Users-->
+        <div class="form-group">
+            <label class="col-sm-12 control-label">{{Users.Properties.Label}}</label>
+            <div class="col-sm-12">
+                <select custom-select="Users.Properties.Options" multiple ng-model="Users.Properties.Value">
+                    <option ng-repeat="opt in Users.Properties.Options" value="{{opt.Value}}">{{opt.Text}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <input type="button" ng-if="SendMailSubmit.Properties.Visible" class="btn btn-primary" value="{{SendMailSubmit.Properties.Value}}" ng-click="sendFile()" />
+            <input type="button" ng-if="SendMailClose.Properties.Visible" class="btn btn-primary" value="{{SendMailClose.Properties.Value}}" ng-click="close()" />
+        </div>
+    </div>
+</script>

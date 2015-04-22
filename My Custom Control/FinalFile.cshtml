@@ -1,0 +1,160 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+<div ng-controller="fileControl">
+    <div style="padding:10px;" ng-init="initFiles()">
+        <ul class="nav nav-pills">
+            <li> <a href="{{theFile.Properties.Label}}" oncontextmenu="return false" ng-if="theFile.Properties.Visible" id="theFile" ng-click="$event.preventDefault();DownloadFile(theFile.Properties.Label)">{{theFile.Properties.Value}}</a></li>
+            <li> <a href="{{theNative.Properties.Label}}" oncontextmenu="return false" ng-if="theNative.Properties.Visible" id="theNative" ng-click="$event.preventDefault();DownloadFile(theNative.Properties.Label)">{{theNative.Properties.Value}}</a></li>
+            <li> <a href="{{theHiRes.Properties.Label}}" oncontextmenu="return false" ng-if="theHiRes.Properties.Visible" id="theHighResolution" ng-click="$event.preventDefault();DownloadFile(theHiRes.Properties.Label)">{{theHiRes.Properties.Value}}</a></li>
+            <li> <a href="#" ng-if="theViewer.Properties.Visible" oncontextmenu="return false" id="Viewer" ng-click="$event.preventDefault();DownloadFile(theViewer.Properties.Label)">{{theViewer.Properties.Value}}</a></li>
+            <li> <a href="#" ng-if="theLargeFileUpload.Properties.Visible" id="LargeFileUpload" ng-click="$event.preventDefault();openLargeFileUpload(theLargeFileUpload.Properties.Label)">{{theLargeFileUpload.Properties.Value}}</a></li>
+            <li> <a href="#" ng-if="HasNative.Properties.Visible" id="Native">{{HasNative.Properties.Value}}</a></li>
+            <li> <a href="#" ng-if="HasHiRes.Properties.Visible" id="HiRes">{{HasHiRes.Properties.Value}}</a></li>
+
+        </ul>
+    </div>
+    <div>
+
+    </div>
+
+    <style type="text/css">
+        .highlight {
+            font-weight: bold;
+            background-color: red;
+        }
+    </style>
+    <script type="text/javascript">
+        function fileControl($scope, $compile, $http) {
+
+            var layoutItems = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+            $scope.ReplyObj = null;
+            $scope.theFile = layoutItems.Items[0];
+            $scope.theNative = layoutItems.Items[1];
+            $scope.theHiRes = layoutItems.Items[2];
+            $scope.theViewer = layoutItems.Items[3];
+            $scope.theLargeFileUpload = layoutItems.Items[4];
+            $scope.HasNative = layoutItems.Items[5].Properties.Visible;
+            $scope.HasHiRes = layoutItems.Items[6].Properties.Visible;
+            $scope.pScope = angular.element('[ng-controller="LayoutRendererCntrl"]').scope();
+
+            $scope.initFiles = function(){
+                if($scope.theFile.Properties.Visible)
+                    $scope.GetUrl($scope.theFile, "theFile","false");
+
+                if($scope.theNative.Properties.Visible)
+                    $scope.GetUrl($scope.theNative,"Native","false");
+
+                if($scope.theHiRes.Properties.Visible)
+                    $scope.GetUrl($scope.theHiRes,"HiRes","false");
+                if($scope.theViewer.Properties.Visible)
+                    $scope.GetUrl($scope.theViewer,"Viewer",'false');
+                if($scope.theLargeFileUpload.Properties.Visible)
+                {
+                    console.log($scope);
+                    console.log($scope.HasNative);
+                    console.log($scope.HasHiRes);
+                    if($scope.HasNative==true && $scope.HasHiRes==true)
+                    {
+                        $scope.GetUrl($scope.theLargeFileUpload,"LargeFileUpload","Both");
+                    }
+                    else if($scope.HasNative==true && $scope.HasHiRes==false)
+                    {
+                        $scope.GetUrl($scope.theLargeFileUpload,"LargeFileUpload","AllowNative");
+                    }
+                    else if($scope.HasNative==false && $scope.HasHiRes==true)
+                    {
+                        $scope.GetUrl($scope.theLargeFileUpload,"LargeFileUpload","AllowHires");
+                    }
+                    else{
+                        $scope.GetUrl($scope.theLargeFileUpload,"LargeFileUpload","AllowNone");
+                    }
+                }
+                //if($scope.HasNative.Properties.Visible)
+                //    console.log($scope.HasNative.Properties.Visible);
+                //    $scope.GetUrl($scope.HasNative,"HasNative",$scope.HasNative.Properties.Visible);
+                //    if($scope.HasHiRes.Properties.Visible)
+                //        console.log($scope.HasHiRes.Properties.Visible);
+                //    $scope.GetUrl($scope.HasHiRes,"HasHiRes",$scope.HasHiRes.Properties.Visible);
+            };
+
+            $scope.GetUrl = function(obj, fileType,fileStatus){
+                $http({
+                    url: path + 'api/FinalFiles/GetFile?fileType=' + fileType+'&fileStatus='+fileStatus,
+                    method: 'GET',
+                    headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+                }).success(function (data) {
+                    if(data)
+                        obj.Properties.Label = data;
+                    else
+                        obj.Properties.Visible = false;
+                }).error(function(error){ return false });
+            };
+
+            $scope.DownloadFile = function (url) {
+
+                if(url=="null" || url=="") return false;
+
+                if(url.indexOf("WebCenter_Inst")>=0)
+                    CenterScreenPopup(url.replace(/\"/gi,""));
+                else
+                    window.location.href=url.replace(/\"/gi,"");
+            };
+
+            function CenterScreenPopup(url) {
+                var width = 1000;
+                var height = 800;
+                var left = (screen.width - width) / 2;
+                var top = (screen.height - height) / 2;
+                var params = 'width=' + width + ', height=' + height;
+                params += ', top=' + top + ', left=' + left;
+                params += ', directories=no';
+                params += ', location=no';
+                params += ', menubar=no';
+                params += ', resizable=yes';
+                params += ', scrollbars=yes';
+                params += ', status=no';
+                params += ', toolbar=no';
+
+                newwin = window.open(url, '_blank', params);
+                if (window.focus) {
+                    newwin.focus();
+                }
+                return false;
+            }
+
+            $scope.LargeFileUrl = '';
+
+            $scope.openLargeFileUpload = function(url)
+            {
+                console.log(url);
+                if(url=="null" || url=="") {alert("Access Denied . Check with admin."); return false;}
+
+                var width = 1000;
+                var height = 800;
+                var left = (screen.width - width) / 2;
+                var top = (screen.height - height) / 2;
+                var params = 'width=' + width + ', height=' + height;
+                params += ', top=' + top + ', left=' + left;
+                params += ', directories=no';
+                params += ', location=no';
+                params += ', menubar=no';
+                params += ', resizable=yes';
+                params += ', scrollbars=yes';
+                params += ', status=no';
+                params += ', toolbar=no';
+
+                //$scope.LargeFileUrl = 'api/LargeFileUpload/UploadLargeFile'+url.replace(/\"/gi,"");
+                console.log(path+'LargeFileUpload/Index' + url.replace(/\"/gi,"") + '&Frame=true', '_blank');
+                console.log(params);
+                newwin = window.open(path+'LargeFileUpload/Index' + url.replace(/\"/gi,"") + '&Frame=true', '_blank', params);
+
+
+            };
+
+        }
+
+    </script>
+    <script type="text/ng-template" id="largeFileUpload.html">
+        <file-upload multiple="false" ng-model="lup" service-url="LargeFileUrl"></file-upload>
+    </script>
+</div>

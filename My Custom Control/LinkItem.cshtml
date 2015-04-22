@@ -1,0 +1,272 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+
+<script type="text/javascript">
+    function linkItemControl($scope, $compile, $http) {
+        var fields = [];
+        var itemType = null;
+        var workflow=null;
+        var layoutItems = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+
+        $scope.gridLinkItem = {rows:[]};
+        $scope.gridLinkInfo = {rows:[]};
+        $scope.ItemType = layoutItems.Items[0];
+        $scope.IsParent = layoutItems.Items[1];
+        $scope.Field1 =  layoutItems.Items[2];
+        $scope.Field2 =  layoutItems.Items[3];
+        $scope.Field3 =  layoutItems.Items[4];
+        $scope.TheFile =  layoutItems.Items[5];
+        $scope.Add =  layoutItems.Items[6];
+        $scope.Delete =  layoutItems.Items[7];
+        $scope.ShowItemLink =  layoutItems.Items[8];
+        $scope.ShowItemInfo =  layoutItems.Items[9];
+        $scope.ShowHeader =  layoutItems.Items[10];
+        $scope.MaxCount =  layoutItems.Items[11];
+        $scope.Stage =  layoutItems.Items[12];
+        $scope.IsRepository =  layoutItems.Items[13];
+        $scope.IsReviseJob = layoutItems.Items[14];
+        $scope.IsPreviousVersionTheFile = layoutItems.Items[15];
+
+        $scope.pScope =  angular.element('[ng-controller="LayoutRendererCntrl"]').scope();
+
+        $.each($scope.ItemType.Properties.Options,function(i,o){
+            if(o.Selected) itemType = o.Value;
+        });
+
+        $.each($scope.IsReviseJob.Properties.Options,function(i,o){
+            if(o.Selected) workflow = o.Value;
+        });
+
+        if($scope.Field1.Properties.Name) fields.push( $scope.Field1.Properties.Name);
+        if($scope.Field2.Properties.Name) fields.push( $scope.Field2.Properties.Name);
+        if($scope.Field3.Properties.Name) fields.push( $scope.Field3.Properties.Name);
+
+        $scope.initLink = function(){
+            if($scope.ShowItemLink.Properties.Visible)
+            {
+                GetLinkItem();
+            }
+            if($scope.ShowItemInfo.Properties.Visible)
+            {
+                GetLinkInfo();
+            }
+        };
+
+        GetLinkItem = function()
+        {
+            if(itemType)
+            {
+
+                $http({
+                    method: "GET",
+                    url: path + "api/LinkItem/GetLinkItem?IsParent=" + $scope.IsParent.Properties.Visible + "&ItemType="+ itemType + "&Fields=" + fields.toString() + "&theFile="+$scope.TheFile.Properties.Visible+"&Stage="+$scope.Stage.Properties.Value+"&IsRepository="+$scope.IsRepository.Properties.Visible,
+                    headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() }
+                }).success(function (gridSettings) {
+
+                    $.each(gridSettings.actions,function(i,o){
+                        if(o.action == 'DownloadFile')
+                        {
+                            o.name=$scope.TheFile.Properties.Value;
+                        }
+                        else if(o.action == 'AddItemLink')
+                        {
+                            o.name=$scope.Add.Properties.Value;
+                        }
+                    });
+
+                    if(!$scope.TheFile.Properties.Visible)
+                    {
+                        $.each(gridSettings.actions,function(i,o){
+                            if(o.action == 'DownloadFile')
+                            {
+                                gridSettings.actions = jQuery.grep(gridSettings.actions, function(value) {
+                                    return value != o;
+                                });
+                            }
+                        });
+                    }
+
+                    if(!$scope.Add.Properties.Visible)
+                    {
+                        $.each(gridSettings.actions,function(i,o){
+                            if(o.action == 'AddItemLink')
+                            {
+                                gridSettings.actions = jQuery.grep(gridSettings.actions, function(value) {
+                                    return value != o;
+                                });
+                            }
+                        });
+                    }
+
+                    $scope.gridLinkItem  = gridSettings;
+                    $scope.gridLinkItem.showTools = $scope.ShowHeader.Properties.Visible;
+                    $scope.gridLinkItem.actionReference =  $scope.ItemLinkActions;
+                }).error(function () {
+                    //alert("Failed to load");
+                });
+            }
+        }
+
+        GetLinkInfo = function()
+        {
+            if(itemType)
+            {
+                $http({
+                    method: "GET",
+                    url: path + "api/LinkItem/GetLinkInfo?IsParent=" + $scope.IsParent.Properties.Visible + "&ItemType="+ itemType + "&Fields=" + fields.toString()+ "&theFile="+$scope.TheFile.Properties.Visible+"&Stage="+$scope.Stage.Properties.Value+"&IsRepository="+$scope.IsRepository.Properties.Visible+"&IsReviseJob="+$scope.IsReviseJob.Properties.Visible,
+                    headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() }
+                }).success(function (gridSettings) {
+                    $.each(gridSettings.actions,function(i,o){
+                        if(o.action == 'DownloadFile')
+                        {
+                            o.name=$scope.TheFile.Properties.Value;
+                        }
+                        else if(o.action == 'Delete')
+                        {
+                            o.name=$scope.Delete.Properties.Value;
+                        }
+                    });
+
+                    if(!$scope.TheFile.Properties.Visible)
+                    {
+                        $.each(gridSettings.actions,function(i,o){
+                            if(o.action == 'DownloadFile')
+                            {
+                                gridSettings.actions = jQuery.grep(gridSettings.actions, function(value) {
+                                    return value != o;
+                                });
+                            }
+                        });
+                    }
+
+                    if(!$scope.Delete.Properties.Visible)
+                    {
+                        $.each(gridSettings.actions,function(i,o){
+                            if(o.action == 'Delete')
+                            {
+                                gridSettings.actions = jQuery.grep(gridSettings.actions, function(value) {
+                                    return value != o;
+                                });
+                            }
+                        });
+                    }
+
+                    //if(!$scope.Delete.Properties.Visible)
+                    //{
+                    //    $.each(gridSettings.actions,function(i,o){
+                    //        if(o.action == 'ReviseJob')
+                    //        {
+                    //            gridSettings.actions = jQuery.grep(gridSettings.actions, function(value) {
+                    //                alert(value)
+                    //                return value != o;
+                    //            });
+                    //        }
+                    //    });
+                    //}
+
+                    $scope.gridLinkInfo  = gridSettings;
+                    $scope.gridLinkInfo.showTools = $scope.ShowHeader.Properties.Visible;
+                    $scope.gridLinkInfo.actionReference =  $scope.ItemInfoActions;
+                }).error(function () {
+                    //alert("Failed to load");
+                });
+            }
+        }
+
+        $scope.ItemLinkActions = {
+            AddItemLink:function(event, row) {
+                $http({
+                    url: path + 'api/LinkItem/AddItemLink?itemID=' + row[0].ItemID + '&IsParent=' + $scope.IsParent.Properties.Visible+"&MaxCount="+$scope.MaxCount.Properties.Value,
+                    method: 'POST',
+                    headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() || "" }}).success(function() {
+                        $scope.IsParent.Properties.IsPostBack = true;
+                        $scope.pScope.Handlers.post($scope.IsParent);
+                    }).error(function (err) {
+                        $.alert(err.ExceptionMessage);
+                    });
+            },
+
+            DownloadFile:function(event, row) {
+                var id =row[0].FileID;
+                if(id != null && id != '')
+                {
+                    window.location.href = path + 'Download/Files?id=' + id + '&folder=TheFile';
+                }
+                else
+                {
+                    alert("Job does not have document...")
+                }
+            }
+        }
+
+        $scope.ItemInfoActions = {
+            Delete:function(event, row) {
+                if(row[0].RelationID != null && row[0].RelationID != '')
+                {
+                    $http({
+                        url: path + 'api/LinkItem/DeleteItemLink?RelationId=' + row[0].RelationID,
+                        method: 'POST',
+                        headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() || "" }}).success(function() {
+                            $scope.IsParent.Properties.IsPostBack = true;
+                            $scope.pScope.Handlers.post($scope.IsParent);
+                        }).error(function () {
+                            alert('Action failed');
+                        });
+                }
+            },
+            DownloadFile:function(event, row) {
+                var id =row[0].FileID;
+                if(id != null && id != '')
+                {
+                    window.location.href = path + 'Download/Files?id=' + id + '&folder=TheFile';
+                }
+                else
+                {
+                    alert("Job does not have document...")
+                }
+            },
+            ReviseJob:function(event, row) {
+                var jobIds = [];
+                if(typeof row === "undefined")
+                {
+                    alert("Please select a job to revise...")
+                    return false;
+                }
+                else
+                {
+                    $.each(row,function(i,o){
+                        jobIds.push(o.JobId);
+                    });
+
+                    $http({
+                        url: path + 'api/LinkItem/ReviseJob?JobIds=' + jobIds.join(',')+'&WorkflowName='+workflow+'&IsPreviousVersionTheFile='+$scope.IsPreviousVersionTheFile.Properties.Visible,
+                        method: 'POST',
+                        headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() || "" }}).success(function() {
+                            $scope.IsParent.Properties.IsPostBack = true;
+                            $scope.pScope.Handlers.post($scope.IsParent);
+                        }).error(function (err) {
+                            $.alert(err.ExceptionMessage);
+                        });
+                }
+            }
+        }
+    }
+</script>
+
+<div ng-controller="linkItemControl">
+    <div ng-init="initLink()">
+        @{ if (Model.Items[8].Properties.Visible)
+         {
+            <div>
+                <grid config="gridLinkItem"></grid>
+            </div>
+         }
+         if (Model.Items[9].Properties.Visible)
+         {
+            <div>
+                <grid config="gridLinkInfo"></grid>
+            </div>
+         }
+        }
+    </div>
+</div>

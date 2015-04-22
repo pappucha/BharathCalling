@@ -1,0 +1,163 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+
+<style type="text/css">
+    .customBtns {
+        background-image: url('Content/images/globalvision.png');
+        background-repeat: no-repeat;
+        border: 0;
+        width: 45px;
+        height: 72px;
+        margin: 5px 10px;
+        display: none;
+        cursor: pointer;
+        -webkit-transition: -webkit-filter 1s;
+    }
+
+        .customBtns:hover {
+            -webkit-filter: grayscale(100%);
+        }
+
+        .customBtns.text {
+            background-position: 0 0;
+        }
+
+        .customBtns.artwork {
+            background-position: -44px 0;
+        }
+
+        .customBtns.spelling {
+            background-position: -89px 0;
+        }
+
+        .customBtns.barille {
+            background-position: -134px 0;
+        }
+
+        .customBtns.barcode {
+            background-position: -179px 0;
+        }
+
+        .customBtns.notes {
+            background-position: -225px 0;
+        }
+</style>
+
+<script type="text/javascript">
+
+    function globalVisionControl($scope, $compile, $http) {
+        var layoutItems = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+
+        $scope.Data = null;
+        $scope.ArtProofUrl = '';
+        $scope.DocProofUrl = '';
+        $scope.BrailUrl = '';
+        $scope.BarCodeUrl = '';
+        $scope.ArtProof = layoutItems.Items[0];
+        $scope.DocProof = layoutItems.Items[1];
+        $scope.Brail = layoutItems.Items[2];
+        $scope.BarCode = layoutItems.Items[3];
+        $scope.ddlDocs = layoutItems.Items[4];
+        $scope.MasterID = '';
+
+        $scope.ArtProof.Properties.Visible = false;
+        $scope.DocProof.Properties.Visible = false;
+        $scope.Brail.Properties.Visible = false;
+        $scope.BarCode.Properties.Visible = false;
+
+        $scope.init = function () {
+            $http({
+                url: path + 'api/GlobalVision/GetGlobalVisionLinks',
+                method: 'GET',
+                headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function (data) {
+                $scope.Data = data;
+                
+                if(data.Brail || data.BarCode){
+                    $scope.ArtProof.Properties.Visible = true;
+                    $scope.DocProof.Properties.Visible = true;
+                }
+
+                if(data.Brail){
+                    $scope.BrailUrl = data.Brail;
+                    $scope.Brail.Properties.Visible = true;
+                }
+                
+                if(data.BarCode){
+                    $scope.BarCodeUrl = data.BarCode;
+                    $scope.BarCode.Properties.Visible = true;
+                }
+
+                if(data.DestroySession){
+                    $.ajax({
+                        url: data.DestroySession,
+                        dataType: 'jsonp',
+                        success: function (d) {
+                            $scope.createSession(data.CreateSession);
+                        },
+                        error: function () {
+                            $scope.createSession(data.CreateSession);
+                        }
+                    });
+                }
+            });
+        }
+
+        $scope.createSession = function(createSessionUrl){
+            $.ajax({
+                url: createSessionUrl, dataType: 'jsonp', success: function () { initActionBtns(); }, error: function () {
+                    $scope.initActionBtns();
+                }
+            });
+        };
+
+        $scope.initActionBtns = function() {
+            $('.customBtns').show().on('click', function () {
+                var url = $(this).attr('url');
+                if(url){
+                    var name = $(this).attr('name');
+                    var w = window.open(url, name);
+                }
+            });
+        }
+
+        $scope.getMasterIds = function(){
+            var artProofUrl = $scope.Data.ArtProof;
+            var docProofUrl = $scope.Data.DocProof;
+
+            $scope.ArtProofUrl = artProofUrl.replace("#masterid#",  $scope.MasterID );
+            $scope.DocProofUrl = docProofUrl.replace("#masterid#",  $scope.MasterID );
+            $scope.BrailUrl = $scope.Data.Brail;
+            $scope.BarCodeUrl = $scope.Data.BarCode;
+
+            //$scope.ArtProofUrl = $scope.ArtProofUrl.replace("#sampleid#",  $scope.MasterID );
+            //$scope.DocProofUrl = $scope.ArtProofUrl.replace("#sampleid#",  $scope.MasterID );
+        }
+    }
+</script>
+
+<div ng-controller="globalVisionControl">
+    <div ng-init="init()">
+        <div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-12 control-label">{{ddlDocs.Properties.Label}}</label>
+                    <div class="col-sm-12">
+                        <select custom-select ng-model="MasterID" multiple ng-change="getMasterIds()">
+                            <option ng-repeat="opt in Data.Files track by $index" value="{{opt.ID}}">{{opt.Name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button id="btnDocProof" name="GlobalArtProof" class="customBtns artwork" name="Artproof" type="button" ng-if="ArtProof.Properties.Visible" url="{{ArtProofUrl}}"></button>
+                <button id="btnArtProof" name="GlobalDocProof" class="customBtns text" name="Docproof" type="button" ng-if="DocProof.Properties.Visible" url="{{DocProofUrl}}"></button>
+                <button id="btnBarile" name="GlobalVisionBarille" class="customBtns barille" type="button" text="text" ng-if="Brail.Properties.Visible" url="{{BrailUrl}}"></button>
+                <button id="btnBarcode" name="GlobalVisionBarcode" class="customBtns barcode" type="button" text="text" ng-if="BarCode.Properties.Visible" url="{{BarCodeUrl}}"></button>
+            </div>
+        </div>
+        @*<button id="btnSpelling" name="GlobalVisionSpelling" class="customBtns spelling" type="button" text="text" url="http://184.173.139.234/Compare.jsp?UserID=dpatel@globalvisioninc.com&MasterID=8345&AMS=perigord&ApplicationType=Spellproof&ReportUpload=1&CallbackOptions={InspectionId=1234,Server=https://XYZ.com}"></button>            
+            <button id="btnNotes" name="GlobalVisioNotes" class="customBtns notes" type="button" text="text" url="http://184.173.139.234/Compare.jsp?UserID=dpatel@globalvisioninc.com&MasterID=8123&AMS=perigord&ApplicationType=notes&ReportUpload=1&CallbackOptions={InspectionId=1234,Server=https://XYZ.com}"></button>*@
+    </div>
+</div>
