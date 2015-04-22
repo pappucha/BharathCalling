@@ -1,0 +1,435 @@
+<!DOCTYPE html><html><head><meta name="generator" content="HTML Tidy for Windows (vers 14 February 2006), see www.w3.org"><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content=""><meta name="author" content=""><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><title>Dashboard</title><link rel="stylesheet" href="styles/themes/default/default.combined.min.css"><link rel="stylesheet" href="styles/lib/ion-checkbox/ion.checkRadio.min.css"><link rel="stylesheet" href="styles/lib/ion-checkbox/colorpicker.min.css"><!--[if lt IE 9]><script src="js/lib/html5shive.min.js"></script>
+      <script src="js/lib/respond.min.js"></script>
+      <script src="js/app/ie-angular-directive-fix.js"></script><![endif]--><script src="js/lib/jquery/jquery-combined.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script><script src="js/lib/ion.checkRadio.min.js"></script><script>FileAPI = {
+            jsPath: '/js/lib/angular-file-upload/', 
+            staticPath: '/js/lib/angular-file-upload/'
+        }</script><script src="js/lib/angular-file-upload/angular-file-upload-html5-shim.min.js"></script><script src="js/lib/angular-file-upload/angular-file-upload-shim.min.js"></script><script src="js/lib/angularjs/angular.min.js"></script><script src="js/lib/angularjs/angular-sanitize.js"></script><script src="js/lib/angular-file-upload/angular-file-upload.min.js"></script><script src="js/app/UIModules/ui.min.js"></script><script src="js/app/MainModule/main.min.js"></script><script src="js/app/Messages/messages.min.js"></script><script src="js/app/Notification/notification.min.js"></script></head><body><header><section class="main-head"><div class="container-fluid"><div class="row"><div class="col-lg-6 col-md-6 col-sm-4 col-xs-4"><a href="" class="logo"></a></div><div class="col-lg-6 col-md-6 col-sm-8 col-xs-8"><ul><li class="client-logo"><img src="images/client_logo.png"></li><li data-toggler=".userinfo .popout" class="userinfo"><div><span class="profilepic hidden-xs" tabindex="-1"><img src="styles/themes/default/images/default-user.png" alt=""></span> <span><span class="user-name">Perigord User</span> <i class="user-role">Adimin</i></span></div><div class="popout" tabindex="-1"><ul><li><a href="">Change Password</a></li><li><a href="">Update Profile</a></li></ul></div></li><li title="Logout" data-placement="bottom" class="_tooltip"><a href=""><span class="icon fa fa-power-off"></span></a></li></ul></div></div></div></section><nav class="clearfix"><div class="nav-container pull-left"><a class="toggleMenu" href="#"><span class="glyphicon glyphicon-align-justify"></span></a><ul class="nav"><li><a href="/Display/Workflow/AddComponent.aspx?TaskName=NewOOSTask">New Job Request</a></li><li class="active"><a href="/default.aspx?PageID=DC34AA9F-9D98-41B9-9858-C0B6D13E20FC" title="Dashboard display">Dashboard</a></li><li><a href="/Display/Forms/TrackerNew.aspx?PageID=2bdf5033-ae9f-404b-ae6d-4a6fa372f0a8&amp;TaskName=Tracker" title="Tracker">Tracker</a></li><li><a href="/Display/Forms/Repository.aspx?PageID=80e21b1c-b175-49d1-8f39-9b03448642cd&amp;TaskName=Repository" title="Repository">Repository</a></li><li><a href="/Display/Workflow/AddComponent.aspx?TaskName=MSDocs">Documents</a></li><li><a href="#">Configuration</a><ul><li><a href="/Display/MenuConfig.aspx" title="Menu Config">Menu Config</a></li><li><a href="/Display/Rules/RuleSet.aspx" title="Rule Config">Rule</a></li><li><a href="/Display/Notification/EmailConfig.aspx" title="Email Config">Email</a></li><li><a href="#" title="Workflow Manager">Workflow</a><ul><li><a href="/Display/Workflow/Workflow.aspx" title="Workflow Manager">Workflow</a></li><li><a href="/Display/Workflow/Task.aspx" title="Task Manager">Task</a></li><li><a href="/Display/Workflow/TaskDefaultConfig.aspx" title="Default Config">Group Defaults</a></li></ul></li><li><a href="#" title="Form manager">Form</a><ul><li><a href="/Display/Forms/Layouts.aspx" title="Layout manager">Layout</a></li><li><a href="/Admin/Configuration/Actions.aspx" title="Action Manager">Action</a></li></ul></li><li><a href="#" title="User">User</a><ul><li><a href="/Admin/Configuration/RolesList.aspx" title="Role Config">Role</a></li><li><a href="/Admin/Membership/UsersList.aspx" title="Group Config">User</a></li></ul></li><li><a href="#" title="Manage Data">Manage Data</a><ul><li><a href="/Admin/Configuration/MasterList.aspx" title="Master Data Config">Master Data</a></li><li><a href="/Admin/Configuration/ManageData.aspx" title="Manage Data Config">Manage Data</a></li></ul></li></ul></li></ul></div><a href="" class="logo pull-right"><img src="styles/themes/default/images/perigord-logo.png" alt=""></a></nav><section class="page-info"><div class="container-fluid"><div class="row"><div class="col-md-6 col-md-12"><h2 class="page-title">Dashboard</h2></div><div class="col-md-6 hidden-xs hidden-sm"><ol class="breadcrumb pull-right"><li><a href="#">Home</a></li><li class="active">Dashboard</li></ol></div></div></div></section></header><main class="content-area"><div class="container-fluid" ng-app="Glams" ng-controller="GlamsController"><div class="row"><div class="col-md-12"><collapsible-panel heading="Tree Control"><tree config="treeConfig"></tree></collapsible-panel></div></div><div class="row"><div class="col-md-12"><collapsible-panel heading="grid"><div><grid config="gridOptions" ng-model="MyGrid"></grid></div></collapsible-panel></div></div><div class="row"><div class="col-md-6"><collapsible-panel heading="Tab Justified Example"><tabset justified="true"><tab heading="New Request Form"><div class="row"><div class="col-lg-12"><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Customer</label><div class="col-sm-10">{{d11}}<select name="" id="customer" ng-change="alert(10)" ng-model="d11" multiple="multiple" custom-select><option ng-repeat="a in data" value="{{a}}">{{a}}</option></select></div></div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Supplier</label><div class="col-sm-10"><select name="" id="Supplier" ng-change="alert(10)" custom-select ng-model="s1"><option value="">Please Select</option><option value="S1">S1</option><option value="Actavis">Actavis</option><option value="Haupt Latina">Haupt Latina</option><option value="Elanco">Elanco</option></select></div></div><div class="form-group"><label for="ccode" class="col-sm-2 control-label">Component Code</label><div class="col-sm-10"><input ng-model="xyz" type="text" class="form-control" id="ccode" placeholder="Text Box"></div></div><div class="form-group"><label for="cref" class="col-sm-2 control-label">Customer Reference</label><div class="col-sm-10"><input type="text" class="form-control" id="cref" placeholder="Text Box"></div></div><div class="form-group"><label for="cp" class="col-sm-2 control-label">Customer Project</label><div class="col-sm-10"><input type="text" class="form-control" id="cp" placeholder="Text Box"></div></div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Product Name</label><div class="col-sm-10">{{xx}}<select name="" id="customers7" custom-select multiple="true" ng-model="xx" ng-options="opt.value as opt.name for opt in dataObj"></select></div></div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Component Type</label><div class="col-sm-10">{{xx1}}<select name="" id="customer2" custom-select ng-model="xx1"><option value="">Please Select</option><option value="Pfizer">Pfizer</option><option value="Mylan">Mylan</option><option value="Lilly">Lilly</option><option value="Zoetis">Zoetis</option><option value="Allergan">Allergan</option><option value="AztraZeneca">AstraZeneca</option><option value="Novartis">Novartis</option></select></div></div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Markets</label><div class="col-sm-10"><select name="" id="customer22" custom-select ng-model="xx2"><option value="">Please Select</option><option value="Pfizer">Pfizer</option><option value="Mylan">Mylan</option><option value="Lilly">Lilly</option><option value="Zoetis">Zoetis</option><option value="Allergan">Allergan</option><option value="AztraZeneca">AstraZeneca</option><option value="Novartis">Novartis</option></select></div></div><div class="form-group"><label for="cp" class="col-sm-2 control-label">Customer Project</label><div class="col-sm-10"><file-upload multiple="true" max-files="2" trigger="auto" allowed-types="png,jpg,pdf" service-url="http://localhost:8080" ng-model="myupload1"></file-upload></div></div><div class="form-group"><label for="cp" class="col-sm-2 control-label">Customer Project</label><div class="col-sm-10"><file-upload trigger="auto" service-url="http://localhost:8080" ng-model="myupload2"></file-upload></div></div></div></div></tab><tab heading="Tab Heading"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab><tab heading="Date Picker"><div class="form-group"><label for="ccode" class="col-sm-2 control-label">Inline Date</label><div class="col-sm-10"><datepicker ng-model="dt1"></datepicker></div></div><div class="form-group"><label for="ccode" class="col-sm-2 control-label">Date 1</label><div class="col-sm-10"><input ng-model="xyz" type="text" datepicker-popup="dd/MM/yyyy" ng-model="dt" class="form-control" id="ccode" placeholder="DD/MM/YYYY"></div></div><div class="form-group"><label for="ccode" class="col-sm-2 control-label">Date 2</label><div class="col-sm-10"><input type="text" class="form-control" datepicker-popup ng-model="dt2" min-date="'2014-08-01'" max-date="'2015-06-22'" placeholder="Min(2014-08-01),Max(2015-06-22)"></div></div></tab></tabset></collapsible-panel></div><div class="col-md-6"><collapsible-panel heading="Tab Example"><tabset><tab heading="New Request Form"><div class="row"><div class="col-lg-12"><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Customer</label><div class="col-sm-10"><select name="" id="customer4" ng-model="xx2" class="no-fluid" custom-select><option value="">Please Select</option><option value="Pfizer">Pfizer</option><option value="Mylan">Mylan</option><option value="Lilly">Lilly</option><option value="Zoetis">Zoetis</option><option value="Allergan">Allergan</option><option value="AztraZeneca">AstraZeneca</option><option value="Novartis">Novartis</option></select></div></div><div class="form-group"><label for="inputEmail3" ng-model="xx2" class="col-sm-2 control-label">Supplier</label><div class="col-sm-10"><select name="" id="Supplier" ng-model="s1" class="no-fluid" custom-select><option value="">Please Select</option><option value="S1">S1</option><option value="Actavis">Actavis</option><option value="Haupt Latina">Haupt Latina</option><option value="Elanco">Elanco</option></select></div></div><div class="form-group"><label for="ccode" class="col-sm-2 control-label">Component Code</label><div class="col-sm-5"><input type="text" class="form-control" id="ccode" placeholder="Text Box"></div></div><div class="form-group"><label for="cref" class="col-sm-2 control-label">Customer Reference</label><div class="col-sm-5"><input type="text" class="form-control"></div></div><div class="form-group"><label for="cp" class="col-sm-2 control-label">Customer Project</label><div class="col-sm-10"><input type="text" class="form-control" id="cp" placeholder="Text Box"></div></div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Product Name</label><div class="col-sm-10"><select name="" ng-model="xx2" id="customerss" class="no-fluid" custom-select><option value="">Please Select</option><option value="Pfizer">Pfizer</option><option value="Mylan">Mylan</option><option value="Lilly">Lilly</option><option value="Zoetis">Zoetis</option><option value="Allergan">Allergan</option><option value="AztraZeneca">AstraZeneca</option><option value="Novartis">Novartis</option></select></div></div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Component Type</label><div class="col-sm-10"><select name="" ng-model="xx2" id="customer44" class="no-fluid" custom-select><option value="">Please Select</option><option value="Pfizer">Pfizer</option><option value="Mylan">Mylan</option><option value="Lilly">Lilly</option><option value="Zoetis">Zoetis</option><option value="Allergan">Allergan</option><option value="AztraZeneca">AstraZeneca</option><option value="Novartis">Novartis</option></select></div></div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Markets</label><div class="col-sm-10"><select name="" ng-model="xx2" id="customer34" class="no-fluid" multiple="multiple" custom-select><option value="">Please Select</option><option value="Pfizer">Pfizer</option><option value="Mylan">Mylan</option><option value="Lilly">Lilly</option><option value="Zoetis">Zoetis</option><option value="Allergan">Allergan</option><option value="AztraZeneca">AstraZeneca</option><option value="Novartis">Novartis</option></select></div></div><div class="form-group"><label for="cp" class="col-sm-2 control-label">Customer Project</label><div class="col-sm-5"><input type="file" class="form-control" id="cp" placeholder="Text Box"></div></div></div></div></tab><tab heading="Tab 2" disabled="true"><i>Second</i><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab><tab heading="Tab 1" active="true"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab></tabset></collapsible-panel></div></div><div class="row"><div class="col-lg-12"><collapsible-panel heading="Custom Select Box Example"><div class="row"><div class="col-md-6"><div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Text Box</label><div class="col-sm-10"><input type="email" class="form-control" id="inputEmail3" placeholder="Text Box"></div></div><div class="form-group"><label for="inputPassword3" class="col-sm-2 control-label">Password</label><div class="col-sm-10"><input type="password" class="form-control" id="inputPassword3" placeholder="Password"></div></div><div class="form-group"><div class="col-sm-offset-2 col-sm-10"><div class="checkbox"><label><input type="checkbox" value="" name="xx0" checked="checked">Checkbox</label></div><div class="checkbox"><label><input type="checkbox" value="">Checkbox</label></div><div class="checkbox disabled"><label><input type="checkbox" value="" disabled="disabled">Checkbox disabled</label></div><div class="radio"><label><input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="checked">Radio 1</label></div><div class="radio"><label><input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">Radio 2</label></div><div class="radio disabled"><label><input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled="disabled">Radio disabled</label></div></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Normal list box</label><div class="col-sm-10"><select ng-model="xx2" name="multiselect" id="multiselect" class="no-fluid" multiple="multiple" ng-model="s1"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Customized list box (compact)</label><div class="col-sm-10"><select ng-model="xx2" name="multiselect" id="multiselect" class="no-fluid" multiple="multiple" custom-select ng-model="s2"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Customized list box</label><div class="col-sm-10">{{s3}}<select ng-model="xx2" name="multiselect" id="multiselect" multiple="multiple" custom-select ng-model="s3"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Customized list disabled</label><div class="col-sm-10"><select ng-model="xx2" name="multiselect" id="multiselect" disabled="disabled" multiple="multiple" custom-select ng-model="s4"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="singleselect" class="col-sm-2 control-label">Select Box (compact)</label><div class="col-sm-10"><select ng-model="xx2" name="singleselect" class="no-fluid form-control" id="singleselect" custom-select><option value="1">--Select--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected="selected">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="form-group"><label for="singleselect" class="col-sm-2 control-label">Select Box</label><div class="col-sm-10"><select ng-model="xx2" name="singleselect" id="singleselect" custom-select><option value="1">--Select--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected="selected">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="form-group"><label for="singleselect" class="col-sm-2 control-label">Select Box Disabled</label><div class="col-sm-10"><select ng-model="xx2" name="singleselect" disabled="disabled" id="singleselect" custom-select><option value="1">--Select--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected="selected">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div></div></div><div class="col-md-6"><div><div class="form-group"><label for="inputEmail3" class="col-sm-2 control-label">Text Box</label><div class="col-sm-10"><input type="email" class="form-control" id="inputEmail3" placeholder="Text Box"></div></div><div class="form-group"><label for="inputPassword3" class="col-sm-2 control-label">Password</label><div class="col-sm-10"><input type="password" class="form-control" id="inputPassword3" placeholder="Password"></div></div><div class="form-group"><div class="col-sm-offset-2 col-sm-10"><div class="checkbox"><label><input type="checkbox" value="" ng-model="aa" custom-checkbox name="xx" checked="checked">Checkbox</label></div><div class="checkbox"><label><input type="checkbox" value="" ng-model="aa" custom-checkbox name="xx">Checkbox</label></div><div class="checkbox"><label><input type="checkbox" value="" ng-model="aa" custom-checkbox name="xx">Checkbox</label></div><div class="checkbox"><label><input type="checkbox" value="" ng-model="aa" custom-checkbox name="xx1">Checkbox</label></div><div class="checkbox"><label><input type="checkbox" value="" ng-model="aa" custom-checkbox name="xx1">Checkbox</label></div><div class="checkbox disabled"><label><input type="checkbox" value="" ng-model="aa" disabled="disabled" custom-checkbox>Checkbox disabled</label></div><div class="radio"><label><input type="radio" name="optionsRadios" ng-model="aa" custom-radio id="optionsRadios1" value="option1" checked="checked">Radio 1</label></div><div class="radio"><label><input type="radio" name="optionsRadios" ng-model="aa" custom-radio id="optionsRadios2" value="option2">Radio 2</label></div><div class="radio disabled"><label><input type="radio" name="optionsRadios" ng-model="aa" custom-radio id="optionsRadios3" value="option3" disabled="disabled">Radio disabled</label></div></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Normal list box</label><div class="col-sm-10"><select ng-model="xx2" name="multiselect" id="multiselect" class="no-fluid" multiple="multiple"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Customized list box (compact)</label><div class="col-sm-10"><select ng-model="xx2" name="multiselect" id="multiselect" class="no-fluid" multiple="multiple" custom-select><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Customized list box</label><div class="col-sm-10"><select ng-model="xx2" name="multiselect" id="multiselect" multiple="multiple" custom-select><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="multiselect" class="col-sm-2 control-label">Customized list disabled</label><div class="col-sm-10"><select ng-model="xx2" name="multiselect" id="multiselect" disabled="disabled" multiple="multiple" custom-select><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7" selected="selected">7</option><option value="8">8</option><option value="9">9</option><option value="10" selected="selected">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="110">110</option></select></div></div><div class="form-group"><label for="singleselect" class="col-sm-2 control-label">Select Box (compact)</label><div class="col-sm-10"><select ng-model="xx2" name="singleselect" class="no-fluid form-control" id="singleselect" custom-select><option value="1">--Select--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected="selected">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="form-group"><label for="singleselect" class="col-sm-2 control-label">Select Box</label><div class="col-sm-10"><select ng-model="xx2" name="singleselect" id="singleselect" custom-select><option value="1">--Select--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected="selected">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="form-group"><label for="singleselect" class="col-sm-2 control-label">Select Box Disabled</label><div class="col-sm-10"><select ng-model="xx2" name="singleselect" disabled="disabled" id="singleselect" custom-select><option value="1">--Select--</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected="selected">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div></div></div></div></collapsible-panel></div></div><div class="row"><div class="col-md-12"><collapsible-panel heading="Vertical Tab Example"><tabset vertical="true"><tab heading="Tab 1" disabled="true"><b>First</b><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab><tab heading="Tab 2"><i>Second</i><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab><tab heading="Tab 1" active="true"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab><tab heading="Tab 1"><b>First</b><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab><tab heading="Tab 2"><i>Second</i><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></tab><tab heading="Tab 1">sdfsa</tab></tabset></collapsible-panel></div></div><div class="row"><div class="col-md-6"><collapsible-panel heading="Custom Alerts" icon-class="fa fa-bars"><div class="customalert"><a href="" class="btn btn-primary alertTest">alert</a> <a href="" class="btn btn-primary confirmTest">confirm</a> <a href="" class="btn btn-primary promptdefault">prompt-default</a> <a href="" class="btn btn-primary prompt">prompt</a> <a href="" class="btn btn-primary promptdefault1">Prompt with return false callback</a> <input type="button" class="btn btn-primary" value="alert"> <input type="button" class="btn btn-primary" value="info"> <input type="button" class="btn btn-primary" value="warning"> <input type="button" class="btn btn-primary" value="error"> <input type="button" class="btn btn-primary" value="success"> <input type="button" class="btn btn-primary" value="delete"> <input type="button" class="btn btn-primary" value="cancel"></div></collapsible-panel></div><div class="col-md-6"><collapsible-panel heading="Custom Alerts" icon-class="fa fa-bars"><div class="customalert"><a href="" class="btn btn-primary modal_1">Modal</a> <a href="" class="btn btn-primary modal_2">Modal With External Link</a> <a href="" class="btn btn-primary modal_3">Modal with disabled features</a> <a href="" class="btn btn-primary modal_4">Aside Modal - right</a> <a href="" class="btn btn-primary modal_5">Aside Modal - left</a> <a href="styles/lib/ion-checkbox/icr-cloudy-skin.png" class="btn btn-primary" modal-popup="{fullscreen:true}" modal-popup-title="Test Modal Directive with options">Test Modal Directive with options</a> <a href="styles/lib/ion-checkbox/icr-cloudy-skin.png" class="btn btn-primary" modal-popup modal-popup-title="Test Modal Directive with options" modal-popup-onclose="alert('test')">Test Modal Directive default</a> <a href="" class="btn btn-primary" aside aside-title="Aside Modal Directive - Right (Default)">Aside Modal Directive - Right (Default)</a> <a href="http://localhost:8080/" class="btn btn-primary" aside aside-position="left" aside-title="Aside Modal Directive -Left" aside-onclose="alert('test')">Aside Modal Directive - Left</a></div></collapsible-panel></div></div><div class="row"><div class="col-md-6"><collapsible-panel heading="info Box example" icon-class="fa fa-bars"><div class="infobox"><h1>Normal Info</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div><div class="infobox success"><h1>Success</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div><div class="infobox warning"><h1>warning</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div><div class="infobox error"><h1>error</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div></collapsible-panel></div><div class="col-md-6"><collapsible-panel heading="Info Box example - Closable" icon-class="fa fa-bars"><div class="infobox"><span class="close"></span><h1>Normal Info</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div><div class="infobox success"><span class="close"></span><h1>Success</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div><div class="infobox warning"><span class="close"></span><h1>warning</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div><div class="infobox error"><span class="close"></span><h1>error</h1><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id.</p></div></collapsible-panel></div></div><div class="row"><div class="col-md-6"><collapsible-panel heading="Accordion example" icon-class="fa fa-bars"><accordion><accordion-group heading="a1" active="true"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></accordion-group><accordion-group heading="a2" active="true"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></accordion-group><accordion-group heading="a3"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></accordion-group></accordion></collapsible-panel></div><div class="col-md-6"><collapsible-panel heading="Accordion example - closeOthers false" icon-class="fa fa-bars"><accordion close-others="false"><accordion-group heading="a1"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></accordion-group><accordion-group heading="a2" active="true"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></accordion-group><accordion-group heading="a3" active="true"><p>Lorem ipsum dolor sit amet, an ius civibus fabellas similique, mazim euismod adipisci cu has. Iisque virtute legendos est an, vim in stet nostro regione. Vel ad sint eirmod regione, pro augue postea ei, vim novum vitae id. Mutat labore expetenda eu sit, iriure minimum detracto nec ei, duo patrioque adolescens deseruisse id. In eam urbanitas conclusionemque. Voluptua intellegat temporibus et eos, no eos simul graecis. Ad mei reformidans definitionem. Mundi invenire has ut, zril everti oporteat mel no. Iisque prompta has ad. Ne diam partem facilisis eos, ex esse novum mea. Quo vitae exerci honestatis ad. Nonumy epicuri principes id cum, pri vocibus detraxit moderatius ad. Eu nulla eruditi percipit vim, sit iudicabit democritum ut. Usu no porro inani deseruisse, qui te mucius alienum invenire. Solum aliquam imperdiet duo ex. Nobis ornatus dolorum no duo, hinc tota liberavisse ex sit, vim porro audiam civibus id. Ei voluptaria constituto liberavisse eos, et admodum alienum deterruisset nec, nam erat numquam assueverit no. Mel mazim aperiam ea, eu purto dolore eum, duo ei purto blandit. Posse assum scripserit sed id, ad simul aperiam repudiare mel. Te meis lobortis vituperatoribus duo, pro id alii copiosae. Usu ne volutpat intellegebat, vocent aliquid interesset per ei, est ea libris vituperatoribus. Et autem minimum eam, pri erat apeirian temporibus ut. Ex doming blandit sea, pro ne mucius detraxit.</p></accordion-group></accordion></collapsible-panel></div></div><script type="text/ng-template" id="gridDefault.html"><div ng-if="filter.filterExpressionActive" class="_filterexpression">
+            <a class="btn btn-xs btn-default" ng-if="filter.filterExpression.length==0" ng-click="filter.addChild(0, filter.filterExpression)"><i class="fa fa-plus"></i></a>
+            <div class="_expression" ng-repeat="exp in filter.filterExpression" ng-include="'gridFilterExpression.html'"></div>
+            <div class="text-left">
+                <a class="btn btn-default" ng-if="filter.filterExpression.length>0" ng-class="{active:filter.setAsDefault}" ng-click="filter.setAsDefault=!filter.setAsDefault"><i class="fa fa-lg" ng-class="{'fa-square-o':!filter.setAsDefault,'fa-check-square-o':filter.setAsDefault}"></i> Default</a>
+                <a class="btn btn-success" ng-if="filter.filterExpression.length>0" ng-click="filter.applyFilter()"><i class="fa fa-filter"></i> Apply filter</a>
+                <a class="btn btn-success" ng-if="filter.filterExpression.length>0" ng-click="filter.saveFilter()"><i class="fa fa-save"></i> Save</a>
+                <a class="btn btn-success" ng-if="filter.filterExpression.length>0 && filter.currentFilterExpression>0" ng-click="filter.saveFilter(true)"><i class="fa fa-save"></i> Save As</a>
+            </div>
+        </div>
+        <div ng-if="grid.groupActions.length" class="text-right _gridaction">
+            <span ng-repeat="action in grid.groupActions" class="grid-action" ng-include="'gridActions.html'"></span>
+        </div>
+        <table class="_grid-tbl">
+            <thead>
+                <tr ng-show="showHeaders">
+                    <th class="expand"></th>
+                    <th ng-repeat="col in grid.columns track by $index" ng-click="orderby(col.value)" ng-style="col.style">
+                        {{col.name}}
+                        <i class="_sort-icon fa fa-sort-amount-{{sort.reverse?'desc':'asc'}}" ng-show="sort.column==col.value"></i>
+                    </th>
+                    <th ng-if="grid.rowActions.length"> Actions</th>
+                </tr>
+                <tr class="col-filter" ng-show="filter.columnFilterActive" class="col-filter">
+                    <td class="expand"></td>
+                    <td ng-repeat="col in grid.columns track by $index" ng-style="col.style">
+                        <input type="text" class="form-control" ng-model="filter.columns[col.value]" ng-if="!col.filter.type || col.filter.type=='text'" />
+                        <input type="number" class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='number'" />
+
+                        <input type="text" datepicker-popup datepicker-append-to-body="true" class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='date'" />
+
+                        <select class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='dropdown'">
+                            <option value=""></option>
+                            <option ng-repeat="cval in grid.getUniqueColumnValues(col)" value="{{cval}}">{{cval}}</option>
+                        </select>
+                    </td>
+                    <td ng-if="grid.rowActions.length"></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat-start="row in grid.rows |  orderBy:sort.column:sort.reverse | columnFilter:filter.columns | gridfilter:filter.search:pagination.pageSize:pagination.currentPage:grid.serverPaging" ng-init="row.$$hactive=!!row.$$hactive" ng-class="{odd:$odd,even:$even,selected: grid.inSelection(row)>=0}">
+                    <td class="expand" ng-click="grid.loadHierarchy(row)"><i ng-if="grid.hierarchy" class="fa fa-chevron-{{row.$$hactive?'down':'right'}}"></i></td>
+                    <td ng-click="grid.selectRow(row)" ng-repeat="c in grid.columns" style="background-color:{{row._rowColor}}">
+                        <a href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='link'"> {{row[c.value]}}</a>
+                        <a href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='modal'" modal-popup="c.modalProperties" modal-popup-title="{{c.modalTitle}}"> {{row[c.value]}}</a>
+                        <a href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='aside'" aside="c.asideProperties" aside-title="{{c.asideTitle}}"> {{row[c.value]}}</a>
+                        <i class="{{row[c.value]}}" ng-if="c.type=='icon'"></i>
+                        <img ng-src="{{grid.getURL(c.url, row)}}" ng-if="c.type=='image'" />
+                        <span ng-if="c.type==''">{{row[c.value]}}</span>
+                    </td>
+                    <td ng-if="grid.rowActions.length" ng-click="$event.stopPropagation()" style="background-color:{{row._rowColor}}">
+                        <span ng-repeat="action in grid.rowActions" class="grid-action" ng-include="'gridActions.html'"></span>
+                    </td>
+                </tr>
+                <tr ng-repeat-end ng-show="row.$$hactive" class="hierarchy" ng-if="grid.hierarchy">
+                    <td colspan="{{grid.columns.length+1+(grid.rowActions.length?1:0)}}">
+                        <div ng-include="'gridHierarchy.html'"></div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="{{grid.columns.length+1+(grid.rowActions.length?1:0)}}">
+                        <ul class="pagination pagination-sm" ng-if="pagination.showPaging && pagination.pages.length>1">
+                            <li ng-class="{ disabled : pagination.currentPage == 0 }">
+                                <a href="" ng-click="pagination.setCurrentPage(0)"><i class="fa fa-angle-double-left"></i></a>
+                            </li>
+                            <li ng-class="{ disabled : pagination.currentPage == 0 }">
+                                <a href="" ng-click="pagination.setCurrentPage(pagination.currentPage - 1)" class="ng-binding"><i class="fa fa-angle-left"></i></a>
+                            </li>
+                            <li ng-repeat="p in pagination.getPages() track by $index" ng-class="{active:(pagination.currentPage == p)}">
+                                <a href="" ng-click="pagination.setCurrentPage(p)">{{p+1}}</a>
+                            </li>
+                            <li ng-class="{ disabled : pagination.currentPage == pagination.lastPage }">
+                                <a href="" ng-click="pagination.setCurrentPage(pagination.currentPage + 1)" class="ng-binding"><i class="fa fa-angle-right"></i></a>
+                            </li>
+                            <li ng-class="{ disabled : pagination.currentPage == pagination.lastPage }">
+                                <a href="" ng-click="pagination.setCurrentPage(pagination.lastPage)"><i class="fa fa-angle-double-right"></i></a>
+                            </li>
+                        </ul>
+                        showing {{((pagination.currentPage+1) * pagination.pageSize)>pagination.totalRecords?pagination.totalRecords:((pagination.currentPage+1) * pagination.pageSize)}} of {{pagination.totalRecords}} records
+                    </td>
+                </tr>
+            </tfoot>
+        </table></script><script type="text/ng-template" id="gridGroup.html"><div ng-if="filter.filterExpressionActive" class="_filterexpression">
+                <a class="btn btn-xs btn-default" ng-if="filter.filterExpression.length==0" ng-click="filter.addChild(0, filter.filterExpression)"><i class="fa fa-plus"></i></a>
+                <div class="_expression" ng-repeat="exp in filter.filterExpression" ng-include="'gridFilterExpression.html'"></div>
+                <div class="text-left">
+                    <a class="btn btn-default" ng-if="filter.filterExpression.length>0" ng-class="{active:filter.setAsDefault}" ng-click="filter.setAsDefault=!filter.setAsDefault"><i class="fa fa-lg" ng-class="{'fa-square-o':!filter.setAsDefault,'fa-check-square-o':filter.setAsDefault}"></i> Default</a>
+                    <a class="btn btn-success" ng-if="filter.filterExpression.length>0" ng-click="filter.applyFilter()"><i class="fa fa-filter"></i> Apply filter</a>
+                    <a class="btn btn-success" ng-if="filter.filterExpression.length>0" ng-click="filter.saveFilter()"><i class="fa fa-save"></i> Save</a>
+                    <a class="btn btn-success" ng-if="filter.filterExpression.length>0 && filter.currentFilterExpression>0" ng-click="filter.saveFilter(true)"><i class="fa fa-save"></i> Save As</a>
+                </div>
+            </div>
+            <div ng-if="grid.groupActions.length" class="text-right _gridaction">
+                <span ng-repeat="action in grid.groupActions" class="grid-action" ng-include="'gridActions.html'"></span>
+            </div>
+            <table class="_grid-tbl" style="width: 99.99%;">
+                <thead>
+                    <tr ng-show="showHeaders">
+                        <th></th>
+                        <th ng-repeat="col in grid.columns track by $index" ng-click="orderby(col.value)" ng-if="col.value!=groupBy">
+                            {{col.name}}
+                            <i class="_sort-icon fa fa-sort-amount-{{sort.reverse?'desc':'asc'}}" ng-show="sort.column==col.value"></i>
+                        </th>
+                        <th ng-if="grid.rowActions.length"> Actions</th>
+                    </tr>
+                    <tr class="col-filter" ng-show="filter.columnFilterActive" class="col-filter">
+                        <td class="expand"></td>
+                        <td ng-repeat="col in grid.columns track by $index" ng-style="col.style">
+                            <input type="text" class="form-control" ng-model="filter.columns[col.value]" ng-if="!col.filter.type || col.filter.type=='text'" />
+                            <input type="number" class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='number'" />
+
+                            <input type="text" datepicker-popup datepicker-append-to-body="true" class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='date'" />
+
+                            <select class="form-control" ng-model="filter.columns[col.value]" ng-if="col.filter.type=='dropdown'">
+                                <option value=""></option>
+                                <option ng-repeat="cval in grid.getUniqueColumnValues(col)" value="{{cval}}">{{cval}}</option>
+                            </select>
+                        </td>
+                        <td ng-if="grid.rowActions.length"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat-start="grow in grid.groupArray  | groupfilter:filter.search:pagination.pageSize:pagination.currentPage:grid.serverPaging track by $index" class="grouphead" ng-click="grow[2]=!grow[2]">
+                        <td class="expand"><i class="fa fa-chevron-{{grow[2]?'down':'right'}}"></i></td>
+                        <td colspan="{{grid.columns.length+(grid.rowActions.length?1:0)}}">
+                            <span>{{grow[0]}}</span>
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end ng-show="grow[2]" ng-repeat-start="row in grow[1]  |  orderBy:sort.column:sort.reverse | gridfilter:filter.search" class="group" ng-class="{odd:($index%2),even:!($index%2),selected:grid.inSelection(row)>=0}">
+                        <td class="expand"><i ng-if="grid.hierarchy" ng-init="row.$$hactive=!!row.$$hactive" ng-click="$event.stopPropagation();row.$$hactive=!row.$$hactive" class="fa fa-chevron-{{row.$$hactive?'down':'right'}}"></i></td>
+                        <td ng-click="grid.selectRow(row)" ng-repeat="c in grid.columns" ng-style="row._style" ng-if="c.value!=groupBy">
+                            <a ng-href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='link'"> {{row[c.value]}}</a>
+                            <a ng-href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='modal'" modal-popup="c.modalProperties" modal-popup-title="{{c.modalTitle}}"> {{row[c.value]}}</a>
+                            <a ng-href="{{grid.getURL(c.url,row)}}" ng-if="c.type=='aside'" aside="c.asideProperties" aside-title="{{c.asideTitle}}"> {{row[c.value]}}</a>
+                            <i class="{{row[c.value]}}" ng-if="c.type=='icon'"></i>
+                            <img ng-src="{{grid.getURL(c.url, row)}}" ng-if="c.type=='image'" />
+                            <span ng-if="c.type==''">{{row[c.value]}}</span>
+                        </td>
+                        <td ng-if="grid.rowActions.length" ng-click="$event.stopPropagation()" ng-style="row._style">
+                            <span ng-repeat="action in grid.rowActions" class="grid-action" ng-include="'gridActions.html'"></span>
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end ng-show="row.$$hactive" class="hierarchy" ng-if="grid.hierarchy">
+                        <td colspan="{{grid.columns.length+1+(grid.rowActions.length?1:0)}}">
+                            <div ng-include="'gridHierarchy.html'"></div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="{{grid.columns.length+1+(grid.rowActions.length?1:0)}}">
+                            <ul class="pagination pagination-sm" ng-if="pagination.showPaging && pagination.pages.length>1">
+                                <li ng-class="{ disabled : pagination.currentPage == 0 }">
+                                    <a href="" ng-click="pagination.setCurrentPage(0)"><i class="fa fa-angle-double-left"></i></a>
+                                </li>
+                                <li ng-class="{ disabled : pagination.currentPage == 0 }">
+                                    <a href="" ng-click="pagination.setCurrentPage(pagination.currentPage - 1)" class="ng-binding"><i class="fa fa-angle-left"></i></a>
+                                </li>
+                                <li ng-repeat="p in pagination.getPages() track by $index" ng-class="{active:(pagination.currentPage == p)}">
+                                    <a href="" ng-click="pagination.setCurrentPage(p)">{{p+1}}</a>
+                                </li>
+                                <li ng-class="{ disabled : pagination.currentPage == pagination.lastPage }">
+                                    <a href="" ng-click="pagination.setCurrentPage(pagination.currentPage + 1)" class="ng-binding"><i class="fa fa-angle-right"></i></a>
+                                </li>
+                                <li ng-class="{ disabled : pagination.currentPage == pagination.lastPage }">
+                                    <a href="" ng-click="pagination.setCurrentPage(pagination.lastPage)"><i class="fa fa-angle-double-right"></i></a>
+                                </li>
+                            </ul>
+                            showing {{((pagination.currentPage+1) * pagination.pageSize)>pagination.totalRecords?pagination.totalRecords:((pagination.currentPage+1) * pagination.pageSize)}} of {{pagination.totalRecords}} records
+                        </td>
+                    </tr>
+                </tfoot>
+            </table></script><script type="text/ng-template" id="gridActions.html"><span ng-if="action.textTemplate">
+                <a ng-if="action.displayType=='link' && action.actionType=='link'" class="{{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+
+                <a ng-if="action.displayType=='link' && action.actionType=='modal'" class="{{action.customClass}}" href="{{grid.getURL(action.action, row)}}" modal-popup="action.modalSettings" modal-popup-title="{{action.name}}" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+
+                <a ng-if="action.displayType=='link' && action.actionType=='aside'" class="{{action.customClass}}" href="{{grid.getURL(action.action, row)}}" aside="action.modalSettings" aside-title="{{action.name}}" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+
+                <a ng-if="action.displayType=='link' && action.actionType=='function'" class="{{action.customClass}}" href="" ng-click="grid.actionHandler($event, !!action.isGeneralAction, action.action, row)" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+
+                <a ng-if="action.displayType=='button' && action.actionType=='link'" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+
+                <a ng-if="action.displayType=='button' && action.actionType=='modal'" modal-popup="action.modalSettings" modal-popup-title="{{action.name}}" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+
+                <a ng-if="action.displayType=='button' && action.actionType=='aside'" aside="action.modalProperties" aside-title="{{aside.name}}" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+
+                <a ng-if="action.displayType=='button' && action.actionType=='function'" ng-click="grid.actionHandler($event, !!action.isGeneralAction, action.action, row)" class="btn btn-default {{action.customClass}}" href="" title="{{action.name}}">
+                    <span ng-bind-html="action.textTemplate"></span>
+                </a>
+            </span>
+
+
+            <span ng-if="!action.textTemplate">
+                <a ng-if="action.displayType=='link' && action.actionType=='link'" class="{{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+
+                <a ng-if="action.displayType=='link' && action.actionType=='modal'" class="{{action.customClass}}" href="{{grid.getURL(action.action, row)}}" modal-popup="action.modalSettings" modal-popup-title="{{action.name}}" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+
+                <a ng-if="action.displayType=='link' && action.actionType=='aside'" class="{{action.customClass}}" href="{{grid.getURL(action.action, row)}}" aside="action.modalSettings" aside-title="{{action.name}}" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+
+                <a ng-if="action.displayType=='link' && action.actionType=='function'" class="{{action.customClass}}" href="" ng-click="grid.actionHandler($event, !!action.isGeneralAction, action.action, row)" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+                <a ng-if="action.displayType=='button' && action.actionType=='link'" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+
+                <a ng-if="action.displayType=='button' && action.actionType=='modal'" modal-popup="action.modalSettings" modal-popup-title="{{action.name}}" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+
+                <a ng-if="action.displayType=='button' && action.actionType=='aside'" aside="action.modalProperties" aside-title="{{aside.name}}" class="btn btn-default {{action.customClass}}" href="{{grid.getURL(action.action, row)}}" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+
+                <a ng-if="action.displayType=='button' && action.actionType=='function'" ng-click="grid.actionHandler($event, !!action.isGeneralAction, action.action, row)" class="btn btn-default {{action.customClass}}" href="" title="{{action.name}}">
+                    <span><i ng-if="action.iconClass" class="{{action.iconClass}}"></i> {{action.name}}</span>
+                </a>
+            </span></script><script type="text/ng-template" id="gridHierarchy.html"><div ng-if="row._hierarchy">
+                <grid config="row._hierarchy" ng-model="$parent.$parent.$parent.$parent.$parent.model"></grid>
+            </div></script><script type="text/ng-template" id="gridFilterExpression.html"><select ng-model="exp.boolean">
+                <option value=""> </option>
+                <option value="AND">AND</option>
+                <option value="OR">OR</option>
+                <option value="NOT AND">NOT AND</option>
+                <option value="NOT OR">NOT OR</option>
+            </select>
+            <select ng-options="col.value as col.name for col in grid.columns" ng-model="exp.column" ng-change="filter.columnChange(exp)">
+                <option value=""> </option>
+            </select>
+            <select ng-model="exp.operator">
+                <option value="EqualTo">EqualTo</option>
+                <option value="NotEqualTo">NotEqualTo</option>
+                <option value="Like">Contains</option>
+                <!--<option value="GreaterThan">GreaterThan</option>
+                <option value="LessThan">LessThan</option>
+                <option value="GreaterThanOrEqualTo">GreaterThanOrEqualTo</option>
+                <option value="LessThanOrEqualTo">LessThanOrEqualTo</option>-->
+                <option value="Between">Between</option>
+                <option value="NotBetween">NotBetween</option>
+                <option value="IsNull">IsNull</option>
+                <option value="NotIsNull">NotIsNull</option>
+            </select>
+            <span ng-if="exp.operator!='Between' && exp.operator!='NotBetween' && exp.operator!='IsNull' && exp.operator!='NotIsNull'">
+                <span ng-if="exp.dataType=='date'">
+                    <input datepicker-popup="dd-MMM-yyyy" type="text" ng-model="exp.value1" placeholder="value1">
+                </span>
+                <span ng-if="exp.dataType=='number'">
+                    <input type="number" ng-model="exp.value1" placeholder="value1">
+                </span>
+                <span ng-if="exp.dataType!='date' && exp.dataType!='number'">
+                    <input type="text" ng-model="exp.value1" placeholder="value1">
+                </span>
+            </span>
+            <span ng-if="exp.operator=='Between' || exp.operator=='NotBetween'">
+                <span ng-if="exp.dataType=='date'">
+                    <input datepicker-popup="dd-MMM-yyyy" type="text" ng-model="exp.value1" placeholder="value1"> AND
+                    <input datepicker-popup="dd-MMM-yyyy" type="text" ng-model="exp.value2" placeholder="value2">
+                </span>
+                <span ng-if="exp.dataType=='number'">
+                    <input type="number" ng-model="exp.value1" placeholder="value1"> AND
+                    <input type="number" ng-model="exp.value2" placeholder="value2">
+                </span>
+                <span ng-if="exp.dataType!='date' && exp.dataType!='number'">
+                    <input type="text" ng-model="exp.value1" placeholder="value1"> AND
+                    <input type="text" ng-model="exp.value2" placeholder="value2">
+                </span>
+            </span>
+            <a ng-click="filter.addChild($index, exp.parent)"><i class="fa fa-plus"></i></a>
+            <a ng-click="filter.addChild($index, exp.children)"><i class="fa fa-plus"></i> <i class="fa fa-level-down"></i></a>
+            <a class="red" ng-click="filter.deleteChild(exp)"><i class="fa fa-times"></i></a>
+
+            <div ng-if="exp.children.length" class="_expression-box">
+                <div ng-repeat="exp in exp.children" class="_expression" ng-include="'gridFilterExpression.html'"></div>
+            </div></script></div></main><footer>&copy; 2014 Perigord Group. All rights reserved.</footer><script src="js/lib/bootstrap/bootstrap.min.js"></script><script src="js/app/init.min.js"></script><script>//alert test script
+        setTimeout(function(){
+            $('.customalert a.promptdefault').on('click', function (e) {
+                e.preventDefault();
+                $.prompt('Prompt Test', {
+                    onComplete: function (res, val) {
+                        console.log(res, val);
+                    }
+                });
+            });
+
+            $('.customalert a.promptdefault1').on('click', function (e) {
+                e.preventDefault();
+                $.prompt('Prompt with return false callback', {
+                    onComplete: function (res, val) {
+                        console.log(res, val);
+                        return !!val;
+                    }
+                });
+            });
+
+            $('.customalert a.prompt').on('click', function (e) {
+                e.preventDefault();
+                $.prompt('Prompt Custom Inputs', {
+                    title: 'Prompt Test',
+                    inputs: [{
+                        type: 'text',
+                        required: true,
+                        value: '',
+                        label: 'TextBox'
+                    }, {
+                        type: 'textarea',
+                        required: true,
+                        value: 'test',
+                        label: 'TextArea'
+                    }, {
+                        type: 'select',
+                        required: true,
+                        label: 'SelectBox',
+                        value: '2',
+                        list: [1, 2, 3]
+                    }, {
+                        type: 'list',
+                        required: true,
+                        label: 'ListBox',
+                        value: [3, 5],
+                        list: [1, 2, 3, 5, 6, 7]
+                    }, {
+                        type: 'checkboxGroup',
+                        label: 'CheckBoxGroup',
+                        name: 'cb',
+                        list: [{
+                            label: 'Checkbox 1',
+                            value: 'c1'
+                        }, {
+                            label: 'Checkbox 2',
+                            value: 'c2'
+                        }, {
+                            label: 'Checkbox 3',
+                            value: 'c3'
+                        }]
+                    }, {
+                        type: 'radioGroup',
+                        label: 'RadioGroup',
+                        name: 'rd',
+                        list: [{
+                            label: 'Radio 1',
+                            value: 'r1'
+                        }, {
+                            label: 'Radio 2',
+                            value: 'r2'
+                        }, {
+                            label: 'Radio 3',
+                            value: 'r3'
+                        }]
+                    }],
+                    height: '510px',
+                    onComplete: function (res, val) {
+                        console.log(res, val);
+                    }
+                });
+                $('form').find(':radio, :checkbox').ionCheckRadio();
+            });
+            
+            
+            $('.customalert a.alertTest').on('click', function (e) {
+                e.preventDefault();
+                $.alert('Alert Test', {
+                    onComplete: function (res) {
+                        console.log(res);
+                    }
+                });
+            });
+            $('.customalert a.confirmTest').on('click', function (e) {
+                e.preventDefault();
+                $.confirm('Confirm Test', {
+                    onComplete: function (res, val) {
+                        console.log(res);
+                    }
+                });
+            });
+
+            $('.customalert input').on('click touchend', function () {
+                $.msgBox('Alert sameple with custom buttons and icons', {
+                    buttons: ['Agree', 'Disagree', 'Help', 'Cancel'],
+                    icon: $(this).val(),
+                    onComplete: function (result) {
+                        console.log(result);
+                    }
+                });
+            });
+            
+            $('.modal_1').on('click', function(){
+                $.modal("Sample Modal", "<h1>A static content!<br> Try to resize, Move, switch to full screen.... :)</h1>");
+            });
+            $('.modal_2').on('click', function(){
+                $.modal("Sample Modal - External Link", "http://g4training1.glams.ie", {type:'iframe'}).on('close', function(){
+                    alert('Close event fired');
+                });
+                
+            });
+            $('.modal_3').on('click', function(){
+                $.modal("Sample Modal", "<h1>Full Screen, Resize, Move, Reload Disabled :( </h1>",{resizable: false, disableFullscreen: true, movable: false, reload: false});
+            });
+            
+            $('.modal_4').on('click', function(){
+                $.aside("Right Side Modal", "<h1>Sample modal window from right :) </h1>");
+            });
+            
+            $('.modal_5').on('click', function(){
+                $.aside("Left Side Modal", "<h1>Sample modal window from left :) </h1>", {position:'left'});
+            });
+            
+        },3000);</script></body></html>
