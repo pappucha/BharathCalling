@@ -1,0 +1,5 @@
+DisplayCanceled:false
+
+"defaultFilter":{"Filter":"","Value":""}
+
+ "StatusTemplate":"[{\"Id\":\"1\",\"Name\":\"All Ticks\"}]"

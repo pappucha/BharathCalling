@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <link rel="stylesheet" href="styles/reset.css" />
+
+    <link rel="stylesheet" href="styles/style.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="scripts/lib/jquery.nicescroll.min.js"></script>
+    <script src="scripts/lib/jquery.ui.touch-punch.min.js"></script>
+    <script src="scripts/lib/modernizr.min.js"></script>
+    <script src="scripts/lib/angular.min.js"></script>
+    <script src="scripts/conroller/UserManagementController.js"></script>
+    <script src="scripts/directives/UserManagementDirectives.js"></script>
+    <!--[if lt IE 9]>
+        <script>
+            var eArr = ["tabs","pane","grouppanel","grouppane"];
+            for(i in eArr){
+                document.createElement(eArr[i]);
+            } 
+        </script>
+    <![endif]-->
+</head>
+
+<body>
+    <div class="user-management" ng-app="UserManagement">
+        <div class="head-strip clearfix">
+            <ul>
+                <li class="icon-settings">User Settings</li>
+            </ul>
+        </div>
+
+        <div>
+            <div class="tophead">
+                <span class="hint-text"><span class="color red">* </span>Mandatory Fields</span>
+                <a class="button light"><img src="images/reset.png"/> Change/Reset Password</a>
+                <a class="button light"><img src="images/lock.png"/> Lock User</a>
+            </div>
+            <tabs>
+                <pane title="User Information">
+                    <div class="input-block">
+                        <label for="firstName">First Name</label>
+                        <input type="text" name="firstName" size="40" id="firstName" />
+                    </div>
+                    <div class="input-block">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" name="lastname" size="40" id="lastname" />
+                    </div>
+                    <div class="input-block">
+                        <label for="employeetitle">Employee Title</label>
+                        <input type="text" name="employeetitle" size="40" id="employeetitle" />
+                    </div>
+                    <div class="input-block">
+                        <label for="department">Department</label>
+                        <input type="text" name="department" size="40" id="department" />
+                    </div>
+                    <div class="input-block" style="border-color:#8fc5ed;">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" size="40" id="email" />
+                        <br>
+                        <br>
+                    </div>
+                    <div class="input-block">
+                        <br>
+                        <label for="accounttype">Account Type</label>
+                        <select name="accounttype" id="accounttype">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="input-block">
+                        <label for="domain">Domain</label>
+                        <select name="domain" id="domain">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="input-block">
+                        <label for="username">Username</label>
+                        <select name="username" id="username">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="input-block last">
+                        <label for="vieweraccess">Viewer Access</label>
+                        <input type="checkbox" id="vieweraccess">
+                        <label for="vieweraccess"></label>
+                    </div>
+                </pane>
+                <pane title="Groups & Permisson" id="GroupsAndPermission">
+                    <grouppanel>
+                        <grouppane title="User" status="active">
+                            <div class="clearfix">
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                            </div>
+                        </grouppane>
+                        <grouppane title="Client" status="">
+                            <div class="clearfix">
+                                <div class="option">
+                                    <input type="checkbox" id="vieweraccess">
+                                    <label for="vieweraccess"></label>
+                                    <label for="vieweraccess">Viewer Access</label>
+                                </div>
+                            </div>
+                        </grouppane>
+                    </grouppanel>
+                </pane>
+                <pane title="Roles & Templates">
+                    
+                </pane>
+            </tabs>
+            <div class="control-box text-center">
+                <a class="button">Save</a>
+                <a class="button">Cancel</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
