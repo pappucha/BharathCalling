@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Update Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/app/UpdateUser/UpdateUser.js"></script>
+<div ng-app="UserManagement" ng-controller="UserUpdateController" ng-init="init()" class="user-management">
+    
+    <div class="form-group">
+        <div class="text-right">
+            <a href="#" class="btn btn-xs btn-default" ng-click="editupdateEmailTemplate()"><i class="fa fa-envelope"></i> Update email tempalte</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
+        <div class="col-sm-10">
+            <input type="text" ng-model="firstName" class="form-control" id="frstName" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="inputlastName" class="col-sm-2 control-label">Last Name</label>
+        <div class="col-sm-10">
+            <input type="text" ng-model="lastName" class="form-control" id="lastName" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="inputDisplayName" class="col-sm-2 control-label">Display Name</label>
+        <div class="col-sm-10">
+            <input type="text" ng-model="displayName" class="form-control" id="displayName" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="inputDepartment" class="col-sm-2 control-label">DepartMent</label>
+        <div class="col-sm-10">
+            <input type="text" ng-model="department" class="form-control" id="department" />
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-10">
+            <input type="email" ng-model="email" class="form-control" id="email" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="inputAccountType" class="col-sm-2 control-label">Account Type</label>
+        <div class="col-sm-1">
+            <select name="accounttype" class="form-control" ng-model="accounttype" id="accounttype" ng-change="setDomain()">
+                <option value="false">Default</option>
+                <option value="true">Domain</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="inputUserName" class="col-sm-2 control-label">User Name</label>
+        <div class="col-sm-10">
+            <input type="text" ng-model="userName" class="form-control" id="userName" disabled />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="inputViewerAcess" class="col-sm-2 control-label">Viewer Acess</label>
+        <div class="col-sm-10">
+            <input type="checkbox" name="viewerAcess" ng-model="Viewer" id="viewerAccess" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" id="Update" value="Update" ng-click="UpdateUserDetails()" class="btn btn-success" />
+            <input type="button" value="Cancel" id="Cancel" ng-click="ClosePage()" class="btn btn-success" />
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="updateEmail.html">
+        <div class="row" style="margin:0">
+            <div class="col-md-8">
+                <div class="form-group" ng-repeat="t in emailTemplate">
+                    <label for="et{{$index}}" class="col-sm-12 control-label">
+                        <input type="checkbox" name="et{{$index}}" ng-model="t.Selected" id="et{{$index}}" /> 
+                        {{t.Name}}
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Selcted Template</h5>
+                <span ng-repeat="t in emailTemplate | filter:{Selected:true}" class="label label-default" style="margin:5px;display:inline-block">{{t.Name}}</span> 
+            </div>
+        </div>
+        <div class="text-center">
+            <a class="btn btn-small btn-primary" ng-click="saveEmailTempalte()">Save</a>
+            <a class="btn btn-small btn-primary" ng-click="closeEmailTemplate()">Cancel</a>
+        </div>
+    </script>
+
+</div>
+
