@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+    <title>Hello AngularJS</title>
+    <meta charset="utf-8"/>
+    <style>
+        div {
+            border: 1px solid black;
+            padding:10px;
+            margin-bottom: 10px;
+            margin-left: 5px;
+        }
+    </style>
+    <!-- Include AngularJS JavaScript -->
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"> </script>
+</head>
+
+<body>
+<!-- Using 'ng-app' as a directive. TO initiate the bootstrap process AngularJS
+    look for the 'ng-app' directive in the DOM. It starts doing so once it gets callback
+    for DOMContentLoadedEvent.
+-->
+<div ng-app> <!-- This is what you should care about -->
+    <p> ng-app declared for this part </p>
+    <p> {{'Do you know that 1 + 1 = ' + (1+1) }}</p>
+
+    <div ng-app>
+        <p> The 'ng-app' ignored by AngularJS since
+            it has already found 'ng-app' declaration above. It is still processed by AngularJS because it is
+            under the DOM element for which the first 'ng-app' was declared</p>
+        <p> {{'Do you know that 1 + 1 = ' + (1+1) }}</p>
+    </div>
+</div><br/><br/>
+<!--=========================-->
+<div ng-app>
+    <p> As soon as AngularJS finds first declaration of 'ng-app' it ignores others  </p>
+    <p> {{'Do you know that 1 + 1 = ' + (1+1) }}</p>
+</div><br/><br/>
+<!--=========================-->
+<div>
+    <p> no ng-app declaration for this part</p>
+    <p> {{'Do you know that 1 + 1 = ' + (1+1) }}</p>
+</div>
+</body>
+</html>

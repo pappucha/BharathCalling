@@ -1,0 +1,27 @@
+<!doctype html>
+<html ng-app>
+<head>
+    <title>MVC Introduction</title>
+    <meta charset="utf-8"/>
+
+    <script type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"> </script>
+    <script src="myFirstController.js"> </script>
+</head>
+
+<body ng-controller="myController" onload="onDomLoaded()">
+<h1> Model View Controller Example </h1>
+
+<select ng-model="selectedCompany">
+    <option value="Google">Google</option>
+    <option value="Microsoft">Microsoft</option>
+    <option value="VMWare">VMWare</option>
+</select>
+
+<p style="display: inline;" class="text-info"> {{ selectedCompany + ' Stock price =' + stockPrice[selectedCompany] }} <p>
+
+<p> Would you like to subscribe to email digests? </p>
+<input ng-model="emailId" type="text"/>
+<button onclick="subscribeBtnClicked()" type="button">Subscribe</button>
+</body>
+</html>
