@@ -1,0 +1,674 @@
+﻿@model Glams.Common.Layout.LayoutItem
+@using Newtonsoft.Json
+
+
+
+<div ng-init="initRecord()" ng-controller="TimeTrackerCntrl">
+    <div class="form-group">
+        <div class="col-sm-4">
+            Job Number <br />
+            <input type="text" value="C-32-02" ng-model="jobNumber" maxlength="16" size="1" class="form-control" name="job-number" ng-change="dateDisabled=jobNumber?true:false" placeholder="Job Number" />
+            @*ng-keyup="disabledate()"*@
+        </div>
+        <div class="col-sm-3">
+            Date From <br />
+            <input type="text" ng-model="dateFrom" datepicker-popup="dd-MMM-yyyy" maxlength="16" size="1" ng-disabled="dateDisabled" class="form-control" name="job-number" placeholder="From date" />
+        </div>
+        <div class="col-sm-3">
+            Date To <br />
+            <input type="text" ng-model="dateTo" datepicker-popup="dd-MMM-yyyy" maxlength="16" size="1" ng-disabled="dateDisabled" class="form-control" name="job-number" placeholder="To date" />
+        </div>
+        <div class="col-sm-2 text-right">
+            <br />
+            <input type="button" class="btn btn-default" value="Search" ng-click="SearchTimeRecord()" />
+            <input type="button" class="btn btn-default" value="New *" ng-click="AddNew()" />
+            @*ng-click="showAddWindow=!!!showAddWindow"*@
+        </div>
+        <br />
+        <div class="form-group">
+            <div class="col-sm-4">
+                Group Type <br />
+                @*{{ddlGroupTypes}}*@
+                <select custom-select="ddlGroupTypes" multiple ng-model="GroupType" ng-change="loadGroup()">
+                    <option ng-repeat="opt in ddlGroupTypes.Properties.Defaults" value="{{opt}}">{{opt}}</option>
+                </select>
+            </div>
+
+            <div class="col-sm-4">
+                Groups <br />
+                @*{{ddlGroups}}*@
+                <select custom-select="data.Groupss" multiple ng-model="Group">
+                    <option ng-repeat="opt in data.Groupss" value="{{opt}}">{{opt}}</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+    <div ng-show="showAddWindow" style="background:#eee;border:1px solid #ddd;padding:20px 0 10px 0">
+        <div class="form-group">
+            <label for="{{txtHours.Properties.Name}}" class="col-sm-1 control-label">Time</label>
+            <div class="col-sm-1">
+                <select custom-select ng-model="h" class="no-fluid" ng-show="hourss.Properties.Visible">
+                    <option value="">HH</option>
+                    <option ng-repeat="n in _.range(0,24)">{{$index}}</option>
+                </select>
+                <select custom-select ng-model="m" class="no-fluid" ng-show="minss.Properties.Visible">
+                    <option value="">MM</option>
+                    <option ng-repeat="n in _.range(0,60)">{{$index}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group" ng-if="theComments.Properties.Visible">
+            <label for="{{theComments.Properties.Name}}" class="col-sm-1 control-label">Comments</label>
+            <div class="col-sm-11">
+                <textarea ng-model="theComments.Properties.Value" maxlength="{{theComments.Properties.MaxLength}}" size="{{theComments.Properties.Size}}" class="form-control" name="{{theComments.Properties.Name}}" placeholder="{{theComments.Properties.WaterMarkText}}"></textarea>
+            </div>
+        </div>
+        <div ng-show="shownonUserWindow">
+            <div class="form-group">
+                <label for="{{txtComments.Properties.Name}}" class="col-sm-1 control-label">Choose Date</label>
+                <div class="col-sm-2">
+                    <input type="text" ng-model="dt" class="form-control" datepicker-popup="dd/MMM/yyyy" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Users</label>
+                <div class="col-sm-2">
+                    <select custom-select="data.users" ng-disabled="userDisabled" ng-model="user">
+                        <option ng-repeat="opt in data.users" value="{{opt.ProviderUserKey}}">{{opt.UserName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Task</label>
+                <div class="col-sm-2">
+                    <select custom-select="data.tasks" ng-model="task">
+                        <option ng-repeat="opt in data.tasks" value="{{opt.ID}}">{{opt.Name}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">Stage</label>
+                <div class="col-sm-2">
+                    <select custom-select="data.stages" ng-model="stage">
+                        <option ng-repeat="opt in data.stages" value="{{opt.ID}}">{{opt.Name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-1 control-label"> </label>
+            <div class="col-sm-10">
+                <input type="button" class="btn btn-primary" ng-model="btnAdd" ng-show="showAdd" value="Add" id="btnAdd" ng-click="PostTimeRecord()" />
+                <input type="button" class="btn btn-primary" value="Update" ng-model="btnupdate" ng-show="showUpdate" id="btnupdate" ng-click="updateTimeRecord()" />
+                <input type="button" class="btn btn-danger" value="Cancel" ng-click="btnCancel()" />
+
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="GridConfig.rows.length">
+        <grid object="GridObj" ng-model="SelectedItems" config="GridConfig"></grid>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    function TimeTrackerCntrl($scope, $compile, $http, $q){
+        var layoutItems = @Html.Raw(JsonConvert.SerializeObject(this.Model));
+        $scope._ = _;
+        $scope.dgGrids = {};
+        $scope.SelectedItems = [];
+        $scope.hourss=layoutItems.Items[0];
+        $scope.minss=layoutItems.Items[1];
+        $scope.theComments = layoutItems.Items[2];
+        $scope.ddlGroupTypes = layoutItems.Items[3];
+        $scope.ddlGroups = layoutItems.Items[4];
+        $scope.Roles = layoutItems.Items[5];
+        $scope.passProof = layoutItems.Items[6];
+        console.log($scope.passProof);
+        $scope.dgGrids = layoutItems.Items[7];
+        $scope.data = {};
+        $scope.pScope = angular.element('[ng-controller="LayoutRendererCntrl"]').scope();
+        $scope.GridConfig = $scope.dgGrids.Properties.GridSettings;
+        $scope.GridConfig.method = 'POST';
+        $scope.GridConfig.actionReference = window.glams.GridActions;
+        $scope.GridConfig.headers = { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() };
+        $scope.GridConfig.serverPaging = true;
+        $scope.row=null;
+        $scope.type=null;
+        console.log(moment(getDateTime).format('MM/DD/YYYY'));
+        $scope.GridConfig.extendedObject = {
+            itemID:0,
+            isProof:false,
+            itemInfos:0,
+            GroupTypes:0,
+            Groups:0,
+            fromData:'01/01/1977',
+            toDate:'01/01/1977',
+            filter:0,
+            role:0,
+            gridLoad:true,
+            serverPaging:true
+        };
+
+        $scope.btnCancel=function(){
+            $scope.showAddWindow=false;
+            $scope.clearField();
+        };
+
+        $scope.initRecord = function()
+        {
+            var  alldata= $scope.GetstaticData();
+            alldata.then(function(data){
+                $scope.data.stages = data[0].Stages;
+                $scope.data.tasks = data[0].Tasks;
+                $scope.data.users = data[0].UserName;
+            });
+
+        };
+
+        $scope.getGroup=function(data)
+        {
+            var dobj=$q.defer();
+
+            $http({
+                url:path+'api/TimeRecord/GetGroupType?name='+$scope.GroupType.toString(),
+                method:'GET',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                console.log(data);
+                dobj.resolve(data);
+            }).error(function(data){
+                console.log('error');
+            });
+            return dobj.promise;
+        };
+        $scope.GetstaticData=function(){
+            var dobj=$q.defer();
+
+            $http({
+                url:path+'api/TimeRecord/GetStaticdata',
+                method:'GET',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                dobj.resolve(data);
+            }).error(function(data){
+                console.log('error');
+            });
+            return dobj.promise;
+        };
+
+        function EditRecord(event, row, gridScope)
+        {
+            //$('#btnAdd').hide();
+            //$('#btnupdate').show();
+            $scope.showAdd=false;
+            $scope.showUpdate=true;
+            //console.log($scope);
+            //console.log($scope.btnAdd);
+            //$scope.btnAdd.show=false;
+            //$scope.btnupdate.show=true;
+            //Check if user is allowed to edit .. If yse then disable the users DropDown
+            var validateUser=$scope.validateUser();
+            validateUser.then(function(val){
+                $scope.userDisabled = false;
+                if(val==2)
+                {
+                    console.log(val);
+                    //Disable the user Drop Down
+                    $scope.userDisabled = true;
+                }
+            });
+
+
+            console.log(row[0].JobNumber);
+            if(row[0].JobNumber==0){$scope.shownonUserWindow=false;}else{$scope.shownonUserWindow=true;}
+            //    $scope.shownonUserWindow=false;
+            $scope.showAddWindow=true;
+            //$scope.shownonUserWindow=true;
+            var time=row[0].Time.split(':');
+            $scope.jobNumber=row[0].JobNumber;
+            $scope.type=row[0].Type;
+            $scope.theComments.Properties.Value=row[0].Comments;
+            var user = '';
+            var stage='';
+            var task='';
+            $.each($scope.data.users, function(i, u){
+                if(u.UserName == row[0].UserID){
+                    user = u.ProviderUserKey;
+                }
+            });
+            $scope.user=user;
+            $.each($scope.data.tasks,function(i,u){
+                if(u.Name==row[0].TaskName)
+                {
+                    task=u.ID;
+                }
+            });
+            $.each($scope.data.stages,function(i,u){
+                if(u.Name==row[0].StageName)
+                {
+                    stage=u.ID;
+                }
+            });
+            $scope.task=task;
+            $scope.stage=stage;
+            //moment($scope.dt).format('MM/DD/YYYY')
+            console.log(row[0].UsersDate);
+            $scope.dt=moment(row[0].UsersDate,'DD-MM-YYYY').format('MM/DD/YYYY');
+            $scope.h=time[0];
+            $scope.m=time[1];
+            $scope.row=row[0].tdID;
+        }
+
+        function Delete(event, row, gridScope) {
+            if (!confirm('Are you Sure you want to delete')) return false;
+            $.ajax({
+                url: path + 'api/TimeRecord/Defunct?ID=' + row[0].tdID,
+                type: 'POST',
+                headers: { 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() || "" },
+                success: function () {
+                    //var pScope = angular.element('[ng-controller="documentControl"]').scope();
+                    //var item = angular.element(event.target).parents('.grid-renderer').parent().scope().item;
+                    //item.Properties.IsPostBack = true;
+                    //pScope.Handlers.post(item);
+                    $.alert('Data has been deleted succesfully');
+                    $scope.SearchTimeRecord();
+
+                },
+                error: function () {
+                    $.alert('Action Failed');
+                }
+            });
+        }
+        window.glams.Actions.Add('DeleteRecord', Delete);
+        window.glams.Actions.Add('EditRecord', EditRecord);
+
+        $scope.AddNew=function(){
+            $scope.showAdd=true;
+            $scope.showUpdate=false;
+            //$('#btnupdate').hide();
+            //$('#btnAdd').show();
+            if(!$scope.jobNumber)
+            {
+                $scope.showAddWindow=!!!$scope.showAddWindow;
+            }
+            else{
+                //Validate Is he admin Role
+                var validateUser=$scope.validateUser();
+                validateUser.then(function(val){
+                    var validateJob=$scope.AuthenticatepartNumber($scope.jobNumber);
+                    validateJob.then(function(val2){
+                        if(val2==1){
+                            if(val==1)
+                            {
+                                $scope.showAddWindow = true;
+                                $scope.shownonUserWindow= true;
+                            }
+                            else if(val==2)
+                            {
+                                var validateJobOwner=$scope.validateJobOwner();
+                                validateJobOwner.then(function(val3){
+                                    //if(val3==true){
+                                    if(val3==2){
+
+                                        //if($scope.jobNumber!=null)
+                                        //{
+                                        //    $scope.shownonUserWindow=true;
+                                        //}
+                                        //else
+                                        //{
+                                        $scope.showAddWindow=true;
+                                        $scope.shownonUserWindow=true;
+                                        //}
+                                        //Ask Ajai even though console show true .. its is not working it always says you are not allowed to access;
+                                        //Tell Ajai to apply rule like job number should be like this format C-01-01
+                                        //console.log(val3);
+                                        ////$scope.showAddWindow = !!!$scope.showAddWindow;
+                                        //$scope.showAddWindow=false;
+                                        //$scope.showAddWindow=true;
+                                    }
+                                    else{
+
+                                        $scope.showAddWindow=false;
+                                        $.alert('You are not allowed to access the job. Please Check with Admin.');
+                                    }
+
+                                });
+                            }
+                            else{
+                                $.alert('You are an admin . But something went wrong.');
+                            }
+                        }
+                        else
+                        {
+                            $.alert('invalid Job Number');
+
+                        }
+                    });
+
+                });
+
+
+            }
+
+        };
+
+
+        $scope.disabledate=function()
+        {
+            //$scope.dateFrom.attr("disabled", "disabled");
+            //$scope.dateTo.attr("disabled", "disabled");
+            $scope.dateFrom.attr("disabled", "disabled");
+            $scope.dateTo.attr("disabled", "disabled");
+        };
+
+        $scope.validateJobOwner=function()
+        {
+            var dobj = $q.defer();
+            $http({
+                url:path+'api/TimeRecord/ValidateJobNumber?PartNumber='+$scope.jobNumber,
+                method:'POST',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                dobj.resolve(data);
+            }).error(function(data){
+                console.log('Error');
+            });
+            return dobj.promise;
+        };
+
+        $scope.validateUser=function()
+        {
+            var dobj = $q.defer();
+            $http({
+                url:path+'api/TimeRecord/validateRoles?roleName='+$scope.Roles.Properties.Value,
+                method:'POST',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                dobj.resolve(data);
+            }).error(function(data){
+                console.log('Error');
+            });
+            return dobj.promise;
+        };
+
+        $scope.AuthenticatepartNumber=function()
+        {
+            var dobj = $q.defer();
+            var partNumber =$scope.jobNumber;
+            $http({
+                url:path+'api/TimeRecord/ValidateJobNumber?PartNumber='+$scope.jobNumber,
+                method:'POST',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                dobj.resolve(data);
+            }).error(function(data){
+                console.log('Error');
+            });
+            return dobj.promise;
+        };
+
+        $scope.GetData=function(url)
+        {
+            ////param={partNo:data.partNo,isProof:data.isProof,itemInfos:data.itemInfo,GroupTypes:data.GroupTypes,Groups:data.Groups,fromData:data.fromData,toDate:data.toDate,filter:data.filter,pageIndex:data.pageIndex,pageSize:data.pageSize};
+            //param={partNo:1,isProof:1,itemInfos:1,GroupTypes:1,Groups:1,fromData:1,toDate:1,filter:1,pageIndex:5,pageSize:1};
+            //console.log(param);
+            //path+'api/TimeRecord/GetTimeRecord?itemID=32&isProof=0&itemInfos=1&GroupTypes=null&Groups=Norway&fromData=11/11/2014&toDate=11/11/2014&filter=1&pageIndex=5&pageSize=1&role=0'
+            $http({
+                url:path+url,
+                method:'GET',
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(data){
+                $scope.GridConfig.rows = data;
+            }).error(function(){
+                console.log('error')
+            });
+
+        };
+
+        $scope.SearchTimeRecord=function()
+        {
+            var url="";
+            if(!$scope.jobNumber && !$scope.dateFrom && !$scope.dateTo){
+                $.notify('Please provide serach values', {type:'error'});
+                return;
+            }
+            if(!$scope.jobNumber){
+                console.log($scope);
+                var validateUser=$scope.validateUser();
+                validateUser.then(function(val){
+                    switch (+val) {
+                        case 1:
+                            //alert('Rakesh');
+                            $scope.GridConfig.extendedObject.jobNumber = 0;
+                            $scope.GridConfig.extendedObject.isProof = $scope.passProof.Properties.Visible;
+                            $scope.GridConfig.extendedObject.itemInfos = null;
+                            $scope.GridConfig.extendedObject.GroupTypes = ($scope.GroupType==null)?null:$scope.GroupType;
+                            $scope.GridConfig.extendedObject.Groups = ($scope.Group==null)?null:$scope.Group;
+                            $scope.GridConfig.extendedObject.fromData = $scope.dateFrom?moment($scope.dateFrom).format('MM/DD/YYYY'):moment(getDateTime).format('MM/DD/YYYY');
+                            $scope.GridConfig.extendedObject.toDate =  $scope.dateFrom?moment($scope.dateTo).format('MM/DD/YYYY'):moment(getDateTime).format('MM/DD/YYYY');
+                            $scope.GridConfig.extendedObject.filter = '0';
+                            $scope.GridConfig.extendedObject.role = '1';
+                            $scope.GridConfig.extendedObject.gridLoad=false;//$scope.role
+                            $scope.GridObj.reload();
+                            console.log($scope.GridConfig.extendedObject);
+                            break;
+                        case 2:
+                            /// alert('Chaubey')
+                            $scope.GridConfig.extendedObject.jobNumber = 0;
+                            $scope.GridConfig.extendedObject.isProof = $scope.passProof.Properties.Visible;
+                            $scope.GridConfig.extendedObject.itemInfos = null;
+                            $scope.GridConfig.extendedObject.GroupTypes = ($scope.GroupType==null)?null:$scope.GroupType;
+                            $scope.GridConfig.extendedObject.Groups = ($scope.Group==null)?null:$scope.Group;
+                            $scope.GridConfig.extendedObject.fromData =$scope.dateFrom?moment($scope.dateFrom).format('MM/DD/YYYY'):moment(getDateTime).format('MM/DD/YYYY');// moment(new Date(0)).format('DD/MM/YYYY');//$scope.dateFrom?moment($scope.dateFrom).format('DD/MM/YYYY'):$scope.dateFrom;
+                            $scope.GridConfig.extendedObject.toDate = $scope.dateFrom?moment($scope.dateTo).format('MM/DD/YYYY'):moment(getDateTime).format('MM/DD/YYYY');//moment(new Date(0)).format('DD/MM/YYYY');//  $scope.dateFrom?moment($scope.dateTo).format('DD/MM/YYYY'):$scope.dateTo;
+                            $scope.GridConfig.extendedObject.filter = '0';
+                            $scope.GridConfig.extendedObject.role = '0';
+                            $scope.GridConfig.extendedObject.gridLoad=false;//$scope.role
+                            $scope.GridObj.reload();
+                            console.log($scope.GridConfig.extendedObject);
+                            break;
+                        case 3:
+                            $.alert('No Role');
+                            break;
+                        default:
+                            $.alert('Some Thing Went Wrong');
+
+                    }
+
+                });
+
+            }
+            else{
+                console.log($scope);
+                var authenticatejobs=$scope.AuthenticatepartNumber($scope.jobNumber)
+                authenticatejobs.then(function(data1){
+                    if(data1==1)
+                    {
+                        var validateUser=$scope.validateUser();
+                        validateUser.then(function(val1){
+                            switch (+val1) {
+                                case 1:
+                                    //It is Admin
+                                    $scope.GridConfig.extendedObject.jobNumber = $scope.jobNumber;
+                                    $scope.GridConfig.extendedObject.isProof = $scope.passProof.Properties.Visible;
+                                    $scope.GridConfig.extendedObject.fromData ='01/01/1977';
+                                    $scope.GridConfig.extendedObject.toDate ='01/01/1977';
+                                    $scope.GridConfig.extendedObject.itemInfos = null;
+                                    $scope.GridConfig.extendedObject.GroupTypes = ($scope.GroupType==null)?null:$scope.GroupType;
+                                    $scope.GridConfig.extendedObject.Groups = ($scope.Group==null)?null:$scope.Group;
+                                    //$scope.dateFrom?moment($scope.dateFrom).format('DD/MM/YYYY'):$scope.dateFrom;
+                                    //$scope.dateFrom?moment($scope.dateTo).format('DD/MM/YYYY'):$scope.dateTo;
+                                    $scope.GridConfig.extendedObject.filter = '0';
+                                    $scope.GridConfig.extendedObject.role = '1';
+                                    $scope.GridConfig.extendedObject.gridLoad=false;
+                                    $scope.GridObj.reload();
+                                    console.log($scope.GridConfig.extendedObject);
+                                    //url='api/TimeRecord/GetTimeRecord?itemID=32&isProof=0&itemInfos=1&GroupTypes=null&Groups=null&fromData=07/11/2014&toDate=07/11/2014&filter=1&pageIndex=5&pageSize=1&role=1';
+                                    //console.log(url);
+                                    //$scope.GetData(url);
+
+                                    break;
+                                case 2:
+                                    //Nornal user;pAss UseriD
+                                    //url='api/TimeRecord/GetTimeRecord?itemID=32&isProof=0&itemInfos=1&GroupTypes=null&Groups=null&fromData=07/11/2014&toDate=07/11/2014&filter=1&pageIndex=5&pageSize=1&role=1';
+                                    //console.log(url);
+                                    //$scope.GetData(url);
+                                    $scope.GridConfig.extendedObject.jobNumber = $scope.jobNumber;
+                                    $scope.GridConfig.extendedObject.isProof = $scope.passProof.Properties.Visible;
+                                    $scope.GridConfig.extendedObject.itemInfos = null;
+                                    $scope.GridConfig.extendedObject.GroupTypes = ($scope.GroupType==null)?null:$scope.GroupType;
+                                    $scope.GridConfig.extendedObject.Groups = ($scope.Group==null)?null:$scope.Group;
+                                    $scope.GridConfig.extendedObject.fromData ='01/01/1977' ;//$scope.dateFrom?moment($scope.dateFrom).format('DD/MM/YYYY'):$scope.dateFrom
+                                    $scope.GridConfig.extendedObject.toDate ='01/01/1977';//$scope.dateFrom?moment($scope.dateTo).format('DD/MM/YYYY'):$scope.dateTo;
+                                    $scope.GridConfig.extendedObject.filter = '0';
+                                    $scope.GridConfig.extendedObject.role = '0';
+                                    $scope.GridConfig.extendedObject.gridLoad=false;
+                                    $scope.GridObj.reload();
+                                    console.log($scope.GridConfig.extendedObject);
+                                    break;
+                                case 3:
+                                    //No Role
+                                    $.alert('No Role wih job');
+                                    break;
+                                default:
+                                    $.alert('Some Thing Went Wrong wih job');
+
+                            }
+                        });
+                    }
+                    else{
+                        $.alert('Kindly check the job number');
+                    }
+
+
+                });
+
+            }
+
+        };
+
+        $scope.ValidatePageControl=function()
+        {
+            if($scope.h==null || $scope.m==null || $scope.txtComments.Properties.value==null)
+            {
+                return false;
+            }
+        }
+
+        $scope.PostTimeRecord=function()
+        {
+            console.log($scope.task);
+            var datedetails=getDateTime();
+            var param={
+
+                hours:$scope.h,
+                mins:$scope.m,
+                comments:$scope.theComments.Properties.Value,
+                jobNumber:($scope.jobNumber==null)?0:$scope.jobNumber,
+                taskID:($scope.task==null)?'0':$scope.task,
+                stageID:($scope.stage==null)?'0':$scope.stage,
+                userID:($scope.user==null)?'0':$scope.user,
+                tsUserDate:$scope.dt?moment($scope.dt).format('MM/DD/YYYY'):getDateTime()
+            };
+            console.log(param);
+            $http({
+                url:path+'api/TimeRecord/PostTimeRecord',
+                method:'POST',
+                data:{timeRecordData:param},
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(){
+                $.alert('Data has Been Saved Succesfully.')
+                //$scope.showAddWindow=false;
+                $scope.clearField();
+
+            });
+        };
+
+        function getDateTime() {
+            var now     = new Date();
+            var year    = now.getFullYear();
+            var month   = now.getMonth()+1;
+            var day     = now.getDate();
+            var hour    = now.getHours();
+            var minute  = now.getMinutes();
+            var second  = now.getSeconds();
+            if(month.toString().length == 1) {
+                var month = '0'+month;
+            }
+            if(day.toString().length == 1) {
+                var day = '0'+day;
+            }
+            if(hour.toString().length == 1) {
+                var hour = '0'+hour;
+            }
+            if(minute.toString().length == 1) {
+                var minute = '0'+minute;
+            }
+            if(second.toString().length == 1) {
+                var second = '0'+second;
+            }
+            var dateTime = year+'/'+month+'/'+day+' '+hour+':'+minute+':'+second;
+            return dateTime;
+        }
+
+        $scope.updateTimeRecord=function(){
+            var param={
+
+                hours:$scope.h,
+                mins:$scope.m,
+                comments:$scope.theComments.Properties.Value,
+                jobNumber:($scope.jobNumber==null)?0:$scope.jobNumber,
+                taskID:($scope.task==null  || $scope.task=="")?'0':$scope.task,
+                stageID:($scope.stage==null|| $scope.stage=="")?'0':$scope.stage,
+                userID:($scope.user==null)?'0':$scope.user,
+                tsUserDate:$scope.dt?moment($scope.dt).format('MM/DD/YYYY'):getDateTime(),
+                Type:$scope.type,
+                ID:$scope.row,
+
+            };
+            console.log(param);
+            $http({
+                url:path+'api/TimeRecord/UpdateTimeRecord',
+                method:'POST',
+                data:{UpdateTimeRecord:param},
+                headers:{ 'RequestVerificationToken': $('[name="__RequestVerificationToken"]').val() },
+            }).success(function(){
+                $.alert('Data has Been Saved Succesfully.')
+                $scope.clearField();
+            });
+        };
+
+        $scope.loadGroup=function()
+        {
+            console.log($scope.GroupType);
+            var d = $scope.GroupType.toString();
+            console.log(d);
+            var Group=$scope.getGroup(d);
+            Group.then(function(data){
+                console.log(data[0].Groups);
+                $scope.data.Groupss =data[0].Groups;
+
+            });
+        };
+
+        $scope.clearField=function()
+        {
+            $scope.h="";
+            $scope.m="";
+            $scope.theComments.Properties.Value="";
+            $scope.dt="";
+            $scope.user="";
+            $scope.stage="";
+            $scope.task="";
+            $scope.showAddWindow=false;
+            $scope.SearchTimeRecord();
+        }
+    }
+
+</script>
