@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DashBoard</title>
+    <meta name="generator" content="HTML Tidy for Windows" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="" />
+
+    <!--List Of All Styles will be here-->
+    <link href="../Content/Common/default.combined.min.css" rel="stylesheet" />
+    <link href="../Content/Common/bootstrap.min.css" rel="stylesheet" />
+
+
+
+    <!--List All Js Here-->
+    <script src="../Scripts/App/Modules.js"></script>
+    <script src="../Scripts/Library/jquery-combined.min.js"></script>
+    <script src="../Scripts/Library/angular.min.js"></script>
+    <script src="../Scripts/Library/angular-sanitize.js"></script>
+    <!--<script src="../Scripts/jquery-1.10.2.min.js"></script>-->
+    <script src="../Scripts/App/MainModule/main.min.js"></script>
+    <script src="../Scripts/App/UIModules/UIModule.js"></script>
+    <script src="../Scripts/Library/bootstrap.js"></script>
+    <script src="../Scripts/Library/init.min.js"></script>
+    <script src="../Scripts/App/UserGrid/Grid.js"></script>
+
+    <!--List All Font And Gycolon here-->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
+    <!--List of CDN-->
+    <script type="text/javascript" src="http://angular-ui.github.com/ng-grid/lib/ng-grid.debug.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://angular-ui.github.com/ng-grid/css/ng-grid.css" />
+
+    <style type="text/css">
+        .gridStyle {
+            border: 1px solid rgb(212,212,212);
+            width: 600px;
+            height: 300px;
+        }
+    </style>
+
+</head>
+<body ng-app="Qatar">
+    <header>
+        <section class="main-head">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-4 col-xs-4">
+                        <a href="http://www.qatarairways.com/" class="logo"></a>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8">
+                        <ul>
+                            <li>
+                                <img src="../Images/logo2.png" style="width: inherit; height: inherit;" />
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="page-info">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 col-md-12">
+                        <h2 class="page-title">Dashboard</h2>
+                    </div>
+                    <div class="col-md-6 hidden-xs hidden-sm">
+                        <ol class="breadcrumb pull-right">
+                            <li><a href="#">Home</a></li>
+                            <li class="active">Padder</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+    <main class="content-area">
+
+        <div class="container-fluid" ng-controller="QatarController">
+            <div class="row">
+                <div class="form-group">
+                </div>
+                <collapsible-panel heading="UsersPanel">
+                    <tabset justified="true">
+                        <tab heading="Flight Lager">
+                            Rakesh Chaubey
+                            <input type="button" value="ClickMe" ng-click="clicker()" />
+                            <div  ng-controller="QatarController">
+                                <div class="gridStyle" ng-grid="gridOptions">
+
+                                </div>
+                            </div>
+                        </tab>
+                        <tab heading="Add Users">
+                            <div class="form-group">
+                                <div class="text-right">
+                                    <a href="#" class="btn btn-xs btn-default" ng-click="editupdateEmailTemplate()"><i class="fa fa-envelope"></i> Update email tempalte</a>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" ng-model="firstName" class="form-control" id="frstName" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputlastName" class="col-sm-2 control-label">Last Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" ng-model="lastName" class="form-control" id="lastName" />
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="inputDisplayName" class="col-sm-2 control-label">Display Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" ng-model="displayName" class="form-control" id="displayName" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputDepartment" class="col-sm-2 control-label">DepartMent</label>
+                                <div class="col-sm-10">
+                                    <input type="text" ng-model="department" class="form-control" id="department" />
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" ng-model="email" class="form-control" id="email" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputAccountType" class="col-sm-2 control-label">Account Type</label>
+                                <div class="col-sm-1">
+                                    <select name="accounttype" class="form-control" ng-model="accounttype" id="accounttype" ng-change="setDomain()">
+                                        <option value="false">Default</option>
+                                        <option value="true">Domain</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputUserName" class="col-sm-2 control-label">User Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" ng-model="userName" class="form-control" id="userName" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputAdminAcess" class="col-sm-2 control-label">Admin Acess</label>
+                                <div class="col-sm-10">
+                                    <input type="checkbox" name="AdminAcess" ng-model="Viewer" id="AdminAcess" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <input type="submit" id="Update" value="Update" ng-click="SaveUserDetails()" class="btn btn-success" />
+                                    <input type="button" value="Cancel" id="Cancel" ng-click="ClosePage()" class="btn btn-success" />
+                                </div>
+                            </div>
+
+                        </tab>
+                    </tabset>
+
+                </collapsible-panel>
+
+
+            </div>
+        </div>
+
+        <!--<div>
+            Chaubey
+            <div ng-app="Qatar" ng-controller="QatarController">
+                <div class="gridStyle" ng-grid="gridOptions"></div>
+            </div>
+        </div>-->
+    </main>
+    <footer>&copy; 2014 Qatar Airways. All rights reserved.</footer>
+</body>
+</html>
