@@ -136,3 +136,149 @@ http://www.indiainfoline.com/live-market/request-handler/get-company-details?typ
 
 http://www.indiainfoline.com/company/itc-ltd/301
 
+
+
+
+
+
+
+
+
+
+
+--------------------------------------21-05-2015---------------------------------------------------
+$('div.row').find('ul').find('li')[5].innerText
+
+
+Final One
+
+$('div.row').find('ul').find('li')[45].innerText
+
+
+15492\3=5164
+
+
+
+
+5163==Zylog System
+
+$('.table').find('.row').find('ul').find('li')[15489].innerText
+
+http://client.cors-api.appspot.com/client#?client_method=GET&client_credentials=false&server_url=http%3A%2F%2Fwww.marketonmobile.com%2Fsearch.php&server_enable=true&server_status=200&server_credentials=false&server_tabs=remote
+
+
+var html='';for (var key=0, size=100000; key<size;key++) {
+                                                      html +='<tr><td>'
+                                                      + $('.table').find('.row').find('ul').find('li')[key].innerText
+                                                      + '</td><td class="whatever1">'
+             + $('.table').find('.row').find('ul').find('li')[key].innerText
+             + '</td><td class="whatever2">'
+             + $('.table').find('.row').find('ul').find('li')[key].innerText
+             + '</td></tr>';
+}console.log(html);
+
+
+
+var html='';for (var key=0, size=5; key<size;key++) {
+                                                      html +='<tr><td>'
+                                                      + $('.table').find('.row').find('ul').find('li')[key].innerText
+                                                      + '</td><td class="whatever1">'
+             + $('.table').find('.row').find('ul').find('li')[key+1].innerText
+             + '</td><td class="whatever2">'
+             + $('.table').find('.row').find('ul').find('li')[key+1+1].innerText
+             + '</td></tr>';
+}alert(html);
+
+
+var html='';for (var key=0, size=20; key<size;key++) {
+                                                      html +='<tr><td>'
+                                                      + $('.table').find('.row').find('li')[key].innerText
+                                                      + '</td><td class="whatever1">'
+             + $('.table').find('.row').find('li')[key+1].innerText
+             + '</td><td class="whatever2">'
+             + $('.table').find('.row').find('li')[key+2].innerText
+             + '</td></tr>';key=key+2;
+}alert(html);
+
+
+var html='';for (var key=0, size=20; key<size;key++) {
+                                                      html +='<tr><td>'
+                                                      + $('.table').find('.row').find('li')[key].innerText
+                                                      + '</td><td class="whatever1">'
+             + $('.table').find('.row').find('li')[key+1].innerText
+             + '</td><td class="whatever2">'
+             + $('.table').find('.row').find('li')[key+2].innerText
+             + '</td></tr>';key=key+2;
+}$('.raka').append(html);
+
+var html='';for (var key=0, size=20; key<size;key++) {
+                                                      html +='<tr><td>'
+                                                      + $('.table').find('.row').find('li')[key].innerText
+                                                      + '</td><td class="whatever1">'
+             + $('.table').find('.row').find('li')[key+1].innerText
+             + '</td><td class="whatever2">'
+             + $('.table').find('.row').find('li')[key+2].innerText
+             + '</td></tr>';key=key+2;
+}$('.raka').append(html);
+
+
+<table class="raka"><tbody><tr><td>20 Microns</td><td class="whatever1">533022</td><td class="whatever2">20MICRONS</td></tr><tr><td>21st Cent. Mgmt.</td><td class="whatever1">526921</td><td class="whatever2">21STCENMGM</td></tr><tr><td>3i Infotech</td><td class="whatever1">532628</td><td class="whatever2">3IINFOTECH</td></tr><tr><td>3M India</td><td class="whatever1">523395</td><td class="whatever2">3MINDIA</td></tr><tr><td>3rd Rock</td><td class="whatever1">532066</td><td class="whatever2">3RDROCK</td></tr><tr><td>7Seas Enter.</td><td class="whatever1">590116</td><td class="whatever2"></td></tr><tr><td>8K Miles</td><td class="whatever1">512161</td><td class="whatever2">8KMILES</td></tr><tr><td>20 Microns</td><td class="whatever1">533022</td><td class="whatever2">20MICRONS</td></tr><tr><td>21st Cent. Mgmt.</td><td class="whatever1">526921</td><td class="whatever2">21STCENMGM</td></tr><tr><td>3i Infotech</td><td class="whatever1">532628</td><td class="whatever2">3IINFOTECH</td></tr><tr><td>3M India</td><td class="whatever1">523395</td><td class="whatever2">3MINDIA</td></tr><tr><td>3rd Rock</td><td class="whatever1">532066</td><td class="whatever2">3RDROCK</td></tr><tr><td>7Seas Enter.</td><td class="whatever1">590116</td><td class="whatever2"></td></tr><tr><td>8K Miles</td><td class="whatever1">512161</td><td class="whatever2">8KMILES</td></tr><tr><td>A B B</td><td class="whatever1">500002</td><td class="whatever2">ABB</td></tr><tr><td>A B N Intercorp</td><td class="whatever1">532575</td><td class="whatever2">ABNINT</td></tr><tr><td>A D S Diagnostic</td><td class="whatever1">523031</td><td class="whatever2"></td></tr><tr><td>A F Enterprises</td><td class="whatever1">538351</td><td class="whatever2"></td></tr><tr><td>A J Brothers</td><td class="whatever1">511662</td><td class="whatever2"></td></tr><tr><td>A.K.Capital Serv</td><td class="whatever1">530499</td><td class="whatever2"></td></tr><tr><td>A2Z Infra Engg.</td><td class="whatever1">533292</td><td class="whatever2">A2ZINFRA</td></tr><tr><td>Aadhaar Ventures</td><td class="whatever1">531611</td><td class="whatever2"></td></tr><tr><td>Aadi Industries</td><td class="whatever1">530027</td><td class="whatever2"></td></tr><tr><td>Aagam Capital</td><td class="whatever1">531866</td><td class="whatever2"></td></tr><tr><td>Aakar Enginee. M</td><td class="whatever1">522201</td><td class="whatever2"></td></tr><tr><td>Aananda Lakshmi</td><td class="whatever1">539096</td><td class="whatever2"></td></tr><tr><td>Aanchal Ispat</td><td class="whatever1">538812</td><td class="whatever2"></td></tr><tr><td>Aarey Drugs</td><td class="whatever1">524412</td><td class="whatever2"></td></tr><tr><td>Aarti Drugs</td><td class="whatever1">524348</td><td class="whatever2">AARTIDRUGS</td></tr><tr><td>Aarti Inds.</td><td class="whatever1">524208</td><td class="whatever2">AARTIIND</td></tr><tr><td>Aarvee Denims</td><td class="whatever1">514274</td><td class="whatever2">AARVEEDEN</td></tr><tr><td>Aarya Global</td><td class="whatever1">531731</td><td class="whatever2"></td></tr><tr><td>Aashee Infotech</td><td class="whatever1">519319</td><td class="whatever2"></td></tr><tr><td>Aasheesh Sec.</td><td class="whatever1">531514</td><td class="whatever2"></td></tr><tr><td>Aastha Broadcas.</td><td class="whatever1">503673</td><td class="whatever2"></td></tr><tr><td>Aaswa Trad.&amp; Exp</td><td class="whatever1">512038</td><td class="whatever2"></td></tr><tr><td>Abacus Computer</td><td class="whatever1">508987</td><td class="whatever2"></td></tr><tr><td>Aban Offshore</td><td class="whatever1">523204</td><td class="whatever2">ABAN</td></tr><tr><td>Abbott India</td><td class="whatever1">500488</td><td class="whatever2">ABBOTINDIA</td></tr><tr><td>ABC Bearings</td><td class="whatever1">505665</td><td class="whatever2">ANTFRIBEAR</td></tr><tr><td>ABC Gas (Int.)</td><td class="whatever1">513119</td><td class="whatever2"></td></tr><tr><td>ABC India</td><td class="whatever1">520123</td><td class="whatever2"></td></tr><tr><td>Abee Info-Consu.</td><td class="whatever1">530833</td><td class="whatever2"></td></tr><tr><td>ABG Infra</td><td class="whatever1">520155</td><td class="whatever2">ABGHEAVY</td></tr><tr><td>ABG Shipyard</td><td class="whatever1">532682</td><td class="whatever2">ABGSHIP</td></tr><tr><td>Abhinav Capital</td><td class="whatever1">532057</td><td class="whatever2"></td></tr><tr><td>Abhinav Leasing</td><td class="whatever1">538952</td><td class="whatever2"></td></tr><tr><td>Abhishek Corp.</td><td class="whatever1">532831</td><td class="whatever2">ABHISHEK</td></tr><tr><td>Abhishek Finle.</td><td class="whatever1">538935</td><td class="whatever2"></td></tr><tr><td>Abirami Fin.</td><td class="whatever1">511756</td><td class="whatever2"></td></tr><tr><td>ABL Bio-Tech.</td><td class="whatever1">526955</td><td class="whatever2"></td></tr><tr><td>ABM Knowledge</td><td class="whatever1">531161</td><td class="whatever2"></td></tr><tr><td>ACC</td><td class="whatever1">500410</td><td class="whatever2">ACC</td></tr><tr><td>Accel Frontline</td><td class="whatever1">532774</td><td class="whatever2">AFL</td></tr><tr><td>Accel Trans</td><td class="whatever1">517494</td><td class="whatever2"></td></tr><tr><td>Accelya Kale</td><td class="whatever1">532268</td><td class="whatever2">ACCELYA</td></tr><tr><td>Accentia Tech.</td><td class="whatever1">531897</td><td class="whatever2"></td></tr><tr><td>Acclaim Indus.</td><td class="whatever1">526347</td><td class="whatever2"></td></tr><tr><td>Accurate Exports</td><td class="whatever1">531905</td><td class="whatever2"></td></tr><tr><td>Accurate Trans.</td><td class="whatever1">530513</td><td class="whatever2"></td></tr><tr><td>ACE Edu.</td><td class="whatever1">530093</td><td class="whatever2"></td></tr><tr><td>Ace Soft. Exp.</td><td class="whatever1">531525</td><td class="whatever2"></td></tr><tr><td>Ace Stonecraft</td><td class="whatever1">515133</td><td class="whatever2"></td></tr><tr><td>Ace Tours</td><td class="whatever1">536492</td><td class="whatever2"></td></tr><tr><td>Achal Investment</td><td class="whatever1">538570</td><td class="whatever2"></td></tr><tr><td>ACI Infocom</td><td class="whatever1">517356</td><td class="whatever2"></td></tr><tr><td>Acil Cott. Inds.</td><td class="whatever1">530901</td><td class="whatever2"></td></tr><tr><td>Acknit Indus.</td><td class="whatever1">530043</td><td class="whatever2"></td></tr><tr><td>AcroPetal Tech.</td><td class="whatever1">533330</td><td class="whatever2">ACROPETAL</td></tr><tr><td>Acrow India</td><td class="whatever1">513149</td><td class="whatever2"></td></tr><tr><td>Acrysil</td><td class="whatever1">524091</td><td class="whatever2"></td></tr><tr><td>Action Const.Eq.</td><td class="whatever1">532762</td><td class="whatever2">ACE</td></tr><tr><td>Action Fin.Serv</td><td class="whatever1">511706</td><td class="whatever2"></td></tr><tr><td>AD Manum Finance</td><td class="whatever1">511359</td><td class="whatever2"></td></tr></tbody></table>
+
+
+
+http://www.google.com/finance/getprices?q=RELIANCE&x=NSE&i=60&p=5d&f=d,c,o,h,l&df=cpct&auto=1&ts=1266701290218
+
+http://www.google.com/finance/getprices?q=TECHM&x=NSE&i=60&p=5d&f=d,c,o,h,l&df=cpct&auto=1&ts=1266701290218
+
+https://developer.yahoo.com/yql/
+
+
+select * from html where url='https://www.google.com/finance/historical?q=NSE%3ATECHM&ei=26tdVYL5K6LVwwOS-IDoCw' and xpath='//*[@id="prices"]/table'
+Copy Xpath And Replace your table
+
+https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D'https%3A%2F%2Fwww.google.com%2Ffinance%2Fhistorical%3Fq%3DNSE%253ATECHM%26ei%3D26tdVYL5K6LVwwOS-IDoCw'%20and%20xpath%3D'%2F%2F*%5B%40id%3D%22prices%22%5D%2Ftable'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys
+
+http://www.nseindia.com/products/dynaContent/equities/equities/histscrip.jsp?symbolCode=2421&symbol=TECHM&symbol=TECHM&segmentLink=3&symbolCount=1&series=ALL&dateRange=24month&fromDate=&toDate=&dataType=PRICEVOLUMEDELIVERABLE
+
+
+
+Steal All Data from here http://www.hdfcsec.com/Market/Sectorwise-CompaniesList.aspx?sector=Automobile
+
+hdfc sec
+
+http://www.marketcalls.in/amibroker/nestrtd-nestnow-amibroker-feeder-open-source-gpl.html
+
+http://www.investing.com/common/technical_summary/view/techSummaryBox-v3.js?
+
+
+http://www.investing.com/common/modules/js_instrument_chart/api/data.php?symbol=Tech%2BMahindra%2BLimited&pair_id=18429&pair_id_for_news=18429&chart_type=area&pair_interval=86400&candle_count=120&events=yes&volume_series=yes  (use this get correvct json data idiot Best Url)
+
+http://www.appuonline.com/global-market.php
+
+http://www.appuonline.com/stocks.php?ex=nse&act=52hl&flag=l&cid=83
+
+http://in.investing.com/equities/StocksFilter?noconstruct=1&smlID=600&sid=&tabletype=price&index_id=all
+
+Forget All use Investing .Com
+
+
+
+Post Request :
+
+http://in.investing.com/instruments/HistoricalDataAjax
+action:historical_data
+curr_id:17989
+st_date:22%2F05%2F2014
+end_date:21%2F05%2F2015
+interval_sec:Weekly
+
+
+
+
+
+
+
+
+
+
+
