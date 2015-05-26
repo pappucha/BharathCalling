@@ -276,6 +276,86 @@ interval_sec:Weekly
 
 
 
+http://www.moneycontrol.com/mccode/common/get_pricechart_div.php?bse_id=Y&nse_id=Y&sc_id=4e533132&BNsetick=58.54|55.54&ins=&sc_mapindex=26
+
+http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol=NITINSPIN&series=EQ
+
+http://content.icicidirect.com/newsiteContent/Research/includes/PDS_CheapestStock.asp
+
+http://content.icicidirect.com/newsiteContent/Research/PreDefinedSearch.asp?pageName=CheapestStocks#
+
+http://content.icicidirect.com/newsiteContent/ProductService/Overview.asp
+
+
+http://www.motilaloswal.com/Broking/Trading-Application/Web/Tools
+
+http://businesstoday.intoday.in/index.jsp
+
+
+http://businesstoday.intoday.in/stock.jsp?SrchQuote=Tech%20Mahindra&id=535
+
+http://businesstoday.accordhostings.com/CompanyProfile/QuarterlyResults.aspx?id=508&FinCode=132755http://businesstoday.accordhostings.com/CompanyProfile/MarketChartAjax.aspx?
+
+GraphType=I&DateOpt=D&Exchg=BSE&DateCnt=1&fincode=132755&TimeStamp=1432634043154
+
+http://content.icicidirect.com/newsiteContent/Research/script/Overview.js
+
+http://content.icicidirect.com/newsiteContent/Research/CustomSearch.asp
+
+http://content.icicidirect.com/newsiteContent/Research/includes/CustomSearchData.asp?industryname=TECHM&marketcap=1&keyfield=ROCE&compare=1&uservalue=1
+
+
+http://content.icicidirect.com/newsiteContent/Research/includes/CustomSearchData.asp?industryname=Select%20*%20from%20Users&marketcap=1&keyfield=ROCE&compare=1&uservalue=1
+
+http://content.icicidirect.com/newsiteContent/Research/TechnicalAnalysis.asp
+
+
+http://en.tldp.org/HOWTO/DocBook-Demystification-HOWTO/sgml.html
+
+http://www.sourceware.org/docbook-tools/
+
+http://stackoverflow.com/questions/15147133/extracting-information-from-sgm-files-using-python
+
+http://www.pdf-converter.com-http.com/sgm-to-pdf-converter.html
+
+http://www.tek-tips.com/viewthread.cfm?qid=1316894
+
+https://www.reaconverter.com/purchase/
+
+
+ftp://sunsite.unc.edu/pub/Linux/utils/text/sgml-tools-1.0.x.tar.gz
+
+
+
+
+
+http://rabartu.net/free-bootstrap
+
+http://www.wpfreeware.com/tutorial/wow-amazing-bootstrap-admin-themes-free-premium/-admin-templates/
+
+http://startbootstrap.com/template-overviews/sb-admin-2/
+
+
+http://www.marketonmobile.com/chart/setting4.xml
+
+http://www.topstockresearch.com/CandleStickPatterns/ReportOnIndianStockFormingBullishEngulfingPattern.html
+
+Gajra Bevel Gears
+
+
+Panoramic Universal  300
+
+
+Punj Lloyd  300
+
+
+http://www.topstockresearch.com/StockHighsReport/StockHighsReport.html
+
+bhartiinfratel
+Varun Shipping Company
+Gujarat Pipavav Port
+
+
 
 
 
