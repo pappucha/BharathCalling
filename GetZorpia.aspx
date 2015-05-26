@@ -357,7 +357,11 @@ Gujarat Pipavav Port
 
 
 http://www.vbforums.com/showthread.php?678953-Utility-Etta-SGML-Text-to-HTML-Converter-VB6
-
+http://stackoverflow.com/questions/1504202/java-sgml-to-xml-conversion
+http://www.balisage.net/Proceedings/vol1/html/Smith01/BalisageVol1-Smith01.html
+http://www.xml.com/pub/a/98/07/dtd/
+http://www.jclark.com/
+http://www.cranesoftwrights.com/resources/n2x/
 
 
 
