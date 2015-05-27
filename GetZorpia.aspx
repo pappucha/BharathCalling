@@ -369,3 +369,60 @@ http://xml.coverpages.org/publicSW.html
 
 
 
+
+-------------------------------------27/05/2014--------------------------------
+
+http://stackoverflow.com/questions/4231135/strategy-for-parsing-lots-and-lots-of-not-so-well-formed-sgml-xml-documents/4231758#4231758
+
+http://www.tldp.org/HOWTO/text/DocBook-OpenJade-SGML-XML-HOWTO
+
+http://www.ibiblio.org/pub/Linux/docs/HOWTO/other-formats/html_single/DocBook-OpenJade-SGML-XML-HOWTO.html
+
+http://xml.coverpages.org/seng.html
+
+http://xml.coverpages.org/grahamTransTools.html
+
+http://docbook.org/sgml/1.0/docbook.dtd
+
+
+https://www.google.com/search?q=%2BSGML+software&oq=%2BSGML+software&aqs=chrome..69i57&sourceid=chrome&es_sm=93&ie=UTF-8#q=SGML+tools
+
+http://www.ti.com/sc/docs/psheets/panoram.htm
+
+http://www.ti.com/sc/docs/psheets/sgmform.htm
+
+http://js.xmetal.com/downloadxmetal.html?_ga=1.209335121.2113124354.1432725330
+
+http://xmetal.com/content-support-downloads/
+
+
+http://xml.coverpages.org/ceth-panoramaTEI.html
+
+http://xml.coverpages.org/publicSW.html#panorama
+
+http://www.geom.uiuc.edu/events/courses/1996/cmwh/WebMath2/sgml.html
+
+http://www.geom.uiuc.edu/events/courses/1996/cmwh/WebMath2/
+
+
+Final One
+
+http://www.mhoenicka.de/software/sgml/tutorial/sgmlnt.pdf
+
+
+Manali Petrochemicals  - Buy this ... 
+
+http://www.moneycontrol.com/stocks/marketstats/indexcomp.php?optex=NSE&opttopic=indexcomp&index=7
+
+
+https://www.equitymaster.com/charts/CompGraph.asp?choose=0&chkNIFTY=on&txtGrSymb=&txtGrSymb1=&period=6&Symbol=CNX5%2CNIFTY
+
+%2C&MAverage=&PrnFriend=0&Type=&CmpSymbol=CNX5%2CNIFTY%2C&chkSymbol=0&filename=chartm.asp&utm_source=stockquote-page&utm_medium=website&utm_campaign=chart-
+
+link&utm_content=1year#chart
+
+https://www.equitymaster.com/stockquotes/mkt-stats/result.asp?type=1&group=-301&limit=0
+
+
+
+
