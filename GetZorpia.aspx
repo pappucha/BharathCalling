@@ -511,3 +511,7 @@ I have good exposure on telerik controls.And did worked with client from west. S
 
 
 Well if you are going to use asp.net mvc 5 . I would recommend to have a boot strap front end implementation. Since it will give your UI a real good life.And it would be very responsive . 
+
+
+
+http://www.users.cloud9.net/~bradmcc/WhatIsSGML.html
