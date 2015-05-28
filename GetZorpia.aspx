@@ -424,5 +424,42 @@ link&utm_content=1year#chart
 https://www.equitymaster.com/stockquotes/mkt-stats/result.asp?type=1&group=-301&limit=0
 
 
+----------------------28-05-2015--------------------------------------------------------------------------
+
+
+http://archive1.village.virginia.edu/dvp4c/sgmlintr.htm
+
+http://www.xmlgrrl.com/publications/DSDTD/ch01.html
+
+http://www.moneycontrol.com/mccode/common/get_pricechart_div.php?bse_id=Y&nse_id=Y&sc_id=544d34&BNsetick=01.345|52.345&ins=&sc_mapindex=19
+
+http://www.nseindia.com/homepage/Indices1.json
+
+
+http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol='TECHM'&series=''
+http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxPeerCompanies.jsp?symbol=TECHM
+
+http://www.nseindia.com/live_market/dynaContent/live_analysis/slbs_chain/chainDataBySeries.jsp
+
+
+loadIndicesData();getNifty();getTopGainersData(); VM699
+
+
+http://www.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=TECHM&instrument=-&date=-&segmentLink=17&symbolCount=2
+
+
+http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TECHM&instrument=FUTSTK&expiry=28MAY2015&type=-&strike=-","otherSeries":
+
+["EQ"],"lastUpdateTime":"28-MAY-2015 14:12:55","tradedDate":"28MAY2015",
+
+
+
+
+
+http://sourceforge.net/p/openjade/mailman/message/31230483/  (Final Try)
+http://www.jclark.com/jade/
+
+http://code.openhub.net/search?s=.sgml&pp=0&fp=135440&mp=1&ml=0&me=1&md=1&ff=1&filterChecked=true
+
 
 
