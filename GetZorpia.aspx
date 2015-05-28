@@ -517,3 +517,554 @@ Well if you are going to use asp.net mvc 5 . I would recommend to have a boot st
 http://www.users.cloud9.net/~bradmcc/WhatIsSGML.html
 
 https://kalpagunaratna.wordpress.com/2013/10/07/my-experience-in-processing-sgml-files-in-java-and-some-issues-with-parsing/
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Core;
+using System.Drawing;
+using ImageMagick;
+using Aspose;
+using Aspose.Pdf;
+using System.Xml;
+using System.Xml.Schema;
+using Sgml;
+using RipSgml;
+using System.Xml.Serialization;
+
+
+namespace RipSgml
+{
+    public class Program
+    {
+        Encoding encoding = null;
+
+        OFXResponseType response = null;
+        static void Main(string[] args)
+        {
+            #region "Old Code"
+
+
+            bool ConvertPdf = false;
+            bool CheckRipSgml = false;
+
+            if (ConvertPdf == true)
+            {
+                var sourcePath = @"D:\Office Project\FIle Manager Qatar\SGML File\SGMLTech_AMM_A318_A319_A320_A321_01_May_2015_QTR\Part_1\CGM\";
+                string[] files = System.IO.Directory.GetFiles(sourcePath);
+                foreach (var item in files)
+                {
+                    var fileName = System.IO.Path.GetFileName(item);
+                    var PdffileName = System.IO.Path.GetFileNameWithoutExtension(item);
+                    Aspose.Pdf.CgmLoadOptions options = new Aspose.Pdf.CgmLoadOptions();
+                    Aspose.Pdf.Document doc = new Document(sourcePath + fileName, options);
+                    doc.PageInfo.IsLandscape = true;
+                    doc.Pages[1].PageInfo.Height = 400;
+                    doc.Pages[1].PageInfo.Width = 400;
+                    doc.Save("c:/pdftest/" + PdffileName + ".pdf");
+
+                }
+            }
+            if (CheckRipSgml == true)
+            {
+                Sgml.SgmlReader reader = new Sgml.SgmlReader();
+                reader.DocType = string.Empty;
+               // reader.InputStream = new StringReader();
+                StringWriter output = new StringWriter();
+                XmlTextWriter writer = new XmlTextWriter(output);
+                reader.Read();
+                while (!reader.EOF)
+                {
+                    writer.WriteNode(reader, true);
+                }
+                writer.Close();
+                string xmlcode = output.ToString();
+
+                xmlcode = xmlcode.Replace("&amp;", "&");
+                xmlcode = xmlcode.Replace("&nbsp;", "&#160;");
+
+                //return xmlcode;
+
+
+            }
+            #endregion
+            #region "Veru Un Code"
+            //string proxy = "";
+            //string output = null;
+            //bool formatted = false;
+            //bool noxmldecl = false;
+            //Encoding encoding = null;
+            //SgmlReader reader = new SgmlReader();
+            //string inputUri = null;
+            //for (int i = 0; i < args.Length; i++)
+            //{
+            //    string arg = args[i];
+            //    if (arg[0] == '-' || arg[0] == '/')
+            //    {
+            //        switch (arg.Substring(1))
+            //        {
+            //            case "e":
+            //                string errorlog = args[++i];
+            //                if (errorlog.ToLower() == "$stderr")
+            //                {
+            //                    reader.ErrorLog = Console.Error;
+            //                }
+            //                else
+            //                {
+            //                    reader.ErrorLogFile = errorlog;
+            //                }
+            //                break;
+            //            case "html":
+            //                reader.DocType = "HTML";
+            //                break;
+            //            case "dtd":
+            //                reader.SystemLiteral = args[++i];
+            //                break;
+            //            case "proxy":
+            //                proxy = args[++i];
+            //                reader.WebProxy = proxy;
+            //                break;
+            //            case "encoding":
+            //                encoding = Encoding.GetEncoding(args[++i]);
+            //                break;
+            //            case "f":
+            //                formatted = true;
+            //                reader.WhitespaceHandling = WhitespaceHandling.None;
+            //                break;
+            //            case "noxml":
+            //                noxmldecl = true;
+            //                break;
+            //            case "doctype":
+            //                reader.StripDocType = false;
+            //                break;
+            //            case "lower":
+            //                reader.CaseFolding = CaseFolding.ToLower;
+            //                break;
+            //            case "upper":
+            //                reader.CaseFolding = CaseFolding.ToUpper;
+            //                break;
+
+            //            default:
+            //                Console.WriteLine("Usage: SgmlReader <options> [InputUri] [OutputFile]");
+            //                Console.WriteLine("-e log         Optional log file name, name of '$STDERR' will write errors to stderr");
+            //                Console.WriteLine("-f             Whether to pretty print the output.");
+            //                Console.WriteLine("-html          Specify the built in HTML dtd");
+            //                Console.WriteLine("-dtd url       Specify other SGML dtd to use");
+            //                Console.WriteLine("-base          Add base tag to output HTML");
+            //                Console.WriteLine("-noxml         Do not add XML declaration to the output");
+            //                Console.WriteLine("-proxy svr:80  Proxy server to use for http requests");
+            //                Console.WriteLine("-encoding name Specify an encoding for the output file (default UTF-8)");
+            //                Console.WriteLine("-lower         Convert input tags to lower case");
+            //                Console.WriteLine("-upper         Convert input tags to upper case");
+            //                Console.WriteLine();
+            //                Console.WriteLine("InputUri       The input file or http URL (default stdin).  ");
+            //                Console.WriteLine("               Supports wildcards for local file names.");
+            //                Console.WriteLine("OutputFile     Output file name (default stdout)");
+            //                Console.WriteLine("               If input file contains wildcards then this just specifies the output file extension (default .xml)");
+            //                return;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (inputUri == null)
+            //        {
+            //            inputUri = arg;
+            //            string ext = Path.GetExtension(arg).ToLower();
+            //            if (ext == ".htm" || ext == ".html")
+            //                reader.DocType = "HTML";
+            //        }
+            //        else if (output == null) output = arg;
+            //    }
+            //}
+            //if (inputUri != null && !inputUri.StartsWith("http://") && inputUri.IndexOfAny(new char[] { '*', '?' }) >= 0)
+            //{
+            //    // wild card processing of a directory of files.
+            //    string path = Path.GetDirectoryName(inputUri);
+            //    if (path == "") path = ".\\";
+            //    string ext = ".xml";
+            //    if (output != null)
+            //        ext = Path.GetExtension(output);
+            //    foreach (string uri in Directory.GetFiles(path, Path.GetFileName(inputUri)))
+            //    {
+            //        Console.WriteLine("Processing: " + uri);
+            //        string file = Path.GetFileName(uri);
+            //        output = Path.GetDirectoryName(uri) + Path.DirectorySeparatorChar + Path.GetFileNameWithoutExtension(file) + ext;
+            //       // Process(reader, uri);
+            //        reader.Close();
+            //    }
+            //    return;
+            //}
+
+            #endregion
+            var parentFile = @"D:\Tester.SGM";
+           // var parentFile = @"D:\Office Project\FIle Manager Qatar\SGML File\SGMLTech_AMM_A318_A319_A320_A321_01_May_2015_QTR\Part_1\SGML\AMM.SGM";
+            //SgmlReader sr = new SgmlReader();
+            ////System.IO.TextReader tr = new StreamReader(parentFile);
+            ////Aspose.Pdf.Generator.Pdf pdf1 = new Aspose.Pdf.Generator.Pdf();
+            ////Aspose.Pdf.Generator.Section sec1 = pdf1.Sections.Add();
+            ////Aspose.Pdf.Generator.Text t2 = new Aspose.Pdf.Generator.Text(tr.ReadToEnd());
+            ////sec1.Paragraphs.Add(t2);
+
+            ////pdf1.Save(@"D:\Office Project\FIle Manager Qatar\SGML File\SGMLTech_AMM_A318_A319_A320_A321_01_May_2015_QTR\Part_1\SGML\Rakesh\rakesh.pdf");
+
+
+            //using (var sourceFile = new StreamReader(parentFile))
+            //{
+            //    var line = sourceFile.ReadLine();
+
+
+            //}
+            Load(parentFile);
+
+
+            //Create pdf document
+            Aspose.Pdf.Generator.Pdf pdf1 = new Aspose.Pdf.Generator.Pdf();
+
+            //Instantiate License class and call its SetLicense method to use the license
+            //Aspose.Pdf.License license = new Aspose.Pdf.License();
+            // license.SetLicense("Aspose.Custom.lic");
+
+            //Set the conformance property of Pdf class to predefined value
+            pdf1.Conformance = Aspose.Pdf.Generator.PdfConformance.PdfA1B;
+
+            //Add a section into the pdf document
+            Aspose.Pdf.Generator.Section sec1 = pdf1.Sections.Add();
+
+            //Save the document
+            pdf1.Save("C:\\aspose\\HelloWorld.pdf");
+
+        }
+
+
+        public static void Load(string path)
+        {
+            StreamReader reader = null;
+            StringReader stringReader = null;
+            try
+            {
+                reader = new StreamReader(path);
+                string rawData = reader.ReadToEnd();
+                reader.Close();
+                string[] lines = ProcessHeader(rawData);
+
+                Sgml.SgmlReader readeraaa = new Sgml.SgmlReader();
+                readeraaa.DocType = string.Empty;
+                readeraaa.InputStream = new StringReader(string.Join("", lines));
+                StringWriter output = new StringWriter();
+                XmlTextWriter writer = new XmlTextWriter(output);
+                readeraaa.Read();
+                while (!readeraaa.EOF)
+                {
+                    writer.WriteNode(readeraaa, true);
+                }
+                writer.Close();
+                string xmlcode = output.ToString();
+
+                xmlcode = xmlcode.Replace("&amp;", "&");
+                xmlcode = xmlcode.Replace("&nbsp;", "&#160;");
+                var edsfsdf = xmlcode;
+
+                if (!Directory.Exists(@"C:\RakeshChaubey"))
+                {
+                    Directory.CreateDirectory(@"C:\RakeshChaubey");
+                }
+                var pathwe = @"C:\RakeshChaubey" + DateTime.Now.ToString();
+                var sb = new StringBuilder();
+                StreamWriter stresmValue = null;
+                stresmValue = File.CreateText(@"C:\RakeshChaubey\" + "Tester234.txt");
+
+                foreach (var item in lines)
+                {
+                    //////Write All to a text Box and think of a way
+
+                    stresmValue.Write(item);
+                    stresmValue.Write(Environment.NewLine);
+
+
+                }
+
+                stresmValue.Close();
+
+
+                //rawData = ConvertToXML(string.Join("", lines));
+                //stringReader = new StringReader(rawData);
+                /// XmlSerializer serializer = new XmlSerializer(typeof(OFXResponseType));
+                ///  var eresponse = (OFXResponseType)serializer.Deserialize(stringReader);
+                stringReader.Close();
+            }
+            catch (IOException ioex)
+            {
+                throw new IOException(ioex.Message, ioex);
+            }
+            catch (InvalidOperationException opex)
+            {
+                throw new InvalidOperationException(opex.Message, opex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+                if (stringReader != null)
+                {
+                    stringReader.Close();
+                }
+            }
+
+        }
+
+
+        private static string ConvertToXML(string sgml)
+        {
+            int start = 0;
+            int end = 0;
+            while (start < sgml.Length && start != -1)
+            {
+                string tag = "";
+                start = sgml.IndexOf("<", end);
+                if (start != -1)
+                {
+                    end = sgml.IndexOf(">", start);
+                    if (end != -1)
+                    {
+                        tag = sgml.Substring(start + 1, end - start - 1);
+                        if (!tag.StartsWith("/"))
+                        {
+                            if (sgml.IndexOf("</" + tag + ">", end) == -1)
+                            {
+                                start = sgml.IndexOf("<", end);
+                                sgml = sgml.Insert(start, "</" + tag + ">");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        start = -1;
+                    }
+                }
+            }
+            return sgml;
+        }
+        public static string[] ProcessHeader(string text)
+        {
+            string[] lines = text.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] rv = new string[lines.Length + 1];
+
+            int i = 0;
+            //while (!lines[i].StartsWith("<OFX>") && i < lines.Length)
+            while (i < lines.Length)
+            {
+                i++;
+            }
+
+            int j = 0;
+            while (j < lines.Length)
+            {
+                lines[j] = lines[j++].Trim();
+            }
+
+            Array.Copy(lines, i, rv, 0, lines.Length - i);
+
+            return lines;
+        }
+
+
+        void Process(SgmlReader reader, string uri)
+        {
+
+            string proxy = "";
+            string output = null;
+            bool formatted = false;
+            bool noxmldecl = false;
+
+            if (uri == null)
+            {
+                reader.InputStream = Console.In;
+            }
+            else
+            {
+                reader.Href = uri;
+            }
+
+
+            if (this.encoding == null)
+            {
+                this.encoding = reader.GetEncoding();
+            }
+
+            XmlTextWriter w = null;
+            if (output != null)
+            {
+                w = new XmlTextWriter(output, this.encoding);
+            }
+            else
+            {
+                w = new XmlTextWriter(Console.Out);
+            }
+            if (formatted) w.Formatting = Formatting.Indented;
+            if (!noxmldecl)
+            {
+                w.WriteStartDocument();
+            }
+            reader.Read();
+            while (!reader.EOF)
+            {
+                w.WriteNode(reader, true);
+            }
+            w.Flush();
+            w.Close();
+        }
+
+
+
+        public XmlDocument FromHtml(TextReader reader)
+        {
+
+            // setup SgmlReader
+            Sgml.SgmlReader sgmlReader = new Sgml.SgmlReader();
+            sgmlReader.DocType = "HTML";
+            sgmlReader.WhitespaceHandling = WhitespaceHandling.All;
+            sgmlReader.CaseFolding = Sgml.CaseFolding.ToLower;
+            sgmlReader.InputStream = reader;
+
+            // create document
+            XmlDocument doc = new XmlDocument();
+            doc.PreserveWhitespace = true;
+            doc.XmlResolver = null;
+            doc.Load(sgmlReader); return doc;
+        }
+
+
+        // public SgmlParser(String DocumentPath)
+        //{
+        //    stream = new FileStream(DocumentPath, FileMode.Open);
+        //    fileLength = stream.Length;
+        //    filePosition = 0;
+        //    bufferIndex = 0;
+        //    FillBuffer();
+        //    ParseHead();
+        //}
+
+        #region "Vomit Code"
+        //var file = System.IO.Directory.GetFiles(sourcePath);
+        //CGMSharp.CGMSharp testerr = new CGMSharp.CGMSharp();
+        //var GetImage = testerr.ConvertFile("n_mm_052120_6_aam0_01_00.CGM", sourcePath);
+
+
+        #region"Old Code"
+        #region"Copy File from one location to another"
+        //string cgm = "";
+        //float width = 180;
+        //float height = 180;
+
+        //object misValue = System.Reflection.Missing.Value;
+        //Microsoft.Office.Interop.Excel.Application xlsApp = null;
+        //Microsoft.Office.Interop.Excel.Workbook xlsWorkBook = null;
+        //Microsoft.Office.Interop.Excel.Worksheet xlsWorkSheet = null;
+
+        //try
+        //{
+        //    xlsApp = new Microsoft.Office.Interop.Excel.ApplicationClass();
+        //    xlsWorkBook = xlsApp.Workbooks.Add(misValue);
+        //    xlsWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlsWorkBook.Sheets["sheet1"];
+        //    xlsWorkSheet.Shapes.AddPicture(cgm, MsoTriState.msoFalse, MsoTriState.msoTrue, 50, 50, width, height);
+        //    xlsWorkSheet.Shapes.Item(0).Copy();
+        //    //_mImage = System.Windows.Forms.Clipboard.GetImage();
+        //}
+        //catch (Exception e)
+        //{
+        //    throw (e);
+        //}
+        //finally
+        //{
+        //    xlsApp.DisplayAlerts = false;
+        //    xlsApp.Quit();
+        //    releaseObject(xlsWorkSheet);
+        //    releaseObject(xlsWorkBook);
+        //    releaseObject(xlsApp);
+        //}
+        //string sourcePath = @"C:\www";
+        //string targetPath = @"C:\my\dir";
+        //string fileName = string.Empty;
+        //string destFile = string.Empty;
+        //if (!Directory.Exists(@"C:\my\dir")) Directory.CreateDirectory(@"C:\my\dir");
+        //string[] files = System.IO.Directory.GetFiles(sourcePath);
+        //foreach (var item in files)
+        //{
+        //    fileName = System.IO.Path.GetFileName(item);
+        //    destFile = System.IO.Path.Combine(targetPath, fileName);
+        //    System.IO.File.Copy(item, destFile, true);
+        //}
+        #endregion
+
+        //Get The File And Start Reading Line By Line.
+        //string Sourcepath = @"D:\Office Project\FIle Manager Qatar\SGML File\SGMLTech_AMM_A318_A319_A320_A321_01_May_2015_QTR\Part_1\SGML\AMM.SGM";
+        //string[] files = Directory.GetFiles(Sourcepath);
+        /////But make Sure it is always 1 File
+        //foreach (var item in files)
+        //{
+        //    string readFile = System.IO.File.ReadAllText(item);
+
+        //}
+
+        //Lets read Cmop File First ... Lets See WEhat is Inside
+
+        //http://www.dotnetcurry.com/showarticle.aspx?ID=105
+        //FileStream fs1 = null;
+        //BinaryReader br = null;
+        //try
+        //{
+        //    fs1 = new FileStream(@"D:\Office Project\FIle Manager Qatar\SGML File\SGMLTech_AMM_A318_A319_A320_A321_01_May_2015_QTR\Part_1\CGM\Rakesh\n_mm_052120_6_aam0_01_00.cgm", FileMode.Open);
+        //    br = new BinaryReader(fs1);
+        //    string str1;
+        //    str1 = br.ReadString();
+        //}
+        //catch (IOException ex)
+        //{
+
+        //}
+        //finally
+        //{
+        //    br.Close();
+        //    fs1.Close();
+        //}
+        #endregion
+        //var sourcePath = @"D:\Office Project\FIle Manager Qatar\SGML File\SGMLTech_AMM_A318_A319_A320_A321_01_May_2015_QTR\Part_1\SGML\AMM.SGM";
+        //var file = System.IO.Directory.GetFiles(sourcePa            //MagickImage image = new MagickImage("n_mm_052120_6_aam0_01_00.cgm");
+        //image.Write("n_mm_052120_6_aam0_01_00.pdf");th);
+        //MagickImage image = new MagickImage("n_mm_052120_6_aam0_01_00.cgm");
+        //image.Write("n_mm_052120_6_aam0_01_00.pdf");
+        #endregion
+
+        private void releaseObject(object obj)
+        {
+            try
+            {
+                System.Runtime.InteropServices.Marshal.ReleaseComObject(obj);
+                obj = null;
+            }
+            catch (Exception ex)
+            {
+                obj = null;
+            }
+            finally
+            {
+                GC.Collect();
+            }
+        }
+    }
+}
+
