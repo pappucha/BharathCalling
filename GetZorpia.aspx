@@ -515,3 +515,5 @@ Well if you are going to use asp.net mvc 5 . I would recommend to have a boot st
 
 
 http://www.users.cloud9.net/~bradmcc/WhatIsSGML.html
+
+https://kalpagunaratna.wordpress.com/2013/10/07/my-experience-in-processing-sgml-files-in-java-and-some-issues-with-parsing/
