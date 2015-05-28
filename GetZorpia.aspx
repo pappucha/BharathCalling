@@ -462,4 +462,52 @@ http://www.jclark.com/jade/
 http://code.openhub.net/search?s=.sgml&pp=0&fp=135440&mp=1&ml=0&me=1&md=1&ff=1&filterChecked=true
 
 
+-----------------------28-05-2015---------------------------------------------------------------------------------------------
+http://archive1.village.virginia.edu/dvp4c/sgmlintr.htm
 
+http://www.xmlgrrl.com/publications/DSDTD/ch01.html
+
+http://www.moneycontrol.com/mccode/common/get_pricechart_div.php?bse_id=Y&nse_id=Y&sc_id=544d34&BNsetick=01.345|52.345&ins=&sc_mapindex=19
+
+http://www.nseindia.com/homepage/Indices1.json
+
+
+http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxGetQuoteJSON.jsp?symbol='TECHM'&series=''
+http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/ajaxPeerCompanies.jsp?symbol=TECHM
+
+http://www.nseindia.com/live_market/dynaContent/live_analysis/slbs_chain/chainDataBySeries.jsp
+
+
+loadIndicesData();getNifty();getTopGainersData(); VM699
+
+
+http://www.nseindia.com/marketinfo/sym_map/symbolMapping.jsp?symbol=TECHM&instrument=-&date=-&segmentLink=17&symbolCount=2
+
+
+http://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TECHM&instrument=FUTSTK&expiry=28MAY2015&type=-&strike=-","otherSeries":
+
+["EQ"],"lastUpdateTime":"28-MAY-2015 14:12:55","tradedDate":"28MAY2015",
+
+
+
+
+
+http://sourceforge.net/p/openjade/mailman/message/31230483/  (Final Try)
+http://www.jclark.com/jade/
+
+http://code.openhub.net/search?s=.sgml&pp=0&fp=135440&mp=1&ml=0&me=1&md=1&ff=1&filterChecked=true
+
+HI Team, 
+
+I can deinetely do your work in your specified time.i have good exposure on HTML,ASP.NET,VB.NET,CSS,Ajax,C#,WCF,SQL,JavaScript,DNN(DotNetNuke),Linq,Jquery,javascript,Boot Strap,Telerik Control’s,Ajax Json,Web Services.Entity Frame Work, VS 3.0, 4.0,MVC 5,CRUD Operations,Telerik Control’s.SQLServer2008,Jquery Footer,Angular Js,Oracle 11G (Toad),Sql Server Profiler 2008.
+
+
+
+You can reach me at skype: rakesh.chaubey1
+Qatar:+97450094977
+
+
+I have good exposure on telerik controls.And did worked with client from west. So have a good command over the language. And as far as concern about the hours. I can spend 5 hours a day max.And definitely more on weekends. Do let me know if you need to have a skype rounf before assigning the project or want to see a demo. 
+
+
+Well if you are going to use asp.net mvc 5 . I would recommend to have a boot strap front end implementation. Since it will give your UI a real good life.And it would be very responsive . 
