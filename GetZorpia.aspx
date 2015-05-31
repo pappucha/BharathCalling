@@ -1068,3 +1068,10 @@ namespace RipSgml
     }
 }
 
+----------------------------------------------------31/05/2015---------------------------------------------------
+
+https://www.screener.in/screens/new/?query=Net+Profit+latest+quarter+%3E+0+AND%0D%0ANet+Profit+preceding+year+quarter+%3C%3D+0+AND%0D%0AExpected+quarterly+net+profit+%3E+0+AND%0D%0ASales+latest+quarter+%3E+Sales+preceding+year+quarter+AND%0D%0ADebt+%3C%3D+1&latest=on&sort=YOY+Quarterly+profit+growth&order=desc#/top
+
+Install the windows version on the tab: http://download.vistair.com/DocuNet-Viewer/
+
+Instructions: http://download.vistair.com/DocuNet-Viewer/Guides/DocuNet-Viewer-Windows.pdf
