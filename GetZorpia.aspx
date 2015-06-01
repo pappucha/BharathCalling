@@ -1075,3 +1075,41 @@ https://www.screener.in/screens/new/?query=Net+Profit+latest+quarter+%3E+0+AND%0
 Install the windows version on the tab: http://download.vistair.com/DocuNet-Viewer/
 
 Instructions: http://download.vistair.com/DocuNet-Viewer/Guides/DocuNet-Viewer-Windows.pdf
+
+
+--------------------------------------------------------------------------------------01/06/2015//////////////--------------
+
+
+
+
+santhosh scripguru
+
+
+People to keep eye on 
+anand24243
+
+http://mmb.moneycontrol.com/india/messageboard/profile.php?user_id=414e414e443234323433
+
+At present (as on 17th June 2014) I can Rembr these 20 cos , which Look promising for Investments for 6-9 months Time Horizon 
+In Pharma Space , Aurobindo P at Rs 702 , Torrent P at Rs 671 , Ajanta P at Rs 1343 
+In Auto Ancillary Space , JBM Auto Rs 268 , Ahmednagar Forging at Rs 352 , Amtek Auto at Rs 241
+In Textile Sector , Welspun India at Rs 177 n Trident at Rs 23 
+In Mid cap space , Sintex at Rs 90 , Shakti Pumps at Rs 175
+In small cap category , Premco Global at Rs 88 , Oriental Carbon at Rs 215 ,HEG at Rs 274 , Shilpi Cable at Rs 52 
+In Infra space , ARSS Infra 
+In PSU , PTC India at Rs 91 , REC at Rs 344 , PFC at Rs 294 , MOIL at Rs 314 , GMDC at Rs 163
+
+Fresh additions on 20 June
+IFGL Refractory at Rs 139 , Indiabulls Housing Finance at Rs 365 ,361 , MM Forgings at Rs 172 , United Bank at Rs 45
+
+
+http://www.poormanportfolio.com/tag/anand24243-multibaggers/
+
+Marksans Pharma
+
+Suryachakra power
+
+http://www.quora.com/What-are-the-best-stocks-to-invest-for-2015-in-BSE-or-NSE
+
+
+http://www.softquad.com./
