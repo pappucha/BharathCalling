@@ -1113,3 +1113,77 @@ http://www.quora.com/What-are-the-best-stocks-to-invest-for-2015-in-BSE-or-NSE
 
 
 http://www.softquad.com./
+0-------------------------02/06/2015---------------------------------------------------
+
+
+santhosh scripguru
+
+
+People to keep eye on 
+anand24243
+juwel110
+
+http://mmb.moneycontrol.com/india/messageboard/profile.php?user_id=414e414e443234323433
+
+At present (as on 17th June 2014) I can Rembr these 20 cos , which Look promising for Investments for 6-9 months Time Horizon 
+In Pharma Space , Aurobindo P at Rs 702 , Torrent P at Rs 671 , Ajanta P at Rs 1343 
+In Auto Ancillary Space , JBM Auto Rs 268 , Ahmednagar Forging at Rs 352 , Amtek Auto at Rs 241
+In Textile Sector , Welspun India at Rs 177 n Trident at Rs 23 
+In Mid cap space , Sintex at Rs 90 , Shakti Pumps at Rs 175
+In small cap category , Premco Global at Rs 88 , Oriental Carbon at Rs 215 ,HEG at Rs 274 , Shilpi Cable at Rs 52 
+In Infra space , ARSS Infra 
+In PSU , PTC India at Rs 91 , REC at Rs 344 , PFC at Rs 294 , MOIL at Rs 314 , GMDC at Rs 163
+
+Fresh additions on 20 June
+IFGL Refractory at Rs 139 , Indiabulls Housing Finance at Rs 365 ,361 , MM Forgings at Rs 172 , United Bank at Rs 45
+
+
+http://www.poormanportfolio.com/tag/anand24243-multibaggers/
+
+Marksans Pharma
+
+Suryachakra power
+
+http://www.quora.com/What-are-the-best-stocks-to-invest-for-2015-in-BSE-or-NSE
+
+
+http://www.softquad.com./
+
+
+Bt Indosolar n Tata coffee
+
+
+From Large Cap , Yes Bank Rs 878 , ICICI Bank Rs 316 , HCL Tech Rs 973 , Tech Mah Rs 550 , Ashok Leyland Rs 72 , Tata Motors Dvr Rs 291 ,Bharat Forge Rs 1209 
+
+From Mid n Small Cap , Aurobindo Pharma Rs 1361 , Ajanta P Rs 1618 , Torrent P Rs 1221 Container Corp Rs 1774 , Kaveri Seeds Rs 930 ,Gujarat Pipavav Rs 215 , Excel Ind 271 , Excel Crop Rs 801 ,Welspun Corp Rs 81 , Sintex Rs 108 ,MM 
+
+Forging Rs 650 ,Cupid Rs 89 ,JK Tyre Rs 108 , CEAT Rs 785 ,Just Dial Rs 1139 ,Tata Coffee Rs 89 , UPL Rs 543
+
+From Fast Moving small caps GIC Housing Rs 222 , Indiabull Housing Rs 608 , Wockhardt Rs 1474 ,Shreyas Ship Rs 688 , Premco Global Rs 420 , Kitex Rs 955 , Srikalahastha Pipes Rs 183 , Welspun India Rs 568 , Paushak Rs 590 , Veljan 
+
+Denison Rs 513 , Kesar Terminal Rs 401 , Garware Wall Ropes Rs 200 ,Astec Life Rs 180 , Coral Lab Rs 344 ,Indian Terrain Rs 660
+
+Pls select 5-6 yur own stocks depending on yur Risk Profile , All stocks are Subject to Qrtly Review on Result declarations , So book Profit/Loss b4 every Qrtly Result n thn wait for my Evaluation after Qrtly Results , Pls hv 5% stop 
+
+loss for all scrips 
+
+
+Premco Global , Welspun India , Kitex Garments ,Srikalahastha Pipes , are all having plenty of opportunities to multiply many times n even Shreyas Ship wil multiply many times , Wockhardt is Risky , (only for Risky players) , can also 
+
+multiply many times , n so is Lycos only for High Risk Players
+
+
+There are only 4 stocks in yur portfolio , Shreyas S n Kalahasthi , shud form max 40% n bal 60% distribute to welspun India , Kitex ,Welspun corp , Premco , Paushak , Astec Life , Garware Wall Ropes n ensure Lycos dnt exceed 10% of 
+
+portfolio , n sorry for morepen I dnt track it
+
+
+Bro ,Aurobindo P is a large Cap Pharma Co wit ever Improving fundamentals , Pls Continue to hold , I think Nw very few ppl wil rembr that I gave a Reco on Aurobindo P at Rs 380 around Dec 2013 , wit a Target Rs 1000 without Any Ifs n 
+
+Buts , It was within 2 months of my Reco that Auro reported bumper profits n an Quarterly Earnings of Rs 14 , after seeing that qrtly result , all ppl got bullish after me , Very fond memories this stock gives me , Nw its around Rs 1400 
+
+, I wish MMB System comes wit some system so that my those best old msgs n Recos can b stored n visible to all , Crest bhai asked me to study Aurobindo P n Alembic Pharma , I studied them for 2 days in my free time , n posted Auro wil 
+
+reach Rs 1000 from Rs 380 n Alembic P wil touch Rs 400 from Rs 200 within 1 year , n also that Auro has a Better chance of doubling than as compared Alembic P , Extremely fond memories nw Alembic P is above Rs 500
+
+Invets in welspun ind, welspun corp, shreyas shipping, sripipe, astec life , garware ropes.
