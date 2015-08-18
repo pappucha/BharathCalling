@@ -1187,3 +1187,12 @@ Buts , It was within 2 months of my Reco that Auro reported bumper profits n an 
 reach Rs 1000 from Rs 380 n Alembic P wil touch Rs 400 from Rs 200 within 1 year , n also that Auro has a Better chance of doubling than as compared Alembic P , Extremely fond memories nw Alembic P is above Rs 500
 
 Invets in welspun ind, welspun corp, shreyas shipping, sripipe, astec life , garware ropes.
+
+
+Hello Arvind Bajaj, Can you give me your opinion for the long term basis for the following script .
+1) Gufic Biosicence cmp 30.40
+2) Gayatri Projects cmp 439.25
+3) Genus Power cmp 36.40
+4) GHCL cmp 121.95
+5) Mold-tek Packaging cmp 233.45
+6) Pitti Lamination cmp 67.30
