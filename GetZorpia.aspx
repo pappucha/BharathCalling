@@ -1196,3 +1196,11 @@ Hello Arvind Bajaj, Can you give me your opinion for the long term basis for the
 4) GHCL cmp 121.95
 5) Mold-tek Packaging cmp 233.45
 6) Pitti Lamination cmp 67.30
+
+
+
+
+http://www.moneycontrol.com/india/messageboard/my_msgs_rated_latest.php?pgno=2&user_id=617276696e64313531
+
+
+http://www.quora.com/What-is-the-best-way-to-learn-to-invest-in-the-stock-market
