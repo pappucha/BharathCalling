@@ -1,14 +1,1955 @@
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8"/>
-		<title>QueryExample</title>
-		
-	</head>
-	<body>
+<%@ Page Language="C#" MasterPageFile="~/Claims/InHouseTPAMaster.master" CodeFile="ClaimHomePage.aspx.cs"
+    Inherits="Claims_ClaimHomePage" Title="Claims Home Page" %>
 
-		
-		
-		
-	</body>
-</html>
+<%@ MasterType VirtualPath="~/Claims/InHouseTPAMaster.master" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Src="../UserControls/ucBottomLinks.ascx" TagName="ucBottomLinks" TagPrefix="uc1" %>
+<%@ Register Src="../UserControls/ucTimePicker.ascx" TagName="ucTimePicker" TagPrefix="uc1" %>
+<%@ Register Src="../UserControls/ucHospitalSearch.ascx" TagName="ucHospitalSearch"
+    TagPrefix="uc1" %>
+<%@ Register Src="../UserControls/ucAilmentSearch.ascx" TagName="ucAilmentSearch"
+    TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="InHouseTPAPlaceHolder" runat="Server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+    <script src="../Scripts/HealthCommonValidation.js" type="text/javascript"></script>
+    <script src="../Scripts/ClaimValidation/PreAuthandClaimIntimation.js" type="text/javascript"></script>
+    <style type="text/css">
+        .pgholder
+        {
+            width: 90% !important;
+            height: 100% !important;
+        }
+    </style>
+    <script>
+        function ValidateForm1() {
+            var Ctrls = "";
+            if (document.getElementById('<%=txtTempAilment.ClientID%>').value == "") {
+                Ctrls = "-- Ailment is missing";
+            }
+            if (document.getElementById('<%=txtHospitalName.ClientID%>').value == "") {
+                if (Ctrls != "") { Ctrls = Ctrls + "\n-- Hospital Name is missing"; } else Ctrls = Ctrls + "\n-- Hospital Name is missing";
+            }
+            if (document.getElementById('<%=txtDtTmOfAdmission.ClientID%>').value == "") {
+                if (Ctrls != "") { Ctrls = Ctrls + "\n-- Admission Date is missing"; } else Ctrls = Ctrls + "\n-- Admission Date is missing";
+            }
+            if (document.getElementById('<%=txtDtTmOfDischarge.ClientID%>').value == "") {
+                if (Ctrls != "") { Ctrls = Ctrls + "\n-- Discharge Date is missing"; } else Ctrls = Ctrls + "\n-- Discharge Date is missing";
+            }
+            if (document.getElementById('<%=txtClaimedAmount.ClientID%>').value == "" || document.getElementById('<%=txtClaimedAmount.ClientID%>').value == 0) {
+                if (Ctrls != "") { Ctrls = Ctrls + "\n-- Claimed Amount"; } else Ctrls = Ctrls + "\n-- Claimed Amount ";
+            }
+            if (document.getElementById('<%=txtAltEmailId.ClientID%>').value != "") {
+                if (!validateEmail(document.getElementById('<%=txtAltEmailId.ClientID%>').value)) {
+                    if (Ctrls != "") { Ctrls = Ctrls + "\n-- Invalid Alternate Email Id"; } else Ctrls = Ctrls + "-- Invalid Alternate Email Id";
+                }
+            }
+
+            var str1 = document.getElementById('<%=txtDtTmOfAdmission.ClientID%>').value;
+            var str2 = document.getElementById('<%=txtDtTmOfDischarge.ClientID%>').value;
+            var str3 = document.getElementById('<%=hdnPolicyStartDt.ClientID%>').value;
+            var str4 = document.getElementById('<%=hdnPolicyEndDt.ClientID%>').value;
+
+            if (document.getElementById('<%=txtDtTmOfAdmission.ClientID%>').value != "" &&
+             document.getElementById('<%=txtDtTmOfDischarge.ClientID%>').value != "") {
+                if (!compareDates(str1, str2)) {
+                    if (Ctrls != "") { Ctrls = Ctrls + "\n-- Admission Date should be less than Discharge Date"; } else Ctrls = Ctrls + "-- Admission Date should be less than Discharge Date";
+                }
+            }
+
+            if (document.getElementById('<%=txtDtTmOfAdmission.ClientID%>').value != "") {
+                if (!compareAdmissionWithPolicy(str1, str3, str4)) {
+                    if (Ctrls != "") { Ctrls = Ctrls + "\n-- Admission Date should be in between Policy Start and End date"; } else Ctrls = Ctrls + "-- Admission Date should be in between Policy Start and End date";
+                }
+            }
+
+
+            if (Ctrls != "") {
+                alert("Please check following data for validity ..\n" + Ctrls);
+                return false;
+            }
+        }
+
+        $(function () {
+            $('.x').click(function () {
+                //                $(".PaymentModeClass input:radio").removeAttr("checked");
+                $(".PaymentModeClass input:radio")[0].checked = true;
+                // $find("neftbehaviour").hide();
+                //return false;
+            });
+
+            //            $('#<%=btnAddNewNEFT.ClientID %>').click(function () {
+            //                $('#NEFTPaymentDetails').show();
+            //                return false;
+            //            });
+        });
+
+        function validateNEFTData() {
+            var payeename = $('#<%=txtPayeename.ClientID %>');
+            var AccountNo = $('#<%=txtAccountNo.ClientID %>');
+            var BankName = $('#<%=txtBankName.ClientID %>');
+            var BranchName = $('#<%=txtBranchName.ClientID %>');
+            var IFSCCode = $('#<%=txtIFSCCode.ClientID %>');
+            var PANNo = $('#<%=txtPANNo.ClientID %>');
+            var AccountType = $('#<%=rbAccountType.ClientID %>');
+            var PayeeMailID = $('#<%=txtPayeeMailID.ClientID %>');
+            var AccountType = $('.AccountTypeClass input:checked').val();
+            var alertlist = '';
+
+            if (payeename.val() == '') {
+                payeename.css('background-color', '#fef5ae');
+                alertlist = alertlist + '--> Please enter payee name\n';
+            }
+            else
+                payeename.css("background-color", 'white');
+
+            if (AccountNo.val() == '') {
+                AccountNo.css('background-color', '#fef5ae');
+                alertlist = alertlist + '--> Please enter account number\n';
+            }
+            else
+                AccountNo.css("background-color", 'white');
+
+            if (BankName.val() == '') {
+                BankName.css('background-color', '#fef5ae');
+                alertlist = alertlist + '--> Please enter bank name\n';
+            }
+            else
+                BankName.css("background-color", 'white');
+
+            if (BranchName.val() == '') {
+                BranchName.css('background-color', '#fef5ae');
+                alertlist = alertlist + '--> Please enter branch name\n';
+            }
+            else
+                BranchName.css("background-color", 'white');
+
+            if (IFSCCode.val() == '') {
+                IFSCCode.css('background-color', '#fef5ae');
+                alertlist = alertlist + '--> Please enter IFSC code\n';
+            }
+            else {
+                if (IFSCCode.val().length != 11) {
+                    IFSCCode.css('background-color', '#fef5ae');
+                    alertlist = alertlist + '--> IFSC code should be 11 character long\n';
+                }
+                else
+                    IFSCCode.css("background-color", 'white');
+            }
+
+            if (PANNo.val() != '') {
+                if (PANNo.val().length != 10) {
+                    PANNo.css('background-color', '#fef5ae');
+                    alertlist = alertlist + '--> PAN number should be 10 character long\n';
+                }
+                else
+                    PANNo.css("background-color", 'white');
+            }
+
+//            if (PANNo.val() == '') {
+//                PANNo.css('background-color', '#fef5ae');
+//                alertlist = alertlist + '--> Please enter PAN number\n';
+//            }
+//            else {
+//                if (PANNo.val().length != 10) {
+//                    PANNo.css('background-color', '#fef5ae');
+//                    alertlist = alertlist + '--> PAN number should be 10 character long\n';
+//                }
+//                else
+//                    PANNo.css("background-color", 'white');
+//            }
+            if (typeof (AccountType) == '' || typeof (AccountType) == 'undefined') {
+                alertlist = alertlist + '--> Please select an account type\n';
+            }
+
+            if (PayeeMailID.val() != '') {
+                if (validateEmail(PayeeMailID.val()) == false) {
+                    PayeeMailID.css('background-color', '#fef5ae');
+                    alertlist = alertlist + '--> Please enter valid mail id\n';
+                }
+                else
+                    PayeeMailID.css("background-color", 'white');
+            }
+            if (alertlist != '') {
+                alert(alertlist);
+                return false;
+            }
+        }
+
+        $(document).ready(function () {
+            var roleid = $('#<%=hdnRoleID.ClientID %>').val();
+            if (!(roleid == 3 || roleid == 12)) {
+                $('#<%=panelPaymentMode.ClientID %> :input').attr("disabled", true);
+                $('#<%=btnEditNEFTDetail.ClientID %>').hide();
+                if ($('.PaymentModeClass input:checked').val() == "NEFT") {
+                    var accno = $('#<%=lblNEFTAccountno.ClientID %>').html();
+                    var newaccno = '';
+                    for (var i = 0; i < accno.length; i++) {
+                        newaccno = newaccno + 'X';
+                    }
+                    $('#<%=lblNEFTAccountno.ClientID %>').html(newaccno);
+                }
+            }
+        });
+
+//        
+
+//        function CheckPaymentMode() {
+//                //Check if the NEFT option is checked
+////                if ($('.PaymentModeClass input:checked').val() != "NEFT") {
+////                    return false;
+////                }
+//        }
+    </script>
+    <style type="text/css">
+        #overlay
+        {
+            /*filter: alpha(opacity=70);
+            -moz-opacity: 0.7;
+            -khtml-opacity: 0.7;
+            opacity: 0.7;
+            height: 541px;
+            width: 1583px;
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            z-index: 1001;
+            background-color: #000;
+            display: none;*/
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            filter: alpha(opacity=70);
+            -moz-opacity: 0.7;
+            -khtml-opacity: 0.7;
+            opacity: 0.7;
+            z-index: 100;
+            /* display: none;*/
+        }
+        .content a
+        {
+            text-decoration: none;
+        }
+        .popup
+        {
+            width: 100%;
+            height: 700px;
+            margin: 0 auto;
+              /* display: none;*/
+            position: absolute;
+            z-index: 101;
+        }
+        .content
+        {
+            background-color: rgb(255, 255, 255);
+            border-color: rgb(255, 255, 255);
+            padding: 0px;
+            height: 300px;
+            position: fixed;
+            z-index: 1002;
+            width: 800px;
+            left: 30%;
+            top: 25%;
+            background: #f3f3f3;
+            box-shadow: 0 2px 5px #000;
+            border-radius: 5px; /*
+            min-width: 600px;
+            width: 600px;
+            min-height: 150px;
+            margin: 100px auto;
+            background: #f3f3f3;
+            position: fixed;
+            z-index: 103;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px #000;*/
+        }
+        .content p
+        {
+            clear: both;
+            color: #555555;
+            text-align: justify;
+        }
+        .content p a
+        {
+            color: #d91900;
+            font-weight: bold;
+        }
+        .content .x
+        {
+            float: right;
+            height: 35px;
+            left: 22px;
+            position: relative;
+            top: -25px;
+            width: 34px;
+        }
+        .content .x:hover
+        {
+            cursor: pointer;
+        }
+    </style>
+    <table class="table05" width="100%">
+        <tr>
+            <td style="height: 18px" class="tdRed">
+                Claims - Home Page
+            </td>
+        </tr>
+    </table>
+    <div id="lightbox" class="lightbox">
+        <p align="center" style="background-color: White; float: right; margin: 2px;">
+            <span id="close-panel" href="#">Close this window</span>
+        </p>
+        <div id="lightbox-panel" class="lightbox-panel">
+            <iframe id="MyIFrame" src="" runat="server" style="overflow: no-scroll; width: 99%;
+                height: 800px !important"></iframe>
+        </div>
+    </div>
+   
+
+    <div class="mainDiv" style="background-color: #EBEBEB;">
+        <a id="show-panel" href="#">Show Panel</a><br />
+        <a id="show-vertical-panel" href="#">Show Vertical Panel</a>
+        <div id="divParentControl" runat="server">
+            <asp:Panel ID="MemberDetailPanel" GroupingText="Basic Info" runat="server" Width="100%"
+                CssClass="panel1">
+                <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                    <tr>
+                        <td style="text-align: right; font-weight: bold;">
+                            <asp:Label ID="lbltxtClaimNo" Text="Claim No" runat="server"></asp:Label>
+                            &nbsp;
+                            <asp:Label ID="lblClaimNo" runat="server"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; font-weight: bold;">
+                            <asp:Label ID="lblMessage" Text="" runat="server"></asp:Label>
+                            <asp:HiddenField ID="hdnRoleID" runat="server" />
+                        </td>
+                    </tr>
+                </table>
+                <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblInsuredName" runat="server" Text="Insured/Patient Name"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtEmployeeName" runat="server" Width="250px" class="txtBackgroundGray"
+                                ViewStateMode="Enabled"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblVIPTag" runat="server" Text="VIP Tag "></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtVIPTag" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblPolicyNo" runat="server" Text="Policy Number"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:HiddenField ID="hdnPolicyStartDt" runat="server" />
+                            <asp:HiddenField ID="hdnPolicyEndDt" runat="server" />
+                            <asp:HiddenField ID="hdnProposername" runat="server" />
+                            <asp:TextBox ID="txtPolicyNo" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblHdfcErgoId" runat="server" Text="HDFC ERGO ID"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtHdfcErgoId" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblProductName" runat="server" Text="Product Name"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtProductName" runat="server" Width="250px" 
+                                class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblProductCode" runat="server" Text="Product Code"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtProductCode" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblPolicySDate" runat="server" Text="Policy Start Date"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtPolicySDate" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblPolicyEDate" runat="server" Text="Policy End Date "></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtPolicyEDate" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblAgeDob" runat="server" Text="Age / DOB"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtAge" runat="server" Width="70px" class="txtBackgroundGray"></asp:TextBox>
+                            <asp:TextBox ID="txtDob" runat="server" Width="70px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblSex" runat="server" Text="Gender "></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtSex" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblCorporateName" runat="server" Text="Corporate Name"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtCorporateName" runat="server" Width="150px" class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblEmpId" runat="server" Text="Employee Id / Grade"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtEmpId" runat="server" Width="70px" 
+                                class="txtBackgroundGray"></asp:TextBox>
+                            <asp:TextBox ID="txtEmpGrade" runat="server" Width="70px" 
+                                class="txtBackgroundGray"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblAddress" runat="server" Text="Address &amp; Contact Details"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtAddress1" runat="server" class="txtBackgroundGray" 
+                                ReadOnly="True" Width="250px"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblState" runat="server" Text="State"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtState" runat="server" class="txtBackgroundGray" 
+                                ReadOnly="True" Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            &nbsp;</td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtAddress2" runat="server" class="txtBackgroundGray" 
+                                ReadOnly="True" Width="250px"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblCity" runat="server" Text="City"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtCity" runat="server" class="txtBackgroundGray" 
+                                ReadOnly="True" Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            &nbsp;</td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtAddress3" runat="server" class="txtBackgroundGray" 
+                                ReadOnly="True" Width="250px"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblPinCode" runat="server" Text="Pin Code"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtPinCode" runat="server" class="txtBackgroundGray" 
+                                ReadOnly="True" Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblContactNo" runat="server" Text="Contact No"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtContactNo" runat="server" MaxLength="10" 
+                                onkeypress="javascript:return fnNumericFieldValidation(event,this);" 
+                                Width="150px"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblAltContactNo" runat="server" Text="Alternate Contact No"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtAltContactNo" runat="server" MaxLength="10" 
+                                onkeypress="javascript:return fnNumericFieldValidation(event,this);" 
+                                Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblEmailId" runat="server" Text="E-Mail ID"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtEmailID" runat="server" class="txtBackgroundGray" 
+                                ReadOnly="True" Width="200px"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblAltEmailId" runat="server" Text="Alternate E-Mail ID"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtAltEmailId" runat="server" Width="200px"></asp:TextBox>
+                        </td>
+                    </tr>
+                </table>
+            </asp:Panel>
+            <asp:Panel ID="PanelHistory" GroupingText="Claim History" runat="server" Width="99%"
+                CssClass="panel1" Visible="False">
+                <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                    <tr>
+                        <td>
+                            <asp:GridView ID="gvPastHistory" runat="server" HeaderStyle-CssClass="gridViewHeader"
+                                AutoGenerateColumns="False" Width="100%">
+                                <Columns>
+                                    <asp:TemplateField HeaderText="Claim No">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtClaimNo" runat="server" Width="60px" ReadOnly="true" Value='<%# Eval("ClaimDate") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Patient Name">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtPatientName" runat="server" Width="60px" ReadOnly="true" Value='<%# Eval("POLICYCONTINUEDFOR") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Policy Continued For">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtPolicyContinuedFor" runat="server" Width="80px" ReadOnly="true"
+                                                Value='<%# Eval("PATIENTNAME") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Date of Admission">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtAdmissionDate" runat="server" Width="80px" ReadOnly="true" Value='<%# Eval("ADMISSIONDATE") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Hospital Name">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtHospitalName" runat="server" Width="80px" ReadOnly="true" Value='<%# Eval("HOSPITALNAME") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Location">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtLocation" runat="server" Width="60px" ReadOnly="true" Value='<%# Eval("LOCATION") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Ailment Name">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtAilmentName" runat="server" Width="60px" ReadOnly="true" Value='<%# Eval("AILMENTNAME") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Claimed Amount">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtClaimedAmount" runat="server" Width="60px" ReadOnly="true" Value='<%# Eval("CLAIMEDAMOUNT") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Amount Paid">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtAmountPaid" runat="server" Width="60px" ReadOnly="true" Value='<%# Eval("AMOUNTPAID") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Status">
+                                        <ItemTemplate>
+                                            <asp:Label ID="txtStatus" runat="server" Width="60px" ReadOnly="true" Value='<%# Eval("STATUS") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                                <HeaderStyle CssClass="gridViewHeader" />
+                            </asp:GridView>
+                        </td>
+                    </tr>
+                </table>
+            </asp:Panel>
+            <asp:Panel ID="HosptalizationPanel" GroupingText="Hospitalization Details" runat="server"
+                Width="100%" CssClass="panel1">
+                <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblHospitalName" runat="server" Text="Hospital Name"></asp:Label>
+                            &nbsp;<span style="color: #ff0000">*</span>
+                        </td>
+                        <td style="width: 25%;padding-left:0px;">
+                        <table cellspacing="0" cellpadding="0" width="80%">
+                         <tr>
+                           <td style="width: 75%;padding-left:0px;">
+                              <textarea ID="txtHospitalName" rows="3" runat="server"  cols="5"
+                                style="width:230px;" disabled="disabled"></textarea>
+                           </td>
+                           <td style="width: 25%">
+                            <asp:HiddenField ID="hdnNSPHospitalId" runat="server" Value="0"></asp:HiddenField>
+                            <uc1:ucHospitalSearch ID="ucHospitalSearch" runat="server" />
+                           </td>
+                         </tr>
+                        </table>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblTempAilment" runat="server" Text="Ailment as per discharge card"></asp:Label>
+                            &nbsp;<span style="color: #ff0000">*</span>
+                        </td>
+                        <td style="width: 25%">
+                            <textarea ID="txtTempAilment"  rows="3" cols="5" runat="server" 
+                                style="width:230px;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <%-- <td>
+                        <asp:Label ID="lblTempAilment" runat="server" Text="Ailment as per discharge card"></asp:Label>
+                    </td>
+                    <td colspan="3">
+                        <asp:TextBox ID="txtTempAilment" runat="server" Width="150px"></asp:TextBox>
+                    </td>--%>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblHospitalAddress" runat="server" Text="Hospital Address"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospitalAdd1" runat="server" CssClass="txtBackgroundGray" 
+                                ReadOnly="True" Width="230px"></asp:TextBox>
+                        </td>
+                        <td>
+                            <asp:Label ID="lblHospitalLocation" runat="server" Text="Hospital Location"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospLocation" runat="server" CssClass="txtBackgroundGray" 
+                                ReadOnly="True" Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >
+                            &nbsp;
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospitalAdd2" runat="server" CssClass="txtBackgroundGray" 
+                                ReadOnly="True" Width="230px"></asp:TextBox>
+                        </td>
+                        <td>
+                            <asp:Label ID="lblHospContactNo" runat="server" Text="Contact No"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospContactNo" runat="server" CssClass="txtBackgroundGray" ReadOnly="True" Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospitalAdd3" runat="server" CssClass="txtBackgroundGray" ReadOnly="True"
+                                Width="230px"></asp:TextBox>
+                        </td>
+                        <td>
+                            <asp:Label ID="lblHospitalState" runat="server" Text="Hospital State"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospState" runat="server" CssClass="txtBackgroundGray" ReadOnly="True"
+                                Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblHospCity" runat="server" Text="Hospital City"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospCity" runat="server" CssClass="txtBackgroundGray"
+                                ReadOnly="True" Width="230px"></asp:TextBox>
+                        </td>
+                        <td>
+                            <asp:Label ID="lblHospPinCode" runat="server" Text="Hospital Pin Code"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtHospPinCode" runat="server" CssClass="txtBackgroundGray" ReadOnly="True"
+                                Width="150px"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblAuthorizeAmount" runat="server" Text="Authorize Amount " Visible="false"></asp:Label>
+                        </td>
+                        <td style="width: 25">
+                            <asp:TextBox ID="txtAuthorizeAmount" runat="server" Width="150px" CssClass="txtBackgroundGray" ReadOnly="True"
+                                Visible="false"></asp:TextBox>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblClaimedAmount" runat="server" Text="Claimed Amount"></asp:Label>
+                            &nbsp;<span style="color: #ff0000">*</span>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtClaimedAmount" runat="server" Width="150px" MaxLength="11" onkeypress="javascript:return fnNumericFieldValidation(event,this);"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblDtTmOfAdmission" runat="server" Text="Date of Admission"></asp:Label>
+                            &nbsp;<span style="color: #ff0000">*</span>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:TextBox ID="txtDtTmOfAdmission" runat="server" Width="150px" onkeypress="javascript:return fnDate(event);"></asp:TextBox>
+                            <asp:ImageButton ID="btnDtTmOfAdmission" runat="server" ImageUrl="~/Images/calendar.gif" />
+                            <cc1:CalendarExtender ID="calDtTmOfAdmission" Format="dd/MM/yyyy" runat="server"
+                                PopupButtonID="btnDtTmOfAdmission" PopupPosition="TopLeft" CssClass="MyCalendar"
+                                TargetControlID="txtDtTmOfAdmission">
+                            </cc1:CalendarExtender>
+                            <asp:HiddenField ID="hdnLengthOfStay" runat="server" Value="0" />
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblDtTmOfDischarge" runat="server" Text="Date of Discharge "></asp:Label>
+                            &nbsp;<span style="color: #ff0000">*</span>
+                        </td>
+                        <td style="width: 25">
+                            <asp:TextBox ID="txtDtTmOfDischarge" runat="server" Width="150px" RoleID="Auditor,CMO"
+                                onkeypress="javascript:return fnDate(event);"></asp:TextBox>
+                            <asp:ImageButton ID="btnDtTmOfDischarge" runat="server" ImageUrl="~/Images/calendar.gif" />
+                            <cc1:CalendarExtender ID="calDtTmOfDischarge" Format="dd/MM/yyyy" runat="server"
+                                PopupButtonID="btnDtTmOfDischarge" CssClass="MyCalendar" TargetControlID="txtDtTmOfDischarge">
+                            </cc1:CalendarExtender>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblTimeOfAdmission" runat="server" Text="Time of Admission"></asp:Label>
+                        </td>
+                        <td style="width: 25%">
+                            <uc1:ucTimePicker ID="ucAdmissionTime" runat="server" />
+                            <%-- <asp:TextBox ID="txtTimeOfAdmission" runat="server" RoleID="Auditor,CMO" Width="150px" ></asp:TextBox>--%>
+                            <%-- <asp:DropDownList ID="drpAdmHr" runat="server" Width="50px">
+                        </asp:DropDownList>
+                        <asp:DropDownList ID="drpAdmMin" runat="server" Width="50px">
+                        </asp:DropDownList>--%>
+                        </td>
+                        <td style="width: 25%">
+                            <asp:Label ID="lblTmOfDischarge" runat="server" Text="Time of Discharge "></asp:Label>
+                        </td>
+                        <td style="width: 25">
+                            <uc1:ucTimePicker ID="ucDischargeTime" runat="server" />
+                            <%--<asp:TextBox ID="txtTimeOfDischarge" runat="server" RoleID="Auditor,CMO" Width="150px"></asp:TextBox>--%>
+                            <%--<asp:DropDownList ID="drpDischargeHr" runat="server" Width="50px">
+                        </asp:DropDownList>
+                        <asp:DropDownList ID="drpDischargeMin" runat="server" Width="50px">
+                        </asp:DropDownList>--%>
+                        </td>
+                    </tr>
+                </table>
+            </asp:Panel>
+            <asp:Panel ID="panelPaymentMode" GroupingText="Payment Mode" runat="server" Width="100%"
+                CssClass="panel1">
+                <div style="padding: 2px 2px 2px 2px; margin: 2px 0px 2px 0px; background-color:#f8f8f8;width:98.75%">
+                    <asp:RadioButtonList ID="rbPaymentMode" class="PaymentModeClass" runat="server" RepeatColumns="2"
+                        OnSelectedIndexChanged="rbPaymentMode_SelectedIndexChanged" AutoPostBack="True">
+                        <asp:ListItem Text="Default payment mode as per corporate setup" Value="DEFAULTPAYMENTMODE"
+                            Selected="True"></asp:ListItem>
+                        <asp:ListItem Text="NEFT payment to customer" Value="NEFT"></asp:ListItem>
+                    </asp:RadioButtonList>
+                </div>
+                <asp:UpdatePanel ID="updClaimNEFTDetail" runat="server">
+                    <ContentTemplate>
+                        <div id="divClaimNEFTDetail" runat="server" visible="false">
+                            <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                                <tr>
+                                    <td style="width: 25%">
+                                        Payee Name
+                                    </td>
+                                    <td style="width: 25%">
+                                        <asp:Label ID="lblNEFTPayeeName" runat="server"></asp:Label>
+                                        <asp:HiddenField ID="hdnNEFTCode" runat="server" />
+                                    </td>
+                                    <td style="width: 25%">
+                                        Account Number</td>
+                                    <td style="width: 25%">
+                                        <asp:Label ID="lblNEFTAccountno" runat="server"></asp:Label>
+                                        <asp:HiddenField ID="hdnisVarified" runat="server" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Bank Name
+                                    </td>
+                                    <td>
+                                        <asp:Label ID="lblNEFTBankName" runat="server"></asp:Label>
+                                    </td>
+                                    <td>
+                                        Branch Name</td>
+                                    <td>
+                                        <asp:Label ID="lblNEFTBranchName" runat="server"></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        IFSC Code
+                                    </td>
+                                    <td>
+                                        <asp:Label ID="lblNEFTIFSCCode" runat="server"></asp:Label>
+                                    </td>
+                                    <td>
+                                        PAN Number</td>
+                                    <td>
+                                        <asp:Label ID="lblNEFTPANNumber" runat="server"></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Account Type
+                                    </td>
+                                    <td>
+                                        <asp:Label ID="lblNEFTAccountType" runat="server"></asp:Label>
+                                    </td>
+                                    <td>
+                                        E-Mail ID</td>
+                                    <td>
+                                        <asp:Label ID="lblNEFTEmailID" runat="server"></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        &nbsp;</td>
+                                    <td>
+                                        &nbsp;</td>
+                                    <td>
+                                        &nbsp;</td>
+                                    <td>
+                                        <asp:LinkButton ID="btnEditNEFTDetail" runat="server"  Font-Bold="true" Font-Underline="true"
+                                            onclick="btnEditNEFTDetail_Click">Edit NEFT Details</asp:LinkButton>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div>
+                    <asp:UpdatePanel ID="updNEFTDetails" runat="server">
+                        <ContentTemplate>
+                            <cc1:ModalPopupExtender ID="ModalPopupNEFT" RepositionMode="None" BehaviorID="neftbehaviour"
+                                Drag="false" DropShadow="false" BackgroundCssClass="modalPopupBackground" TargetControlID="btnSearchProxy"
+                                PopupControlID="updNEFTDetails" CancelControlID="btnNEFTPopupClose" runat="server">
+                            </cc1:ModalPopupExtender>
+                            <asp:Button ID="btnSearchProxy" runat="server" Width="0" Enabled="false" CssClass="ucControl" />
+                            <div class="popup">
+                                <div class='content'>
+                                    <asp:ImageButton ID="btnNEFTPopupClose" runat="server" CssClass="x" ImageUrl="../Images/popupclose.jpg" />
+                                   <%-- <br />--%>
+                                    <asp:GridView ID="gvNEFTList" runat="server" Width="100%" HeaderStyle-CssClass="gridViewHeader"
+                                        AutoGenerateColumns="false">
+                                        <Columns>
+                                            <asp:TemplateField>
+                                                <ItemTemplate>
+                                                    <asp:RadioButton ID="btnSelectedNEFT" runat="server" AutoPostBack="true" OnCheckedChanged="btnSelectedNEFT_CheckedChanged" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="NEFT Code">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupNEFTCode" Text='<%# Eval("neftcodeid_var") %>' runat="server"></asp:Label>
+                                                    <asp:HiddenField ID="popupisVarified" runat="server"  Value='<%# Eval("isvarified_num") %>'/>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Payee Name">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupPayeeName" Text='<%# Eval("payeename_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Account No">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupAccountNo" Text='<%# Eval("accountno_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Account Type">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupAccountType" Text='<%# Eval("accounttype_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Bank Name">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupBankName" Text='<%# Eval("bankname_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Branch Name">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupBranchName" Text='<%# Eval("branchname_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="IFSC Code">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupIFSCCode" Text='<%# Eval("ifsccode_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="PAN No">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupPANNo" Text='<%# Eval("panno_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Email ID">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="popupEmailID" Text='<%# Eval("emailid_var") %>' runat="server"></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                        <HeaderStyle CssClass="gridViewHeader" />
+                                    </asp:GridView>
+                                    <br />
+                                    <div style="margin-left:10px">
+                                    <asp:LinkButton ID="btnAddNewNEFT" Font-Underline="true" runat="server" Text="Add New NEFT Detail" 
+                                        onclick="btnAddNewNEFT_Click"></asp:LinkButton></div>
+
+                                   <div id="NEFTPaymentDetails" runat="server" visible="false">
+                                    <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                                        <tr>
+                                            <td style="width: 25%">
+                                                Payee Name
+                                            </td>
+                                            <td style="width: 25%">
+                                                <asp:TextBox ID="txtPayeename" runat="server" Width="150px" MaxLength="100" onkeyPress="javascript:return fnNameFieldValidation(event);"></asp:TextBox>
+                                                <asp:HiddenField ID="hdnInsertMode" runat="server" />
+                                            </td>
+                                            <td style="width: 25%">
+                                                Account Number
+                                            </td>
+                                            <td style="width: 25%">
+                                                <asp:TextBox ID="txtAccountNo" runat="server" Width="150px" MaxLength="16" onkeyPress="javascript:return fnInetgerFieldValidation(event);"></asp:TextBox>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Bank Name
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="txtBankName" runat="server" Width="150px" MaxLength="100" onkeyPress="javascript:return fnNameFieldValidation(event);"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                Branch Name
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="txtBranchName" runat="server" Width="150px" MaxLength="100" onkeyPress="javascript:return fnNumberAlphaDashSpaceBackSpaceKey(event);"></asp:TextBox>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                IFSC Code
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="txtIFSCCode" runat="server" Width="150px" MaxLength="11" onkeyPress="javascript:return fnNumberAlphaDashSpaceBackSpaceKey(event);"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                PAN Number
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="txtPANNo" runat="server" Width="150px" MaxLength="10" onkeyPress="javascript:return fnNumberAlphaDashSpaceBackSpaceKey(event);" ></asp:TextBox>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Account Type
+                                            </td>
+                                            <td>
+                                                <asp:RadioButtonList ID="rbAccountType" runat="server" RepeatColumns="2" CssClass="AccountTypeClass">
+                                                    <asp:ListItem Text="Saving" Value="Saving"></asp:ListItem>
+                                                    <asp:ListItem Text="Current" Value="Current"></asp:ListItem>
+                                                </asp:RadioButtonList>
+                                            </td>
+                                            <td>
+                                                E-Mail ID
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="txtPayeeMailID" runat="server" Width="150px" onkeyPress="javascript:return fncEmailValidate(event);"></asp:TextBox>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                           <td colspan="4" style="text-align:center">
+                                              <asp:ImageButton ID="btnSaveNEFT" runat="server" ImageUrl="~/Images/savebtn.gif" OnClientClick="javascript:return validateNEFTData();"
+                                                   onclick="btnSaveNEFT_Click" />
+                                           </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                </div>
+                                
+                            </div>
+                        </ContentTemplate>
+                       <%-- <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="rbPaymentMode" EventName="SelectedIndexChanged" />
+                        </Triggers>--%>
+                    </asp:UpdatePanel>
+                   
+                </div>
+            </asp:Panel>
+        </div>
+         <asp:Panel ID="userRemarkPanel" GroupingText="User Remarks" runat="server" Width="100%"
+                        CssClass="panel1">
+                        <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                            <tr style="width: 100%;">
+                                <td style="width: 100%;">
+                                    <asp:GridView ID="gvRemark" runat="server" AutoGenerateColumns="False" Width="100%">
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="User Role">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblName" runat="server" Text='<%#Eval("ROLENAME") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle Width="10%" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="User Name">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblUserName" runat="server" Text='<%#Eval("USERNAME") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle Width="10%" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Date & Time">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblTimeStamp" runat="server" Text='<%#Eval("TIMESTAMP_DTE") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle Width="12%" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Remarks">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblRemark" runat="server" Text='<%#Eval("REMARKS_VAR") %>'></asp:Label>
+                                                </ItemTemplate>
+                                                <%--<HeaderStyle Width="55%" />--%>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                        <HeaderStyle CssClass="gridViewHeader" />
+                                    </asp:GridView>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+        <table class="table05">
+            <tr>
+                <td style="width: 90%; vertical-align: top;">
+                    <asp:Panel ID="remarkPanel" GroupingText="Processing Remarks" runat="server" Width="100%"
+                        CssClass="panel1">
+                        <table class="table06" width="100%" cellpadding="1" border="1" cellspacing="1">
+                            <tr>
+                            <td style="width: 20%;">
+                                <asp:Label ID="lblUsersRemark" runat="server" Text="User Remark" Visible="False"></asp:Label>
+                            </td>
+                            <td style="width: 80%;">
+                                <textarea id="txtUsersRemark"  cols="20" runat="server"
+                                    rows="7" style="width: 100%" visible="False"></textarea>
+                            </td>
+                        </tr>
+                        </table>
+                    </asp:Panel>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center">
+                    <asp:UpdatePanel ID="updButton" runat="server">
+                        <ContentTemplate>
+                            <asp:ImageButton ID="btnClose" runat="server" ImageUrl="~/Images/close.gif" OnClick="btnClose_Click"
+                                Visible="False" />
+                            &nbsp;<asp:ImageButton ID="btnSave" runat="server" ImageUrl="~/Images/savebtn.gif"
+                                OnClientClick="javascript:return ValidateForm1();" OnClick="btnSave_Click" Visible="False" />
+                            &nbsp;<asp:ImageButton ID="btnProceed" runat="server" ImageUrl="~/Images/proceedbtn.gif"
+                                OnClick="btnProceed_Click" OnClientClick="javascript:return ValidateForm1();"
+                                Visible="False" />
+                            <asp:ImageButton ID="btnViewNext" runat="server" ImageUrl="~/Images/nextbtn.gif"
+                                OnClick="btnViewNext_Click" Visible="False" />
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </td>
+            </tr>
+            <tr>
+                <td style="height: 18px; text-align: center">
+                    <uc1:ucBottomLinks ID="ucBottomLinks" runat="server" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</asp:Content>
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Data;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using Claim_WCFService;
+using NSPWCFService;
+
+public partial class Claims_ClaimHomePage : System.Web.UI.Page
+{
+    static string strHDFCCardNo, strPolicyNo;
+    protected void Page_PreInit(object sender, EventArgs e)
+    {
+        Master.MasterTabName = "NAME";
+        Master.MasterTabUrl = "NavigateURL";
+        Master.MasterSelectedTab = "1";
+        Master.IsTab = true;
+
+        Master.MasterBindTab();
+    }
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        ucBottomLinks.ClaimType = "Health";
+        ucHospitalSearch.SelectButtonClick += new EventHandler(HospitalData_Selected);
+        //ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "alert2", "<script>enableControlforNonMedico('" + hdnRoleID.ClientID + "','" + txtTempAilment.ClientID + "')</script>", false);
+        //ucAilmentSearch.SelectButton += new EventHandler(AilmentData_Selected);
+        if (!IsPostBack)
+        {
+            //calls method to get number of days from Admission date and Discharge date
+            txtDtTmOfDischarge.Attributes.Add("onchange", "GetDaysDiff('" + txtDtTmOfAdmission.ClientID + "','" + txtDtTmOfDischarge.ClientID + "','" + hdnLengthOfStay.ClientID + "')");
+            txtDtTmOfAdmission.Attributes.Add("onchange", "GetDaysDiff('" + txtDtTmOfAdmission.ClientID + "','" + txtDtTmOfDischarge.ClientID + "','" + hdnLengthOfStay.ClientID + "')");
+
+            hdnRoleID.Value = Session["RoleID"].ToString();
+            // Disable all Control in page other than remarks and [Agree And Disagree] button for Auditor
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "alert1", "<script>disableControlforAuditor('" + hdnRoleID.ClientID + "','" + divParentControl.ClientID + "')</script>", false);
+
+            ucAdmissionTime.loadHours();
+            ucAdmissionTime.loadMinutes();
+            ucAdmissionTime.loadSeconds();
+            ucDischargeTime.loadHours();
+            ucDischargeTime.loadMinutes();
+            ucDischargeTime.loadSeconds();
+
+            ClaimTransationDetails objClaimTransDetail = new ClaimTransationDetails();
+            ClaimTransactionClient objClaimTransClient = new ClaimTransactionClient();
+            string strClaimNo = string.Empty;
+            string strStatusId = string.Empty;
+            long longClaimRecNo;
+            long longContactRecNo;
+            long longMedicalRecNo;
+            if (Request.QueryString["ClaimNO"] != null)
+            {
+                strClaimNo = Request.QueryString["ClaimNo"].ToString();
+                objClaimTransDetail = objClaimTransClient.getClaimsTransDetails(strClaimNo);
+                if (objClaimTransDetail != null)
+                {
+                    objClaimTransDetail.RoleId_num = Convert.ToInt64(Session["RoleId"]);
+                    objClaimTransDetail.UserId_num = Convert.ToInt32(Session["UserID"]);
+                    if (!(string.IsNullOrEmpty(Request.QueryString["StatusCategory"])))
+                    {
+                        objClaimTransDetail.WORKFLOWID_NUM = Convert.ToInt32(Request.QueryString["StatusCategory"].ToString().Trim());
+                    }
+                    Session["ClaimTransactionDetail"] = objClaimTransDetail;
+                }
+            }
+            else
+            {
+                objClaimTransDetail = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+                strClaimNo = objClaimTransDetail.ClaimNo_Var;
+                strStatusId = Convert.ToString(objClaimTransDetail.STATUSID_NUM);
+            }
+
+            objClaimTransDetail = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+            longClaimRecNo = objClaimTransDetail.Claim_ClaimsDetail_Num;
+            longMedicalRecNo = objClaimTransDetail.Claim_MedicalDetails_Num;
+
+            MedicalDetailsClient objMedDetail = new MedicalDetailsClient();
+            MedicalDetails objMedicalList = new MedicalDetails();
+            if (Session["MedicalDetails"] == null)
+            {
+                objMedicalList = objMedDetail.getMedicalDetail(objClaimTransDetail.Claim_MedicalDetails_Num);
+                Session["MedicalDetails"] = objMedicalList;
+            }
+            else
+                objMedicalList = (MedicalDetails)Session["MedicalDetails"];
+
+
+            ClaimDetailsClient objClaim = new ClaimDetailsClient();
+            ClaimDetails objClaimList = new ClaimDetails();
+            if (Session["ClaimDetail"] != null)
+                objClaimList = (ClaimDetails)Session["ClaimDetail"];
+            else
+            {
+                objClaimList = objClaim.getClaimDetails(longClaimRecNo);
+                Session["ClaimDetail"]=objClaimList;
+            }
+
+            if (objClaimList != null)
+            {
+                strHDFCCardNo = objClaimList.HEGICCardNo_Var;
+                strPolicyNo = objClaimList.PolicyNo_Var;
+                hdnPolicyStartDt.Value = objClaimList.PolicyStartDate_DTE;
+                hdnPolicyEndDt.Value = objClaimList.policyEndDate_DTE;
+                Session["ClaimDetail"] = objClaimList;
+                lblClaimNo.Text = strClaimNo;
+                txtEmployeeName.Text = objClaimList.PatientName_Var;
+                txtVIPTag.Text = objClaimList.VIPTag_Num.ToString();
+                txtPolicyNo.Text = objClaimList.PolicyNo_Var;
+                txtHdfcErgoId.Text = objClaimList.HEGICCardNo_Var;
+                txtPolicySDate.Text = objClaimList.PolicyStartDate_DTE;
+                txtPolicyEDate.Text = objClaimList.policyEndDate_DTE;
+                txtAge.Text = objClaimList.patientAge_num.ToString();
+                txtDob.Text = objClaimList.PatientDOB_DTE;
+                txtSex.Text = objClaimList.PatientGender_Num.ToString() == "0" ? "Female" : "Male";
+                txtCorporateName.Text = objClaimList.CorporateName_Var;
+                txtEmpId.Text = objClaimList.EmployeeCode_Var;
+                txtProductName.Text = objClaimList.ProductName_Var;
+                txtProductCode.Text = Convert.ToString(objClaimList.ProductCode_Var);
+                txtHospitalName.InnerText = objClaimList.hospitalName_Var;
+                txtEmpGrade.Text = objClaimList.EmployeeGrade_Var;
+                hdnProposername.Value = (objClaimList.ProposerFName_Var + " " + objClaimList.ProposerLName_Var).Trim();
+                // To Visible Authorized AMount in case of Cashless Claim
+                if (objClaimTransDetail.WORKFLOWID_NUM == 2)
+                {
+                    // To Hide Save Button & Address Field in case of Cashless Claim
+                    ucHospitalSearch.FindControl("btnSaveHospital").Visible = false;
+                    ucHospitalSearch.FindControl("trAddress1").Visible = false;
+                    ucHospitalSearch.FindControl("trAddress2").Visible = false;
+                    ucHospitalSearch.FindControl("trAddress3").Visible = false;
+                    ((HiddenField)ucHospitalSearch.FindControl("hdnPolicyNo")).Value = objClaimList.PolicyNo_Var;
+                    ((HiddenField)ucHospitalSearch.FindControl("hdnARYTPolicy")).Value = objClaimList.ARYTPolicy_Var;
+                    ucHospitalSearch.setClaimTypeForSearch("CASHLESS");
+                    //hdnAuthorizeAmount.Value = objClaimList.authorizedAmount_num.ToString();
+                    txtAuthorizeAmount.Text = objClaimList.TotaAuthorizedAmount_Num.ToString();
+                    txtAuthorizeAmount.Visible = true;
+                    lblAuthorizeAmount.Visible = true;
+                    panelPaymentMode.Visible = false;
+                }
+                else if (objClaimList.isNEFTAllowed_Var == "N")
+                    panelPaymentMode.Visible = false;
+
+                hdnNSPHospitalId.Value = objClaimList.hospitalId_Var;
+                txtDtTmOfAdmission.Text = objClaimList.admissionDate_DTE;
+                txtDtTmOfDischarge.Text = objClaimList.dischargeDate_dte;
+                ucAdmissionTime.setTime(objClaimList.admissionTime_Time);
+                ucDischargeTime.setTime(objClaimList.dischargeTime_time);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "CalculateStayLength", "GetDaysDiff('" + txtDtTmOfAdmission.ClientID + "','" + txtDtTmOfDischarge.ClientID + "','" + hdnLengthOfStay.ClientID + "')", true);
+                //txtAilment.Text = objClaimList.ailmentName_var;
+                txtClaimedAmount.Text = objClaimList.approxClaimAmount_num.ToString();
+                txtProductName.Text = objClaimList.ProductName_Var;
+                txtProductCode.Text = Convert.ToString(objClaimList.ProductCode_Var);
+                txtTempAilment.InnerText = objClaimList.TempAilmentName_Var;
+                if (rbPaymentMode.Items.FindByValue(objClaimList.PaymentMode_Var) != null)
+                {
+                    rbPaymentMode.ClearSelection();
+                    rbPaymentMode.Items.FindByValue(objClaimList.PaymentMode_Var).Selected = true;
+                    AccountDetailsClient dbAccountDetails = new AccountDetailsClient();
+                    List<ClaimNEFTDetails> claimNEFTDetails = dbAccountDetails.getNEFTDetails(new ClaimNEFTDetails { EmpId_Var = txtEmpId.Text, Policyno_Var = txtPolicyNo.Text, neftcodeid_var = objClaimList.neftcode_var, Flag_Var = "INDNEFT" });
+                    dbAccountDetails.Close();
+                    if (claimNEFTDetails.Count > 0)
+                    {
+                        lblNEFTPayeeName.Text = claimNEFTDetails[0].payeename_var;
+                        lblNEFTAccountno.Text = claimNEFTDetails[0].accountno_var;
+                        lblNEFTAccountType.Text = claimNEFTDetails[0].accounttype_var;
+                        lblNEFTBankName.Text = claimNEFTDetails[0].bankname_var;
+                        lblNEFTBranchName.Text = claimNEFTDetails[0].branchname_var;
+                        lblNEFTIFSCCode.Text = claimNEFTDetails[0].ifsccode_var;
+                        lblNEFTPANNumber.Text = claimNEFTDetails[0].panno_var;
+                        lblNEFTEmailID.Text = claimNEFTDetails[0].emailid_var;
+                        hdnisVarified.Value = claimNEFTDetails[0].isvarified_num;
+                        if (claimNEFTDetails[0].isvarified_num=="1")
+                            btnEditNEFTDetail.Visible = false;
+                        divClaimNEFTDetail.Visible = true;
+                    }
+                }
+                hdnNEFTCode.Value = objClaimList.neftcode_var;
+
+                List<E_NSP_BasicDetails> objlstNspBasicDetails = new List<E_NSP_BasicDetails>();
+                NSP_FACESHEET_DATAClient objNSPFaceSheet = new NSP_FACESHEET_DATAClient();
+                E_NSP_BasicDetails objNspBasicDetails = new E_NSP_BasicDetails();
+                objNspBasicDetails.NSPID_VAR = hdnNSPHospitalId.Value;
+                objlstNspBasicDetails = objNSPFaceSheet.FETCH_FACESHEET_NSPID_HOSPITAL_BASICDETAILS(objNspBasicDetails);
+                if (objlstNspBasicDetails.Count > 0)
+                {
+                    txtHospitalName.InnerText = objlstNspBasicDetails[0].HSNAME_VAR;
+                    txtHospitalAdd1.Text = objlstNspBasicDetails[0].HSADDRESS1_VAR;
+                    txtHospitalAdd2.Text = objlstNspBasicDetails[0].HSADDRESS2_VAR;
+                    txtHospitalAdd3.Text = objlstNspBasicDetails[0].HSADDRESS3_VAR;
+                    txtHospLocation.Text = objlstNspBasicDetails[0].HSLOCATION_VAR;
+                    txtHospState.Text = objlstNspBasicDetails[0].HSSTATENAME_VAR;
+                    txtHospCity.Text = objlstNspBasicDetails[0].HSDISTRICTNAME_VAR;
+                    txtHospContactNo.Text = objlstNspBasicDetails[0].TELNO;
+                } 
+            }
+
+            longContactRecNo = objClaimTransDetail.Claim_ContactDetail_Num;
+            ContactDetailsClient objContactDetails = new ContactDetailsClient();
+            ContactDetails objContactList = new ContactDetails();
+            objContactList = objContactDetails.getContactDetail(longContactRecNo);
+            if (objContactList != null)
+            {
+                txtAddress1.Text = objContactList.AddAddress1_Var;
+                txtAddress2.Text = objContactList.AddAddress2_Var;
+                txtAddress3.Text = objContactList.AddAddress3_Var;
+                txtState.Text = objContactList.AddState_Var;
+                txtCity.Text = objContactList.AddCity_Var;
+                txtPinCode.Text = objContactList.AddZipCode_Num.ToString();
+                txtContactNo.Text = objContactList.ContactNo_Var;
+                txtAltContactNo.Text = objContactList.AltContactNo_Var;
+                txtAltEmailId.Text = objContactList.AltEmailId_Var;
+                txtEmailID.Text = objContactList.EmailId_Var;
+                Session["ContactDetails"] = objContactList;
+            }
+            List<PastHistory> objPastHistory = objClaim.getPastHistory(objClaimList.PolicyNo_Var);
+            if (objPastHistory.Count > 0)
+            {
+                gvPastHistory.DataSource = objPastHistory;
+                gvPastHistory.DataBind();
+                PanelHistory.Visible = true;
+            }
+
+            List<ClaimStatusDetails> claimStatusDetails = (List<ClaimStatusDetails>)Session["ClaimStatus"];
+            //Filter Claim status for finding action can be perform by Button
+            if (Session["ClaimStatus"] != null)
+            {
+                int productTypeID = Convert.ToInt32(string.IsNullOrEmpty(Convert.ToString(Session["ProdID"])) ? "0" : Convert.ToString(Session["ProdID"]));
+                List<ClaimStatusDetails> claimFilter = (from status in claimStatusDetails where status.PAGENAME_VAR == "ClaimHomePage.aspx" && status.WORKFLOWID_NUM == productTypeID && status.PRECONDITION1_VAR == strStatusId select status).ToList<ClaimStatusDetails>();
+                if (!(claimFilter.Count > 0))
+                {
+                    if (Session["TempViewRole"] != null)
+                    {
+                        claimFilter = (from status in claimStatusDetails where status.PAGENAME_VAR == "ClaimHomePage.aspx" && status.PRECONDITION1_VAR == "NA" && status.WORKFLOWID_NUM == productTypeID && status.ROLEID_NUM == Convert.ToInt32(Session["TempViewRole"]) select status).ToList<ClaimStatusDetails>();
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "alert2", "<script>disableControlforTempRole('" + Session["TempViewRole"].ToString() + "','" + divParentControl.ClientID + "','" + remarkPanel.ClientID + "')</script>", false);
+                    }
+                    else
+                    {
+                        claimFilter = (from status in claimStatusDetails where status.PAGENAME_VAR == "ClaimHomePage.aspx" && status.PRECONDITION1_VAR == "NA" && status.WORKFLOWID_NUM == productTypeID && status.ROLEID_NUM == Convert.ToInt32(Session["RoleID"]) select status).ToList<ClaimStatusDetails>();
+                    }
+                }
+                foreach (ClaimStatusDetails claimStatus in claimFilter)
+                {
+                    switch (claimStatus.BUTTON_VAR)
+                    {
+                        case "Save":
+                            if (claimStatus.VISIBLE_NUM == 1)
+                            {
+                                if (claimStatus.ENABLE_NUM == 1)
+                                    btnSave.Enabled = true;
+                                else
+                                    btnSave.Enabled = false;
+                                btnSave.Visible = true;
+                            }
+                            else
+                                btnSave.Visible = false;
+                            break;
+                        case "Next":
+                            if (claimStatus.VISIBLE_NUM == 1)
+                            {
+                                if (claimStatus.ENABLE_NUM == 1)
+                                    btnProceed.Enabled = true;
+                                else
+                                    btnProceed.Enabled = false;
+                                btnProceed.Visible = true;
+                            }
+                            else
+                                btnProceed.Visible = false;
+                            break;
+
+                        case "Cancel":
+                            if (claimStatus.VISIBLE_NUM == 1)
+                            {
+                                if (claimStatus.ENABLE_NUM == 1)
+                                    btnClose.Enabled = true;
+                                else
+                                    btnClose.Enabled = false;
+                                btnClose.Visible = true;
+                            }
+                            else
+                                btnClose.Visible = false;
+                            break;
+                        case "ViewNext":
+                            if (claimStatus.VISIBLE_NUM == 1)
+                            {
+                                if (claimStatus.ENABLE_NUM == 1)
+                                    btnViewNext.Enabled = true;
+                                else
+                                    btnViewNext.Enabled = false;
+                                btnViewNext.Visible = true;
+                            }
+                            else
+                                btnViewNext.Visible = false;
+                            break;
+                    }
+                }
+                // to set the remark of Users
+                SetUserRemark(claimFilter);
+            }
+        }
+    }
+
+    private void HospitalData_Selected(object sender, EventArgs e)
+    {
+        hdnNSPHospitalId.Value = ucHospitalSearch.NSPId;
+        txtHospitalName.InnerText = ucHospitalSearch.HospitalName;
+        txtHospitalAdd1.Text = ucHospitalSearch.HospitalAddress;
+        txtHospitalAdd2.Text = ucHospitalSearch.HospitalAddress2;
+        txtHospitalAdd3.Text = ucHospitalSearch.HospitalAddress3;
+        txtHospLocation.Text = ucHospitalSearch.HospitalLocation;
+        txtHospState.Text = ucHospitalSearch.HospitalState;
+        txtHospCity.Text = ucHospitalSearch.HospitalCity;
+        txtHospContactNo.Text = ucHospitalSearch.HospitalContactNo;
+        txtHospPinCode.Text = ucHospitalSearch.HospitalPinCode;
+    }
+
+    protected void btnSave_Click(object sender, ImageClickEventArgs e)
+    {
+        try
+        {
+            SaveAndRedirection("Save");
+        }
+        catch (Exception ex)
+        {
+            lblMessage.Text = ex.Message;
+            lblMessage.ForeColor = System.Drawing.Color.Red;
+        }
+        finally { }
+    }
+
+    protected void btnProceed_Click(object sender, ImageClickEventArgs e)
+    {
+        try
+        {
+            SaveAndRedirection("Next");
+        }
+        catch (Exception ex)
+        {
+            lblMessage.Text = ex.Message;
+            lblMessage.ForeColor = System.Drawing.Color.Red;
+        }
+        finally { }
+    }
+
+    /// <summary>
+    /// Save the data
+    /// </summary>
+    /// <returns></returns>
+    public int saveClaimHomeDetails(List<ClaimStatusDetails> claimFilter)
+    {
+        int intSuccess = 0;
+
+        try
+        {
+            #region Claim Details
+            ClaimDetails objClaimDetails = new ClaimDetails();
+            if (Session["ClaimDetail"] != null)
+            {
+                objClaimDetails = (ClaimDetails)Session["ClaimDetail"];
+            }
+            int lengthofStay=Convert.ToInt32(string.IsNullOrEmpty(hdnLengthOfStay.Value) ? "0" : hdnLengthOfStay.Value);
+            if(lengthofStay>0)
+                objClaimDetails.lengthOfStay_num = lengthofStay;
+            objClaimDetails.ClaimNo_Var = lblClaimNo.Text;
+            objClaimDetails.HEGICCardNo_Var = txtHdfcErgoId.Text.ToString().Trim();
+            objClaimDetails.PolicyNo_Var = txtPolicyNo.Text.ToString().Trim();
+            objClaimDetails.PatientName_Var = txtEmployeeName.Text.ToString().Trim();
+            objClaimDetails.ProductName_Var = txtProductName.Text.ToString().Trim();
+            objClaimDetails.ProductCode_Var = txtProductCode.Text;
+            objClaimDetails.CorporateName_Var = txtCorporateName.Text.ToString().Trim();
+            objClaimDetails.EmployeeCode_Var = txtEmpId.Text.ToString().Trim();
+            objClaimDetails.admissionDate_DTE = txtDtTmOfAdmission.Text.ToString().Trim();
+            objClaimDetails.dischargeDate_dte = txtDtTmOfDischarge.Text.ToString().Trim();
+            objClaimDetails.admissionTime_Time = ucAdmissionTime.GetHour() + ":" + ucAdmissionTime.GetMinute() + ":" + ucAdmissionTime.GetSecond();
+            objClaimDetails.dischargeTime_time = ucDischargeTime.GetHour() + ":" + ucDischargeTime.GetMinute() + ":" + ucDischargeTime.GetSecond();
+            //objClaimDetails.ailmentId_Num =hdnAilments.Value == "0" ? 0 : Convert.ToInt32(hdnAilments.Value);
+            //objClaimDetails.ailmentName_var = txtAilment.Text.ToString().Trim();
+            //objClaimDetails.ICDCode_Var = hdnICDCode.Value;
+            objClaimDetails.approxClaimAmount_num = txtClaimedAmount.Text.ToString().Trim() == "" ? 0 : Convert.ToDecimal(txtClaimedAmount.Text.ToString().Trim());
+            objClaimDetails.hospitalName_Var = txtHospitalName.InnerText.ToString().Trim();
+            objClaimDetails.hospitalId_Var = hdnNSPHospitalId.Value == "" ? "0" : hdnNSPHospitalId.Value;
+            //objClaimDetails.authorizedAmount_num = txtAuthorizeAmount.Text.ToString().Trim() == "" ? 0 : Convert.ToDecimal(txtAuthorizeAmount.Text.ToString().Trim());
+            objClaimDetails.VIPTag_Num = txtVIPTag.Text == "" ? 0 : Convert.ToInt32(txtVIPTag.Text);
+            objClaimDetails.PolicyStartDate_DTE = txtPolicySDate.Text.ToString().Trim();
+            objClaimDetails.policyEndDate_DTE = txtPolicyEDate.Text.ToString().Trim();
+            objClaimDetails.patientAge_num = txtAge.Text == "" ? 0 : Convert.ToInt32(txtAge.Text);
+            objClaimDetails.PatientDOB_DTE = txtDob.Text.ToString();
+            objClaimDetails.PatientGender_Num = txtSex.Text == "Male" ? 1 : 0;
+            objClaimDetails.ProductCode_Var = txtProductCode.Text;
+            objClaimDetails.TempAilmentName_Var = txtTempAilment.InnerText.ToString().Trim();
+            objClaimDetails.EmployeeGrade_Var = txtEmpGrade.Text;
+            objClaimDetails.userId_num = Convert.ToInt32(Session["UserID"]);
+            #endregion Claim Details
+
+            #region Contact Details
+            ContactDetails objContactDetails = new ContactDetails();
+            if (Session["ContactDetails"] != null)
+            {
+                objContactDetails = (ContactDetails)Session["ContactDetails"];
+            }
+            //objContactDetails.RecordNo_Var = Convert.ToInt32(Session["RECORDNO"]);
+            //objContactDetails.TransNo_Var = Convert.ToInt32(Session["TransNo"]);
+            //objContactDetails.ContactNo_Var = txtContactNo.Text.ToString().Trim();
+            objContactDetails.AltContactNo_Var = txtAltContactNo.Text.ToString().Trim();
+            //objContactDetails.EmailId_Var = "";
+            objContactDetails.AltEmailId_Var = txtAltEmailId.Text.ToString().Trim();
+            objContactDetails.UserId_Num = Convert.ToInt32(Session["UserID"]);
+
+            #endregion Contact Details
+
+            #region Medical Details
+            MedicalDetails objMedicalDetails = new MedicalDetails();
+            if (Session["MedicalDetails"] != null)
+            {
+                objMedicalDetails = (MedicalDetails)Session["MedicalDetails"];
+                if (lengthofStay > 0)
+                    objMedicalDetails.StayLength_Num = lengthofStay;
+            }
+            #endregion Medical Details
+
+            ClaimTransationDetails claimTransactionDetails = new ClaimTransationDetails();
+            if (Session["ClaimTransactionDetail"] != null)
+            {
+                claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+                //9 is for Cashless Supplementry
+                if (claimTransactionDetails.WORKFLOWID_NUM == 2 && objClaimDetails.typeOfClaim_num !=9)
+                {
+                    objClaimDetails.ClaimType_Var = "Cashless";
+                }
+                else
+                {
+                    if (objClaimDetails.isNEFTAllowed_Var == "Y")
+                    {
+                        objClaimDetails.PaymentMode_Var = rbPaymentMode.SelectedValue;
+                        if (rbPaymentMode.SelectedValue == "NEFT")
+                            objClaimDetails.neftcode_var = hdnNEFTCode.Value;
+                        else
+                            objClaimDetails.neftcode_var = string.Empty;
+                    }
+                    else
+                        objClaimDetails.neftcode_var = string.Empty;
+                }
+            }
+
+            //claimTransactionDetails.WORKFLOWID_NUM = claimFilter[0].WORKFLOWID_NUM;
+            claimTransactionDetails.TABID_NUM = Convert.ToInt32(Session["SelectedTab"].ToString());
+            //Button name will be same for any button 
+            claimTransactionDetails.ButtonName_Var = "Save";
+
+            UserRemarks userRemark = getUserRemark(claimFilter);
+            ClaimDetailsClient dbHomeDetails = new ClaimDetailsClient();
+            int iStatus = dbHomeDetails.insertHomeDetails(ref objClaimDetails, ref objContactDetails, ref objMedicalDetails, ref claimTransactionDetails);
+            Session["ClaimTransactionDetail"] = claimTransactionDetails;
+            Session["ClaimDetail"] = objClaimDetails;
+            Session["ContactDetails"] = objContactDetails;
+            Session["MedicalDetails"] = objMedicalDetails;
+
+
+            intSuccess = iStatus;
+            return intSuccess;
+        }
+        catch (Exception ex)
+        {
+            intSuccess = 0;
+            return intSuccess;
+        }
+    }
+
+    /// <summary>
+    /// Fill Data regards User remark into UserRemark Object
+    /// </summary>
+    public UserRemarks getUserRemark(List<ClaimStatusDetails> claimFilter)
+    {
+        UserRemarks userRemark = new UserRemarks();
+        ClaimTransationDetails claimTransactionDetails = new ClaimTransationDetails();
+        if (Session["ClaimTransactionDetail"] != null)
+        {
+            claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+        }
+        userRemark.ROLEID_NUM = claimTransactionDetails.RoleId_num;
+        userRemark.ClaimNo_var = claimTransactionDetails.ClaimNo_Var;
+        userRemark.UserId_NUM = claimTransactionDetails.UserId_num;
+        System.Web.UI.HtmlControls.HtmlTextArea htmlTextarea = (System.Web.UI.HtmlControls.HtmlTextArea)this.Page.Master.FindControl("InHouseTPAPlaceHolder").FindControl(claimFilter[0].RemarkControlID_Var);
+        if (htmlTextarea != null)
+            userRemark.REMARKS_VAR = htmlTextarea.Value.Trim();
+
+        userRemark.TABID_NUM = Convert.ToInt32(Session["SelectedTab"].ToString());
+        userRemark.Active_Num = 1;
+        return userRemark;
+    }
+
+    public void SetUserRemark(List<ClaimStatusDetails> claimFilter)
+    {
+        UserRemarks userRemark = new UserRemarks();
+        ClaimTransationDetails claimTransactionDetails = new ClaimTransationDetails();
+        long roleID = Convert.ToInt32(Session["RoleID"]);
+        if (Session["ClaimTransactionDetail"] != null)
+        {
+            claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+            if (claimTransactionDetails.ClaimNo_Var != null)
+            {
+                userRemark.ClaimNo_var = claimTransactionDetails.ClaimNo_Var;
+                userRemark.TABID_NUM = Convert.ToInt32(Session["SelectedTab"].ToString());
+                ClaimDetailsClient dbClaimDetailsClient = new ClaimDetailsClient();
+                List<UserRemarks> usersRemark = dbClaimDetailsClient.getUserRemark(userRemark);
+                if (usersRemark.Count > 0)
+                {
+                    var remarks = usersRemark.Where(t => t.ROLEID_NUM == roleID).Select(t => t.REMARKS_VAR);
+                    if (remarks.Count() > 0)
+                    {
+                        txtUsersRemark.Value = remarks.FirstOrDefault();
+                    }
+
+                    var gvUsersremarks = usersRemark.Where(t => t.ROLEID_NUM != roleID).Select(t => t);
+                    if (!(gvUsersremarks.Count() > 0))
+                    {
+                        userRemarkPanel.Visible = false;
+                    }
+                    gvRemark.DataSource = gvUsersremarks;
+                    gvRemark.DataBind();
+                }
+            }
+        }
+        System.Web.UI.HtmlControls.HtmlTextArea htmlTextarea = (System.Web.UI.HtmlControls.HtmlTextArea)this.Page.Master.FindControl("InHouseTPAPlaceHolder").FindControl(claimFilter[0].RemarkControlID_Var);
+        if (htmlTextarea != null)
+        {
+            htmlTextarea.Visible = true;
+            lblUsersRemark.Visible = true;
+            lblUsersRemark.Text = Convert.ToString(Session["RoleName"]) + " Remark";
+        }
+    }
+
+    protected void btnClose_Click(object sender, ImageClickEventArgs e)
+    {
+        try
+        {
+            SaveAndRedirection("Cancel");
+        }
+        catch (Exception ex)
+        {
+            lblMessage.Text = ex.Message;
+            lblMessage.ForeColor = System.Drawing.Color.Red;
+        }
+        finally { }
+    }
+
+    /// <summary>
+    /// save Claim Transactional Detail
+    /// </summary>
+    /// <param name="claimFilteredData"></param>
+    /// <returns></returns>
+    public int SaveTransactionalDetail(List<ClaimStatusDetails> claimFilteredData)
+    {
+        ClaimTransactionClient dbClaimTransactionClient = new ClaimTransactionClient();
+        ClaimTransationDetails claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+        if (Session["ClaimTransactionDetail"] != null)
+        {
+            claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+        }
+        claimTransactionDetails.TABID_NUM = Convert.ToInt32(Session["SelectedTab"]);
+        //claimTransactionDetails.WORKFLOWID_NUM = claimFilteredData[0].WORKFLOWID_NUM;
+        //Button name will be same for any button 
+        claimTransactionDetails.ButtonName_Var = "Save";
+        return dbClaimTransactionClient.insertClaimTransactionDetails(claimTransactionDetails);
+    }
+
+    /// <summary>
+    /// Save data and redirect based on Action type
+    /// </summary>
+    /// <param name="buttonType">Button name e.g:Save</param>
+    public void SaveAndRedirection(string buttonType)
+    {
+
+        List<ClaimStatusDetails> claimStatusDetails = (List<ClaimStatusDetails>)Session["ClaimStatus"];
+        ClaimDetailsClient dbClaimDetailsClient = new ClaimDetailsClient();
+        int saveStatus = 0;
+        int transSaveResult = 0;
+        string validationMessage = string.Empty;
+        ClaimTransationDetails claimTransactionDetails = new ClaimTransationDetails();
+        if (Session["ClaimTransactionDetail"] != null)
+            claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+        
+        ClaimDetails objClaimList = new ClaimDetails();
+        if (Session["ClaimDetail"] != null)
+            objClaimList = (ClaimDetails)Session["ClaimDetail"];
+
+        ClaimCommonFunction claimCommonFunction = new ClaimCommonFunction();
+        ClaimDetails objClaimDetails = new ClaimDetails();
+        objClaimDetails.admissionDate_DTE = txtDtTmOfAdmission.Text.Trim();
+        objClaimDetails.hospitalId_Var = hdnNSPHospitalId.Value;
+        objClaimDetails.HEGICCardNo_Var = txtHdfcErgoId.Text.Trim();
+        objClaimDetails.approxClaimAmount_num = Convert.ToDecimal(string.IsNullOrEmpty(txtClaimedAmount.Text) ? " 0 " : txtClaimedAmount.Text);
+        objClaimDetails.dischargeDate_dte = txtDtTmOfDischarge.Text;
+        objClaimDetails.ClaimNo_Var = objClaimList.ParentClaimNo_Var;
+        objClaimDetails.ProductCode_Var = objClaimList.ProductCode_Var;
+        objClaimDetails.PolicyNo_Var = objClaimList.PolicyNo_Var;
+        objClaimDetails.ISLOCKED_NUM = 1;
+        objClaimDetails.BussinessTransno_Num = objClaimList.BussinessTransno_Num;
+        // Changed for fire validation for 
+        if(claimTransactionDetails.WORKFLOWID_NUM==2)
+            objClaimDetails.ClaimType_Var ="CASHLESS";
+        else
+            objClaimDetails.ClaimType_Var = "REIMBURSEMENT";
+
+
+        //Filter Claim status for finding action can be perform by Button
+        int productTypeID = Convert.ToInt32(string.IsNullOrEmpty(Convert.ToString(Session["ProdID"])) ? "0" : Convert.ToString(Session["ProdID"]));
+        List<ClaimStatusDetails> claimFilter = (from status in claimStatusDetails where status.PRODUCTCODE_NUM == 1 && status.WORKFLOWID_NUM == productTypeID && status.PAGENAME_VAR == "ClaimHomePage.aspx" && status.BUTTON_VAR == buttonType select status).ToList<ClaimStatusDetails>();
+        ClaimTransactionClient dbClaimTransactionClient = new ClaimTransactionClient();
+        if (claimFilter.Count > 0)
+        {
+            //Save data And Redirect
+            if (claimFilter[0].ACTION_VAR == "6" || claimFilter[0].ACTION_VAR == "3")
+            {
+                validationMessage = claimCommonFunction.DuplicateClaim(objClaimDetails);
+                if (string.IsNullOrEmpty(validationMessage))
+                {
+                    transSaveResult = saveClaimHomeDetails(claimFilter);
+                    saveStatus = dbClaimDetailsClient.SaveUserRemarks(getUserRemark(claimFilter));
+                    if (transSaveResult == 1 && saveStatus == 1)
+                    {
+                        if (claimFilter[0].REDIRECTIONPATH_VAR == "Dash Board")
+                        {
+                            string HomePageURL = Session["PageUrls"].ToString();
+                            Response.Redirect(HomePageURL);
+                        }
+                        else
+                            Response.Redirect(claimFilter[0].REDIRECTIONPATH_VAR);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "SaveData", "<script type='text/javascript'>alert('Data save has been failed');</script>", false);
+                    }
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "ClaimDuplicated", "<script type='text/javascript'>" + validationMessage + "</script>", false);
+                }
+            }
+
+            //Generate Claim No or Save data
+            else if (claimFilter[0].ACTION_VAR == "1")
+            {
+                validationMessage = claimCommonFunction.DuplicateClaim(objClaimDetails);
+                if (string.IsNullOrEmpty(validationMessage))
+                {
+                    int IsDataSaved = saveClaimHomeDetails(claimFilter);
+                    saveStatus = dbClaimDetailsClient.SaveUserRemarks(getUserRemark(claimFilter));
+                    if (IsDataSaved == 1 && saveStatus == 1)
+                    {
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "SaveData", "<script type='text/javascript'>alert('Data has been saved succcessfully.');</script>", false);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "SaveData", "<script type='text/javascript'>alert('Data save has been failed');</script>", false);
+                    }
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "ClaimDuplicated1", "<script type='text/javascript'>alert('" + validationMessage + "')</script>", false);
+                }
+            }
+            //Redirect to Dashboard or Other page
+            if (claimFilter[0].ACTION_VAR == "2")
+            {
+                if (claimFilter[0].REDIRECTIONPATH_VAR == "Dash Board")
+                {
+                    string HomePageURL = Session["PageUrls"].ToString();
+                    Response.Redirect(HomePageURL);
+                }
+                else
+                    Response.Redirect(claimFilter[0].REDIRECTIONPATH_VAR);
+            }
+            //Save Remark
+            else if (claimFilter[0].ACTION_VAR == "4")
+            {
+                transSaveResult = SaveTransactionalDetail(claimFilter);
+                saveStatus = dbClaimDetailsClient.SaveUserRemarks(getUserRemark(claimFilter));
+                if (saveStatus == 1 && transSaveResult == 1)
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "SaveRemark1", "<script type='text/javascript'>alert('Data has been saved succcessfully.');</script>", false);
+                else
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "SaveRemark2", "<script type='text/javascript'>alert('Data save has been failed.');</script>", false);
+            }
+            //Save Remark And Redirect
+            else if (claimFilter[0].ACTION_VAR == "5")
+            {
+                transSaveResult = SaveTransactionalDetail(claimFilter);
+                saveStatus = dbClaimDetailsClient.SaveUserRemarks(getUserRemark(claimFilter));
+                if (saveStatus == 1 && transSaveResult == 1)
+                {
+                    if (claimFilter[0].REDIRECTIONPATH_VAR == "Dash Board")
+                    {
+                        string HomePageURL = Session["PageUrls"].ToString();
+                        Response.Redirect(HomePageURL, false);
+                    }
+                    else
+                        Response.Redirect(claimFilter[0].REDIRECTIONPATH_VAR, false);
+                }
+                else
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "SaveRemarkAndRedirect", "<script type='text/javascript'>alert('Data save has been failed.');</script>", false);
+            }
+            //Close Window
+            else if (claimFilter[0].ACTION_VAR == "8")
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "", "<script>window.close();</script>");
+            }
+        }
+    }
+
+    /// <summary>
+    /// To insert status in case of Investigation
+    /// </summary>
+    /// <param name="claimFilter"></param>
+    /// <returns></returns>
+    public int SaveInvestigationStatus(List<ClaimStatusDetails> claimFilter)
+    {
+        ClaimTransationDetails claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+        if (Session["ClaimTransactionDetail"] != null)
+        {
+            claimTransactionDetails = (ClaimTransationDetails)Session["ClaimTransactionDetail"];
+        }
+        Session["ClaimTransactionDetail"] = claimTransactionDetails;
+        claimTransactionDetails.TABID_NUM = Convert.ToInt32(Session["SelectedTab"]);
+        claimTransactionDetails.ButtonName_Var = claimFilter[0].BUTTON_VAR;
+        claimTransactionDetails.PRECONDITION1_VAR = "Investigation";
+        claimTransactionDetails.investigationFlag_Num = 1;
+        claimTransactionDetails.UserName_Var = Convert.ToString(Session["UserName"]);
+        ClaimTransactionClient dbClaimTransactionClient = new ClaimTransactionClient();
+        return dbClaimTransactionClient.insertInvestigationStatusDetails(claimTransactionDetails);
+    }
+
+    protected void btnViewNext_Click(object sender, ImageClickEventArgs e)
+    {
+        try
+        {
+            SaveAndRedirection("ViewNext");
+        }
+        catch (Exception ex)
+        {
+            lblMessage.Text = ex.Message;
+            lblMessage.ForeColor = System.Drawing.Color.Red;
+        }
+        finally { }
+    }
+
+    protected void rbPaymentMode_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        AccountDetailsClient dbAccountDetails = null;
+        try
+        {
+            if (rbPaymentMode.SelectedValue == "NEFT")
+            {
+                dbAccountDetails = new AccountDetailsClient();
+                ClaimDetails objClaimList = new ClaimDetails();
+                if (Session["ClaimDetail"] != null)
+                    objClaimList = (ClaimDetails)Session["ClaimDetail"];
+
+                ClaimNEFTDetails neftDetails = new ClaimNEFTDetails { EmpId_Var = txtEmpId.Text, Policyno_Var = txtPolicyNo.Text, policytype_var = objClaimList.PolicyType_Var, CustID_Var = objClaimList.CustID_Var, Claimno_Var = objClaimList.ClaimNo_Var, Flag_Var = "NEFT" };
+                List<ClaimNEFTDetails> NEFTList = dbAccountDetails.getNEFTDetails(neftDetails);
+                dbAccountDetails.Close();
+                gvNEFTList.DataSource = NEFTList;
+                gvNEFTList.DataBind();
+                ModalPopupNEFT.Show();
+                if (NEFTList.Count > 0)
+                    NEFTPaymentDetails.Visible = false;
+                else
+                {
+                    btnAddNewNEFT.Visible = false;
+                    hdnInsertMode.Value = "NEWNEFTENTRY";
+                    txtPayeename.Text = hdnProposername.Value;
+                    txtPayeeMailID.Text = txtEmailID.Text;
+                    NEFTPaymentDetails.Visible = true;
+                }
+            }
+            else
+            {
+                divClaimNEFTDetail.Visible = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            dbAccountDetails.Abort();
+        }
+    }
+
+    protected void btnSelectedNEFT_CheckedChanged(object sender, EventArgs e)
+    {
+        int index = ((GridViewRow)((CheckBox)sender).NamingContainer).RowIndex;
+        hdnNEFTCode.Value = ((Label)gvNEFTList.Rows[index].FindControl("popupNEFTCode")).Text;
+        lblNEFTPayeeName.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupPayeeName")).Text;
+        lblNEFTAccountno.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupAccountNo")).Text;
+        lblNEFTAccountType.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupAccountType")).Text;
+        lblNEFTBankName.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupBankName")).Text;
+        lblNEFTBranchName.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupBranchName")).Text;
+        lblNEFTIFSCCode.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupIFSCCode")).Text;
+        lblNEFTPANNumber.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupPANNo")).Text;
+        lblNEFTEmailID.Text = ((Label)gvNEFTList.Rows[index].FindControl("popupEmailID")).Text;
+        hdnisVarified.Value = ((HiddenField)gvNEFTList.Rows[index].FindControl("popupisVarified")).Value;
+        if (hdnisVarified.Value == "1")
+            btnEditNEFTDetail.Visible = false;
+
+        divClaimNEFTDetail.Visible = true;
+    }
+
+    protected void btnAddNewNEFT_Click(object sender, EventArgs e)
+    {
+        NEFTPaymentDetails.Visible = true;
+        hdnInsertMode.Value = "NEWNEFTENTRY";
+        txtPayeename.Text = hdnProposername.Value;
+        txtPayeeMailID.Text = txtEmailID.Text;
+        ModalPopupNEFT.Show();
+    }
+
+    protected void btnSaveNEFT_Click(object sender, ImageClickEventArgs e)
+    {
+        AccountDetailsClient dbAccountDetails = null;
+        try
+        {
+            dbAccountDetails = new AccountDetailsClient();
+            ClaimNEFTDetails neftDetails = new ClaimNEFTDetails();
+            if (hdnInsertMode.Value == "EDITNEFTENTRY")
+                neftDetails.neftcodeid_var = hdnNEFTCode.Value;
+
+            neftDetails.EmpId_Var = txtEmpId.Text;
+            neftDetails.Policyno_Var = txtPolicyNo.Text;
+            neftDetails.payeename_var = txtPayeename.Text;
+            neftDetails.accountno_var = txtAccountNo.Text;
+            neftDetails.bankname_var = txtBankName.Text;
+            neftDetails.branchname_var = txtBranchName.Text;
+            neftDetails.ifsccode_var = txtIFSCCode.Text;
+            neftDetails.panno_var = txtPANNo.Text;
+            neftDetails.accounttype_var = rbAccountType.SelectedValue;
+            neftDetails.emailid_var = txtPayeeMailID.Text;
+            neftDetails.Flag_Var = hdnInsertMode.Value;
+            neftDetails.UserID_Num = Convert.ToInt64(Session["UserID"]);
+            neftDetails.RoleID_num = Convert.ToInt32(Session["RoleID"]);
+            string neftCode=dbAccountDetails.insertClaimNEFTDetails(neftDetails);
+            dbAccountDetails.Close();
+            if (!string.IsNullOrEmpty(neftCode))
+            {
+                hdnNEFTCode.Value = neftCode;
+                lblNEFTPayeeName.Text = txtPayeename.Text;
+                lblNEFTAccountno.Text = txtAccountNo.Text;
+                lblNEFTAccountType.Text = rbAccountType.SelectedValue;
+                lblNEFTBankName.Text = txtBankName.Text;
+                lblNEFTBranchName.Text = txtBranchName.Text;
+                lblNEFTIFSCCode.Text = txtIFSCCode.Text;
+                lblNEFTPANNumber.Text = txtPANNo.Text;
+                lblNEFTEmailID.Text = txtPayeeMailID.Text;
+                hdnisVarified.Value = "0";
+                divClaimNEFTDetail.Visible = true;
+            }
+            else
+            {
+                ModalPopupNEFT.Show();
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertFailureMessage", "<script>alert('Data save has been failed')<script>", false);
+            }
+        }
+        catch (Exception ex)
+        {
+            dbAccountDetails.Abort();
+            ModalPopupNEFT.Show();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertFailureMessage", "<script>alert('" + ex.Message + "')<script>", false);
+        }
+    }
+
+    protected void btnEditNEFTDetail_Click(object sender, EventArgs e)
+    {
+        btnAddNewNEFT.Visible = false;
+        txtPayeename.Text = lblNEFTPayeeName.Text;
+        txtAccountNo.Text = lblNEFTAccountno.Text;
+        rbAccountType.SelectedValue = lblNEFTAccountType.Text;
+        txtBankName.Text = lblNEFTBankName.Text;
+        txtBranchName.Text = lblNEFTBranchName.Text;
+        txtIFSCCode.Text = lblNEFTIFSCCode.Text;
+        txtPANNo.Text = lblNEFTPANNumber.Text;
+        txtPayeeMailID.Text = lblNEFTEmailID.Text;
+        hdnInsertMode.Value = "EDITNEFTENTRY";
+        NEFTPaymentDetails.Visible = true;
+        ModalPopupNEFT.Show();
+    }
+}
