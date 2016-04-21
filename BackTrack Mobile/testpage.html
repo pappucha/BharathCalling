@@ -1,136 +1,2204 @@
-<!doctype html>
-<html ng-app="ui.bootstrap.demo">
-  <head>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
-    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.1.js"></script> 
-    <script src="test.js"></script>
-	  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
-	<script type="text/javascript" src="notify.js"></script>
-	  <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<!--	  <script type="text/javascript" src="http://jeasyui.com/demo/main/datagrid_data1.json"></script>-->
-<!--	  Can we not go with jqueryeasy ui-->
-		
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-	  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  </head>
-  <body>
-	 
-	<div ng-init="initRecord()" ng-controller="TabsDemoCtrl">
-<!--
-  <input type="text" ng-model="ten"/>
-		<input type="submit" value="Click me" ng-click="clik()"/>
--->
-	
-		
-  <tabset>
-    <tab heading="User Details"> 
-		<div class="panel panel-success">
-			
-			 <div class="panel-body container-fluid ng-scope">
-				 <div class="form-group">
-        <div class="text-right">
-            <a href="#" class="btn btn-xs btn-default" ng-click="editupdateEmailTemplate()"><i class="fa fa-envelope"></i> Update email tempalte</a>
-        </div>
-    </div>
-				 <div class="form-group">
-        			<label for="inputUserName" class="col-sm-2 control-label">User Name</label>
-					 		<div class="col-sm-10">
-            			<input type="text" ng-model="userName" id="userName" class="form-control"/>
-        					</div>
-				 		</div>
-				 
-				 
-				 <div class="form-group">
-        			<label for="inputBranchName" class="col-sm-2 control-label">Branch Name</label>
-					 		<div class="col-sm-10">
-            			<input type="text" ng-model="branchName" id="branchName" class="form-control"/>
-        					</div>
-				 		</div>
-				 
-				 <div class="form-group">
-        			<label for="inputManagerName" class="col-sm-2 control-label">Manager Name</label>
-					 		<div class="col-sm-10">
-            			<input type="text" ng-model="ManagerName" id="ManagerName" class="form-control"/>
-        					</div>
-				 		</div>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SGML.BusinessLayer;
+using SGML.EntityLayer;
+using SGML.Utilities;
+using System.Data;
+using System.IO;
+using System.Xml.Linq;
+using System.Text.RegularExpressions;
+using Sgml;
+using System.Configuration;
+using System.Xml;
+namespace SGMLExtraction
+{
+    public class Extraction
+    {
+        public void ImportTask(string sgmlID, string path, string ACType, string DocumentName, string VersionDate)
+        {
+            //This one i am doing for Amm 777
 
-				    <div class="form-group">
-        <label for="inputassigned" class="col-sm-2 control-label">Country Assigned</label>
-        <div class="col-sm-10">
-<select name="assigned" class="form-control" ng-model="assigned" id="assigned" ng-options="i.name for i in countrylist">
-                
-            </select>
-        </div>
-    </div>
+            string getTypeID = string.Empty;
+            bool offsize = false;
 
-				 
-				
-				 
-				 <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <input type="submit" id="Save" value="Save" ng-click="SaveUser()" class="btn btn-success" />
-           
+            try
+            {
+                string FinalPath = path;
+                string[] files = Directory.GetFiles(FinalPath);
+                int iFile = 0;
+                int iFileProcess = 0;
+                getTypeID = sgmlID;
+                DataSet dsf = getDataTableData();
+                foreach (string filename in files)
+                {
+                    List<ParentNode> nodeMaintain = new List<ParentNode>();
+                    List<ExtractSGM> lstExtractSGM = new List<ExtractSGM>();
+                    ExtractSGM extractSGM = new ExtractSGM();
+                    SGMTool data = new SGMTool();
+                    SGMTool data1 = null;
 
-            <input type="button" value="Close" id="resetField" class="btn btn-success" ng-click="Cancel()" />
-        </div>
-    </div> 
-				 
-				 
-			</div>
-	    </div>
-	  </tab>
-	  <tab heading="Role Details">  
-	  <div class="panel panel-success">
-			
-			 <div class="panel-body container-fluid ng-scope">
-				 
-				 <table class="table table-hover">
-					 <caption>Contry Details</caption>
-					 <thead>
-  <tr>
-	  <th>#</th>
-	  <th>Name</th>
-	  <th>Country</th>
-	  <th>City</th>
-					 </tr></thead>
-					 <tbody>
-<!--					 rowdetails in data.tabledata-->
-					 <tr ng-repeat="rowdetails in data.tabledata">
-						
-						 <td>{{$index+1}}</td>
-						 <td>{{rowdetails[$index+1].Name}}</td>
-						 <td>{{rowdetails[$index+1].Country}}</td>
-						 <td>{{rowdetails[$index+1].City}}</td>
-						 
-<!--
-						// <td>{{x[$index+1].Name}}</td>
-						 //<td>{{x[$index+1].Country}}</td>
-						 //<td>{{x[$index+1].City}}</td>
--->
-						 
-					 
-					 </tr></tbody>
-</table>
-				 
+                    SGMLCHAPTER chapter = null;
+                    SECTIONSGML sectionsgml = null;
+                    SUBJECTSGML subjectsgml = null;
+                    PGBLKSGML pgblksgml = null;
+                    TaskSGML taskSgml = null;
+
+                    GraphicSGML graphicsgml = null;
+                    SheetSGML sheetsgml = null;
+                    data1 = new SGMTool();
+                    iFile++;
+                    var strXML = System.IO.File.ReadAllText(filename);
+                    var textSize = strXML.Length;
+                    if (textSize >= 10040083)
+                    {
+                        offsize = true;
+                    }
+                    //if(strXML.Any(SGML.Utilities.Constants.caseChapter))
+                    int findCapitalLetter = Regex.Matches(strXML, SGML.Utilities.Constants.caseChapter).Count;
 
 
-</div>
-</div>
-		  
-	  </tab>
-	  <tab heading="History Details">  History Details</tab>
-	  <tab heading="Work Details">  Work Details</tab>
-	  
-<!--
-    <tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
-      {{tab.content}}
-    </tab>
--->
-  </tabset>
-</div>
-	  
-	  <script type="text/ng-template" id="updateEmail.html">
-	  Rakesh Chaubey
-	  </script>
-</body>
-</html>
+                    //Check Here  weather this sgml will be capital based or small letter based 
+                    //if(strXML.Contains("<CHAPTER"))
+                    //the only way i can achieve this case by putting a capital and small letter senerioa using if condition
+
+                    #region  "Capital Letter"
+
+
+                    if (findCapitalLetter > 0)
+                    {
+
+                        //It means we are in capital letter
+                        if (strXML.Contains(SGML.Utilities.Constants.variableChapter))
+                        {
+
+
+
+                            ///From Here Write The COmplete content in DatabAse
+                            ///
+
+
+                            int getChaptercount = Regex.Matches(strXML, SGML.Utilities.Constants.variableChapter).Count;
+                            iFileProcess++;
+
+                            // if (test == 12)
+                            // {
+                            var getAllChapter = "";
+                            if (getChaptercount > 1)
+                            {
+                                getAllChapter = strXML.Replace("<REVST>", "").Replace("<REVEND>", "").Replace("T</", "T></").Replace("&", "");
+                                //For Getting All Chapter in A page 
+                                //string[] stringSeparators2 = new string[] { "<DELETED", "<TASKREQ", "<SBEFF", "<COLSPEC", "<SPANSPEC", "<TORVALUE", "<GRSYMBOL", "<COCEND", "<COCST" };
+                                string[] stringSeparators2 = new string[] { "<DELETED", "<TASKREQ", "<SBEFF", "<TORVALUE", "<GRSYMBOL", "<COCEND", "<COCST", "<COCEFF" };
+                                string[] result2 = getAllChapter.Split(stringSeparators2, StringSplitOptions.None);
+                                string sFinalXML2 = string.Empty;
+                                int ij2 = 0;
+                                bool include2 = false;
+
+                                var _item2 = "";
+
+
+
+                                foreach (var item2 in result2)
+                                {
+
+                                    var newitem2 = item2;
+                                    //var newitem3 = "";
+                                    _item2 = item2;
+
+                                    #region "Old Code"
+
+
+                                    //for (int il = 0; il < SGML.Utilities.Constants.validateVariable.Length; il++)
+                                    //{
+                                    //    if (_item2.Contains(SGML.Utilities.Constants.validateVariable[il]))
+                                    //    {
+                                    //        do
+                                    //        {
+
+
+                                    //            string v2 = _item2.Substring(_item2.IndexOf(SGML.Utilities.Constants.validateVariable[il]));
+                                    //            string x2 = v2.Substring(v2.IndexOf(SGML.Utilities.Constants.validateVariable[il]), v2.IndexOf(">") - v2.IndexOf(SGML.Utilities.Constants.validateVariable[il]) + 1);
+                                    //            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                    //            _item2 = _item2.Replace(x2, "");
+
+                                    //        }
+                                    //        while (_item2.Contains(SGML.Utilities.Constants.validateVariable[il]));
+                                    //        newitem2 = _item2;
+                                    //    }
+                                    //}
+
+                                    //foreach (var itemremove in stringSeparators2)
+                                    //{
+                                    //    if (_item2.Contains(itemremove))
+                                    //    {
+                                    //        do
+                                    //        {
+
+
+                                    //            string v2 = _item2.Substring(_item2.IndexOf(itemremove));
+                                    //            string x2 = v2.Substring(v2.IndexOf(itemremove), v2.IndexOf(">") - v2.IndexOf(itemremove) + 1);
+                                    //            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                    //            _item2 = _item2.Replace(x2, "");
+
+                                    //        }
+                                    //        while (_item2.Contains(itemremove));
+                                    //        newitem2 = _item2;
+                                    //    }
+
+                                    //}
+
+                                    //if (_item2.Contains("<COLSPEC"))
+                                    //{
+                                    //    do
+                                    //    {
+
+
+                                    //        string v2 = _item2.Substring(_item2.IndexOf("<COLSPEC"));
+                                    //        string x2 = v2.Substring(v2.IndexOf("<COLSPEC"), v2.IndexOf(">") - v2.IndexOf("<COLSPEC") + 1);
+                                    //        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                    //        _item2 = _item2.Replace(x2, "");
+
+                                    //    }
+                                    //    while (_item2.Contains("<COLSPEC"));
+                                    //    newitem2 = _item2;
+
+
+                                    //    include2 = true;
+                                    //    if (ij2 == 0)
+                                    //    {
+                                    //        sFinalXML2 += newitem2;
+                                    //        ij2++;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        int iVal2 = newitem2.IndexOf(">");
+                                    //        string text2 = newitem2.Insert(iVal2, "/");
+                                    //        sFinalXML2 += text2;
+                                    //    }
+                                    //}
+
+
+                                    //else if (_item2.Contains("<SPANSPEC"))
+                                    //{
+                                    //    do
+                                    //    {
+                                    //        string v2 = _item2.Substring(_item2.IndexOf("<SPANSPEC"));
+                                    //        string x2 = v2.Substring(v2.IndexOf("<SPANSPEC"), v2.IndexOf(">") - v2.IndexOf("<SPANSPEC") + 1);
+                                    //        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                    //        _item2 = _item2.Replace(x2, "");
+                                    //    }
+                                    //    while (_item2.Contains("<SPANSPEC"));
+                                    //    newitem3 = _item2;
+
+                                    //    include2 = true;
+                                    //    if (ij2 == 0)
+                                    //    {
+                                    //        sFinalXML2 += newitem3;
+                                    //        ij2++;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        int iVal2 = newitem3.IndexOf(">");
+                                    //        string text2 = newitem3.Insert(iVal2, "/");
+                                    //        sFinalXML2 += text2;
+                                    //    }
+                                    //}
+                                    //else
+                                    //{
+                                    //    include2 = true;
+                                    //    if (ij2 == 0)
+                                    //    {
+                                    //        sFinalXML2 += newitem2;
+                                    //        ij2++;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        int iVal2 = newitem2.IndexOf(">");
+                                    //        string text2 = newitem2.Insert(iVal2, "/");
+                                    //        sFinalXML2 += text2;
+                                    //    }
+                                    //}
+                                    #endregion
+
+                                    if (_item2.Contains("<COLSPEC"))
+                                    {
+                                        do
+                                        {
+
+
+                                            string v2 = _item2.Substring(_item2.IndexOf("<COLSPEC"));
+                                            string x2 = v2.Substring(v2.IndexOf("<COLSPEC"), v2.IndexOf(">") - v2.IndexOf("<COLSPEC") + 1);
+                                            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                            _item2 = _item2.Replace(x2, "");
+
+                                        }
+                                        while (_item2.Contains("<COLSPEC"));
+                                        newitem2 = _item2;
+                                    }
+
+                                    if (_item2.Contains("<SPANSPEC"))
+                                    {
+                                        do
+                                        {
+                                            string v2 = _item2.Substring(_item2.IndexOf("<SPANSPEC"));
+                                            string x2 = v2.Substring(v2.IndexOf("<SPANSPEC"), v2.IndexOf(">") - v2.IndexOf("<SPANSPEC") + 1);
+                                            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                            _item2 = _item2.Replace(x2, "");
+                                        }
+                                        while (_item2.Contains("<SPANSPEC"));
+                                        newitem2 = _item2;
+                                    }
+                                    include2 = true;
+                                    if (ij2 == 0)
+                                    {
+                                        sFinalXML2 += newitem2;
+                                        ij2++;
+                                    }
+                                    else
+                                    {
+                                        int iVal = newitem2.IndexOf(">");
+                                        var text = newitem2.Insert(iVal, "/");
+                                        sFinalXML2 += text;
+                                    }
+
+                                }
+                                if (include2)
+                                    getAllChapter = sFinalXML2;
+
+
+                                string[] stringSep2 = new string[] { SGML.Utilities.Constants.variableChapter };
+                                string[] result12 = getAllChapter.Split(stringSep2, StringSplitOptions.None);
+                                include2 = false;
+                                foreach (var item12 in result12)
+                                {
+                                    if (!include2)
+                                    {
+                                        include2 = true;
+                                    }
+                                    else
+                                    {
+                                        getAllChapter = SGML.Utilities.Constants.sgmlFirstItem + " " + SGML.Utilities.Constants.variableChapter + item12;
+                                    }
+                                }
+
+                                //End
+
+
+                            }
+
+
+                            if (offsize == true)
+                            {
+                                System.Threading.Thread.Sleep(5000);
+                            }
+
+                            string tes = @"*>";
+                            //strXML = strXML.Replace("<REVST>", "").Replace("<REVEND>", "").Replace("T</", "T></").Replace("&", "").Replace("</CHAPTER>", "").Replace("*><COLSPEC", "></COLSPEC><COLSPEC");
+                            strXML = strXML.Replace("<REVST>", "").Replace("<REVEND>", "").Replace("T</", "T></").Replace("&", "").Replace("</CHAPTER>", "");//.Replace("<COLSPEC", "<");
+                            //B777 Ammm we have added "<COCEND","<COCST"
+                            //string[] stringSeparators1 = new string[] { "<DELETED", "<TASKREQ", "<SBEFF", "<COLSPEC", "<SPANSPEC", "<TORVALUE", "<GRSYMBOL", "<CHAPTER", "<COCEND", "<COCST" };//, "<CHAPTER"
+                            //string[] stringSeparators1 = new string[] { "<DELETED", "<TASKREQ", "<SBEFF", "<SPANSPEC", "<TORVALUE", "<GRSYMBOL", "<CHAPTER", "<COCEND", "<COCST" };//, "<CHAPTER"
+                            string[] stringSeparators1 = new string[] { "<DELETED", "<TASKREQ", "<SBEFF", "<TORVALUE", "<GRSYMBOL", "<CHAPTER", "<COCEND", "<COCST", "<COCEFF" };//, "<CHAPTER"
+                            string[] result = strXML.Split(stringSeparators1, StringSplitOptions.None);
+                            var sFinalXML = string.Empty;
+                            int ij = 0;
+                            bool include = false;
+                            var _item = "";
+                            foreach (var item in result)
+                            {
+                                //var newitem = item;
+                                //var newitem1 = item;
+                                var newitem = item;
+
+                                _item = item;
+                                #region "Old Code1"
+
+                                //for (int il = 0; il < SGML.Utilities.Constants.validateVariable.Length; il++)
+                                //{
+                                //    if (_item.Contains(SGML.Utilities.Constants.validateVariable[il]))
+                                //    {
+                                //        do
+                                //        {
+
+
+                                //            string v2 = _item.Substring(_item.IndexOf(SGML.Utilities.Constants.validateVariable[il]));
+                                //            string x2 = v2.Substring(v2.IndexOf(SGML.Utilities.Constants.validateVariable[il]), v2.IndexOf(">") - v2.IndexOf(SGML.Utilities.Constants.validateVariable[il]) + 1);
+                                //            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                //            _item = _item.Replace(x2, "");
+
+                                //        }
+                                //        while (_item.Contains(SGML.Utilities.Constants.validateVariable[il]));
+                                //        newitem = _item;
+                                //    }
+                                //}
+                                //if (_item.Contains("<COLSPEC"))
+                                //{
+                                //    do
+                                //    {
+
+
+                                //        string v = _item.Substring(_item.IndexOf("<COLSPEC"));
+                                //        string x = v.Substring(v.IndexOf("<COLSPEC"), v.IndexOf(">") - v.IndexOf("<COLSPEC") + 1);
+                                //        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                //        _item = _item.Replace(x, "");
+
+                                //    }
+                                //    while (_item.Contains("<COLSPEC"));
+                                //    newitem = _item;
+
+                                //    include = true;
+                                //    if (ij == 0)
+                                //    {
+                                //        sFinalXML += newitem;
+                                //        ij++;
+                                //    }
+                                //    else
+                                //    {
+                                //        int iVal = newitem.IndexOf(">");
+                                //        var text = newitem.Insert(iVal, "/");
+                                //        sFinalXML += text;
+                                //    }
+                                //}
+
+                                //else  if (_item.Contains("<SPANSPEC"))
+                                //{
+                                //    do
+                                //    {
+                                //        string v2 = _item.Substring(_item.IndexOf("<SPANSPEC"));
+                                //        string x2 = v2.Substring(v2.IndexOf("<SPANSPEC"), v2.IndexOf(">") - v2.IndexOf("<SPANSPEC") + 1);
+                                //        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                //        _item = _item.Replace(x2, "");
+                                //    }
+                                //    while (_item.Contains("<SPANSPEC"));
+                                //    newitem1 = _item;
+
+                                //    include = true;
+                                //    if (ij == 0)
+                                //    {
+                                //        sFinalXML += newitem1;
+                                //        ij++;
+                                //    }
+                                //    else
+                                //    {
+                                //        int iVal = newitem1.IndexOf(">");
+                                //        var text = newitem1.Insert(iVal, "/");
+                                //        sFinalXML += text;
+                                //    }
+                                //}
+
+                                //else
+                                //{
+                                //    include = true;
+                                //    if (ij == 0)
+                                //    {
+                                //        sFinalXML += strXML;
+                                //        ij++;
+                                //    }
+                                //    else
+                                //    {
+                                //        int iVal = strXML.IndexOf(">");
+                                //        var text = strXML.Insert(iVal, "/");
+                                //        sFinalXML += text;
+                                //    }
+                                //}
+                                ////sFinalXML += _item;
+                                ////  strXML = sFinalXML;
+                                #endregion
+
+                                if (_item.Contains("<COLSPEC"))
+                                {
+                                    do
+                                    {
+                                        string v = _item.Substring(_item.IndexOf("<COLSPEC"));
+                                        string x = v.Substring(v.IndexOf("<COLSPEC"), v.IndexOf(">") - v.IndexOf("<COLSPEC") + 1);
+                                        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                        _item = _item.Replace(x, "");
+
+                                    }
+                                    while (_item.Contains("<COLSPEC"));
+                                    newitem = _item;
+                                }
+
+                                if (_item.Contains("<SPANSPEC"))
+                                {
+                                    do
+                                    {
+                                        string v2 = _item.Substring(_item.IndexOf("<SPANSPEC"));
+                                        string x2 = v2.Substring(v2.IndexOf("<SPANSPEC"), v2.IndexOf(">") - v2.IndexOf("<SPANSPEC") + 1);
+                                        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                        _item = _item.Replace(x2, "");
+                                    }
+                                    while (_item.Contains("<SPANSPEC"));
+                                    newitem = _item;
+                                }
+
+                                include = true;
+                                if (ij == 0)
+                                {
+                                    sFinalXML += newitem;
+                                    ij++;
+                                }
+                                else
+                                {
+                                    int iVal = newitem.IndexOf(">");
+                                    var text = newitem.Insert(iVal, "/");
+                                    sFinalXML += text;
+                                }
+
+                            }
+                            if (include)
+                                strXML = sFinalXML;
+
+
+                            string[] stringSep = new string[] { SGML.Utilities.Constants.variableChapter };
+                            string[] result1 = strXML.Split(stringSep, StringSplitOptions.None);
+                            include = false;
+                            foreach (var item in result1)
+                            {
+                                if (!include)
+                                {
+                                    include = true;
+                                }
+                                else
+                                {
+                                    strXML = SGML.Utilities.Constants.sgmlFirstItem + " " + SGML.Utilities.Constants.variableChapter + item;
+                                }
+                            }
+
+                            #region "Waste"
+                            //XmlDocument document = new XmlDocument();
+                            //document.LoadXml(strXML);
+
+                            //var newstrXml = "";
+                            //newstrXml = strXML;
+
+                            //if (newstrXml.Contains("<COLSPEC"))
+                            //{
+                            //    do
+                            //    {
+
+
+                            //        string v = newstrXml.Substring(newstrXml.IndexOf("<COLSPEC"));
+                            //        string x = v.Substring(v.IndexOf("<COLSPEC"), v.IndexOf(">") - v.IndexOf("<COLSPEC") + 1);
+                            //        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                            //        newstrXml = newstrXml.Replace(x, "");
+
+                            //    }
+                            //    while (newstrXml.Contains("<COLSPEC"));
+                            //    strXML = newstrXml;
+                            //}
+
+                            //strXML = "";
+                            #endregion
+
+                            if (offsize == true)
+                            {
+                                System.Threading.Thread.Sleep(5000);
+                            }
+
+                            XDocument xDoc = XDocument.Parse(strXML);
+                            XDocument xDocNew = null;
+                            if (getChaptercount > 1)
+                            {
+                                xDocNew = XDocument.Parse(getAllChapter);
+                            }
+                            IEnumerable<XElement> elList = from p in xDoc.Root.DescendantsAndSelf() select p;
+
+
+
+
+
+                            #region "Save Tittle"
+                            int ChapterID = Convert.ToInt32(elList.Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault());
+                            string strChapter = "CHAPTER " + (string)elList.Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault();
+                            string strChapterTittle = xDoc.Descendants(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault().Value.ToString();
+                            string CHG = (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault();
+                            string KEY = (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault();
+                            string chpEffect = (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value.ToString() == null ? "0" : (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value;
+                            chapter = new SGMLCHAPTER();
+                            chapter.ChapterID = ChapterID;
+                            chapter.ChapterName = strChapter;
+                            chapter.ChapterTittle = strChapterTittle;
+                            chapter.CHG = CHG;
+                            chapter.Keys = KEY;
+                            chapter.Effect = chpEffect;
+                            extractSGM.lstSGMLCHAPTER.Add(chapter);
+                            #endregion
+
+                            if (getChaptercount > 1)
+                            {
+                                var Chapt = (from p in xDocNew.Root.Descendants()
+                                             where p.Name.LocalName == SGML.Utilities.Constants.sgmlChapter
+                                             select p).ToList();
+                                #region"To Add remaining Chapter in case we have an extra"
+                                for (int i = 0; i < Chapt.Count(); i++)
+                                {
+
+                                    int extraChapterID = Convert.ToInt32(Chapt[i].Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault() == null ? "0" : (string)Chapt[i].Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault());
+                                    if (extraChapterID != ChapterID)
+                                    {
+                                        string extrastrChapter = "CHAPTER " + (string)Chapt[i].Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault();
+                                        string extrastrChapterTittle = xDoc.Descendants(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault().Value.ToString();
+                                        string extraCHG = (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault();
+                                        string extraKEY = (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault();
+                                        string extrachpEffect = (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value.ToString() == null ? "0" : (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value;
+                                        chapter = new SGMLCHAPTER();
+                                        chapter.ChapterID = extraChapterID;
+                                        chapter.ChapterName = extrastrChapter;
+                                        chapter.ChapterTittle = extrastrChapterTittle;
+                                        chapter.CHG = extraCHG;
+                                        chapter.Keys = extraKEY;
+                                        chapter.Effect = extrachpEffect;
+                                        extractSGM.lstSGMLCHAPTER.Add(chapter);
+                                    }
+
+
+                                }
+
+                                #endregion
+                            }
+                            var Section = (from p in xDoc.Root.Descendants()
+                                           where p.Name.LocalName == SGML.Utilities.Constants.sgmlSection
+                                           select p).ToList();
+
+                            var ChapterAgain = (from p in xDoc.Root.Descendants()
+                                                where p.Name.LocalName == SGML.Utilities.Constants.sgmlChapter
+                                                select p).ToList();
+
+
+
+
+                            foreach (var sectionItem in Section)
+                            {
+                                #region "Save Section"
+                                int sectionChapterID = Convert.ToInt32(sectionItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() == null ? "0" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                int sectionSecID = Convert.ToInt32(sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                string sectionName = sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : "SECTION " + sectionItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString();
+                                string sectionTittle = sectionItem.Elements(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault() != null ? sectionItem.Elements(SGML.Utilities.Constants.sgmlTittle).First().Value.ToString() : "";
+                                string sectionKey = sectionItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString() == null ? "0" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                string sectionCHG = sectionItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString() == null ? "No CHG" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                sectionsgml = new SECTIONSGML();
+                                sectionsgml.ChapterID = sectionChapterID;
+                                sectionsgml.CHG = "0";
+                                sectionsgml.KEY = sectionKey;
+                                sectionsgml.SectionID = sectionSecID;
+                                sectionsgml.SectionName = sectionName;
+                                sectionsgml.SectionTittle = sectionTittle;
+                                extractSGM.lstSECTIONSGML.Add(sectionsgml);
+
+
+
+
+                                #endregion
+                                #region
+                                ////So Title Will be inside PRCLIST1
+                                ////Section Tiittle Will be different For Every Item
+                                //string SectionTitle = item.Elements("TITLE").FirstOrDefault() != null ? item.Elements("TITLE").First().Value.ToString() : "";
+                                ////Get One Chapter
+                                //string ChapID = item.Attribute("CHAPNBR").Value.ToString() == null ? "0" : item.Attribute("CHAPNBR").Value.ToString();
+                                //string ChapterID = item.Attribute("CHAPNBR").Value.ToString() == null ? "0" : "CHAPTER" + "  " + item.Attribute("CHAPNBR").Value.ToString();
+                                /////Section ID
+                                //string SECTNBR = item.Attribute("SECTNBR").Value.ToString() == null ? "0" : "SECTION " + item.Attribute("CHAPNBR").Value.ToString() + "-" + "  " + item.Attribute("SECTNBR").Value.ToString();
+                                //string PGBLK = item.Attribute("PGBLKNBR").Value.ToString() == null ? "0" : "PGBLK " + item.Attribute("CHAPNBR").Value.ToString() + "-" + "  " + item.Attribute("SECTNBR").Value.ToString();
+
+                                //Now Get Subject AS Weel With Tittle 
+
+                                ///Query To Get Subject
+                                ///
+                                #endregion
+
+
+                                var getSubject = (from p1 in sectionItem.Descendants()
+                                                  where p1.Name.LocalName == SGML.Utilities.Constants.sgmlSubject
+                                                  select p1).ToList();
+                                foreach (var subjectItem in getSubject)
+                                {
+                                    #region "Save Subject"
+                                    int subjectChapterID = Convert.ToInt32(subjectItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                    int subjectSecID = Convert.ToInt32(subjectItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                    int subjectSubID = Convert.ToInt32(subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString());
+                                    string subjectName = subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() == null ? "0" : "SUBJECT " + subjectItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + subjectItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString();
+                                    string subjectTittle = subjectItem.Elements(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault() != null ? subjectItem.Elements(SGML.Utilities.Constants.sgmlTittle).First().Value.ToString() : "";
+                                    string subjectKey = subjectItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                    string subjectCHG = subjectItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString() == null ? "No CHG" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                    subjectsgml = new SUBJECTSGML();
+                                    subjectsgml.ChapterID = subjectChapterID;
+                                    subjectsgml.CHG = subjectCHG;
+                                    subjectsgml.KEY = subjectKey;
+                                    subjectsgml.SectionID = subjectSecID;
+                                    subjectsgml.SubjectID = subjectSubID;
+                                    subjectsgml.SubjectName = subjectName;
+                                    subjectsgml.SubjectTittle = subjectTittle;
+                                    extractSGM.lstSUBJECTSGML.Add(subjectsgml);
+
+                                    #endregion
+
+
+
+
+
+                                    var getPgblk = (from p in subjectItem.Descendants()
+                                                    where p.Name.LocalName == SGML.Utilities.Constants.sgmlPgblk
+                                                    select p).ToList();
+
+                                    foreach (var pgblkItem in getPgblk)
+                                    {
+                                        #region "Save Pgblk"
+                                        int pgblkChapterID = Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() == null ? "0" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                        int pgblkSecID = Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                        int pgblkSubID = Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() == null ? "0" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString());
+                                        int pgblkID = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber) == null ? 0 : Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString());
+                                        string pgblkCHG = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "NO CHANGE" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                        string pgblkName = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString() == null ? "0" : "PGBLK " + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() + "-" + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString();
+                                        string pgblkTittle = pgblkItem.Elements(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault() != null ? pgblkItem.Elements(SGML.Utilities.Constants.sgmlTittle).First().Value.ToString() : "No Title";
+                                        string pgblkKey = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString() == null ? "No Key" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                        string pgblkEffect = pgblkItem.Elements(SGML.Utilities.Constants.sgmlEffect).FirstOrDefault() != null ? pgblkItem.Elements(SGML.Utilities.Constants.sgmlEffect).First().Value : "No Value";
+                                        //string pgblkEffect = pgblkItem.Elements(SGML.Utilities.Constants.sgmlEffect).FirstOrDefault() != null ? pgblkItem.Elements(SGML.Utilities.Constants.sgmlEffect).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value : "No Value";
+                                        //var pgblkPrcList = pgblkItem.Elements("PRCLIST1").FirstOrDefault() != null ? pgblkItem.Elements("PRCLIST1").First().ToString(): "No Prc List";
+                                        //var pgblkPrcList = pgblkItem.Elements("PRCLIST1").FirstOrDefault() != null ? pgblkItem.Elements("PRCLIST1").First().Value.ToString(): "No Prc List";
+                                        var newPgblk = pgblkItem.ToString();
+
+                                        //var check = string.Join("", pgblkItem.Elements(SGML.Utilities.Constants.sgmlGraphic).ToArray());
+                                        var getAllGraphic = "";
+                                        var getGraphonetime = (from p in pgblkItem.Descendants()
+                                                               where p.Name.LocalName == SGML.Utilities.Constants.sgmlGraphic
+                                                               select p).ToList();
+                                        foreach (var itemGraphic in getGraphonetime)
+                                        {
+                                            getAllGraphic = getAllGraphic + itemGraphic;
+                                        }
+
+                                        var completeCaution = (from p1 in pgblkItem.Descendants()
+                                                               where p1.Name.LocalName == "CAUTION"
+                                                               select p1).ToList();
+                                        var completeWARNING = (from p1 in pgblkItem.Descendants()
+                                                               where p1.Name.LocalName == "WARNING"
+                                                               select p1).ToList();
+
+
+                                        foreach (var item in completeCaution)
+                                        {
+                                            var newItem = Regex.Replace(item.ToString(), @"<[^>]+>|&nbsp;", "").Trim().Replace(";", "");
+                                            if (dsf.Tables[0].Rows.Count > 0)
+                                            {
+                                                var getcautios = from a in dsf.Tables[0].AsEnumerable() where a.Field<string>("ENTITYID") == newItem select a;
+                                                // newPgblk=newPgblk.Replace()
+                                                if (getcautios.Count() > 0)
+                                                    newPgblk = newPgblk.Replace(getcautios.FirstOrDefault().ItemArray[1].ToString(), getcautios.FirstOrDefault().ItemArray[2].ToString());
+                                            }
+
+                                        }
+
+
+                                        foreach (var item in completeWARNING)
+                                        {
+                                            var newItem = Regex.Replace(item.ToString(), @"<[^>]+>|&nbsp;", "").Trim().Replace(";", "");
+                                            if (dsf.Tables[0].Rows.Count > 0)
+                                            {
+                                                var getcautios = from a in dsf.Tables[0].AsEnumerable() where a.Field<string>("ENTITYID") == newItem select a;
+                                                // newPgblk=newPgblk.Replace()
+                                                if (getcautios.Count() > 0)
+                                                    newPgblk = newPgblk.Replace(getcautios.FirstOrDefault().ItemArray[1].ToString(), getcautios.FirstOrDefault().ItemArray[2].ToString());
+                                            }
+
+                                        }
+                                        ///Get Data from Database 
+
+                                        newPgblk = newPgblk.Replace(";</WARNING>", "</WARNING>");
+                                        newPgblk = newPgblk.Replace(";</CAUTION>", "</CAUTION>");
+
+
+
+                                        //var pgblkPrcList = pgblkItem.Elements(SGML.Utilities.Constants.sgmlPriceList).FirstOrDefault() != null ? pgblkItem.Elements(SGML.Utilities.Constants.sgmlPriceList).FirstOrDefault().ToString() : "";
+                                        ////This one i added for B777
+                                        //if (pgblkItem.Elements(SGML.Utilities.Constants.sgmlPBFMATR).FirstOrDefault() != null)
+                                        //{
+                                        //    //pgblkPrcList = pgblkItem.Elements("PBFMATR").FirstOrDefault().Value.ToString();Ingored Because i want the syntax as welll..PBFMATR is added for B777
+
+                                        //    pgblkPrcList = pgblkPrcList + pgblkItem.Elements(SGML.Utilities.Constants.sgmlPBFMATR).FirstOrDefault().ToString();
+                                        //}
+                                        //if (pgblkItem.Elements(SGML.Utilities.Constants.sgmlPriceList).FirstOrDefault() == null)
+                                        //{
+                                        //    StringBuilder sb = new StringBuilder();
+                                        //    var Tasker = (from t in pgblkItem.Descendants() where t.Name.LocalName == SGML.Utilities.Constants.sgmlTask select t).ToList();
+                                        //    var TaskGraphics = (from t in pgblkItem.Descendants() where t.Name.LocalName == SGML.Utilities.Constants.sgmlGraphic select t).ToList();
+
+                                        //    foreach (var item in Tasker)
+                                        //    {
+
+                                        //        var getSubTask = (from p in subjectItem.Descendants()
+                                        //                          where p.Name.LocalName == SGML.Utilities.Constants.sgmlSubTask
+                                        //                          select p).ToList();
+                                        //        //foreach (var itemSubTask in getSubTask)
+                                        //        //{
+                                        //        //    int SubChapterID = Convert.ToInt32(itemSubTask.Attribute("CHAPNBR").Value.ToString() == null ? "0" : itemSubTask.Attribute("CHAPNBR").Value.ToString());
+                                        //        //    int SubSecID = Convert.ToInt32(itemSubTask.Attribute("SECTNBR").Value.ToString() == null ? "0" : itemSubTask.Attribute("SECTNBR").Value.ToString());
+                                        //        //    int SubSubID = Convert.ToInt32(itemSubTask.Attribute("SUBJNBR").Value.ToString() == null ? "0" : itemSubTask.Attribute("SUBJNBR").Value.ToString());
+                                        //        //    int SubpgblkID = itemSubTask.Attribute("PGBLKNBR") == null ? 0 : Convert.ToInt32(itemSubTask.Attribute("PGBLKNBR").Value.ToString());
+                                        //        //    string SubpgblkKey = itemSubTask.Attribute("KEY").Value.ToString() == null ? "No Key" : itemSubTask.Attribute("KEY").Value.ToString();
+
+                                        //        //    subtaskSGML = new SUBTaskSGML();
+                                        //        //    subtaskSGML.CHAPTERID = SubChapterID;
+                                        //        //    subtaskSGML.SECTIONID = SubSecID;
+                                        //        //    subtaskSGML.SUBJECTID = SubSubID;
+                                        //        //    subtaskSGML.PGBLKID = SubpgblkID;
+                                        //        //    subtaskSGML.FUNC = itemSubTask.Attribute("FUNC") == null ? "0" : itemSubTask.Attribute("FUNC").Value.ToString();
+                                        //        //    subtaskSGML.SEQ = itemSubTask.Attribute("SEQ") == null ? "0" : itemSubTask.Attribute("SEQ").Value.ToString();
+                                        //        //    subtaskSGML.KEYSS = SubpgblkKey;
+                                        //        //    subtaskSGML.TaskKey = item.Attribute("KEY") == null ? "0" : item.Attribute("KEY").Value.ToString();
+                                        //        //    subtaskSGML.TaskName = "TASK " + subtaskSGML.CHAPTERID + "-" + subtaskSGML.SECTIONID + "-" + subtaskSGML.SUBJECTID + "-" + subtaskSGML.PGBLKID + "-" + subtaskSGML.FUNC + "-" + subtaskSGML.SEQ;
+                                        //        //    extractSGM.lstSubTaskSGML.Add(subtaskSGML);
+                                        //        //}
+
+
+                                        //        taskSgml = new TaskSGML();
+                                        //        taskSgml.CHAPTERID = pgblkChapterID;
+                                        //        taskSgml.SECTIONID = pgblkSecID;
+                                        //        taskSgml.SUBJECTID = pgblkSubID;
+                                        //        taskSgml.PGBLKID = pgblkID;
+                                        //        taskSgml.FUNC = item.Attribute(SGML.Utilities.Constants.sgmlFunc) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString();
+                                        //        taskSgml.SEQ = item.Attribute(SGML.Utilities.Constants.sgmlSeq) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                        //        taskSgml.KEYSS = item.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                        //        taskSgml.TASKTITLE = item.Elements(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault() != null ? item.Elements(SGML.Utilities.Constants.sgmlTittle).First().Value : "";
+                                        //        taskSgml.TASKNAME = "TASK " + item.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                        //        extractSGM.lstTaskSGML.Add(taskSgml);
+                                        //        sb = sb.Append(item);
+                                        //    }
+                                        //    ///This line i added for A320 when <Graphis is out of task
+                                        //    foreach (var itemGraphics in TaskGraphics)
+                                        //    {
+                                        //        sb = sb.Append(itemGraphics);
+
+                                        //    }
+                                        //    pgblkPrcList = pgblkPrcList + sb.ToString();
+                                        //}
+
+
+                                        pgblksgml = new PGBLKSGML();
+                                        pgblksgml.ChapterID = pgblkChapterID;
+                                        pgblksgml.SectionID = pgblkSecID;
+                                        pgblksgml.SubjectID = pgblkSubID;
+                                        pgblksgml.PGBLKID = pgblkID;
+                                        pgblksgml.PGBLKNAME = pgblkName;
+                                        pgblksgml.PGBLKTITTLE = pgblkTittle;
+                                        pgblksgml.CHG = pgblkCHG;
+                                        pgblksgml.KEY = pgblkKey;
+                                        pgblksgml.CompleteRawDAta = newPgblk;
+                                        pgblksgml.GraphicContent = getAllGraphic.ToString() == "" ? "0" : getAllGraphic.ToString();
+                                        pgblksgml.Effect = pgblkEffect;
+                                        extractSGM.lstPGBLKSGML.Add(pgblksgml);
+                                        var Tasker = (from t in pgblkItem.Descendants() where t.Name.LocalName == SGML.Utilities.Constants.sgmlTask select t).ToList();
+                                        foreach (var item in Tasker)
+                                        {
+                                            taskSgml = new TaskSGML();
+                                            taskSgml.CHAPTERID = pgblkChapterID;
+                                            taskSgml.SECTIONID = pgblkSecID;
+                                            taskSgml.SUBJECTID = pgblkSubID;
+                                            taskSgml.PGBLKID = pgblkID;
+                                            taskSgml.FUNC = item.Attribute(SGML.Utilities.Constants.sgmlFunc) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString();
+                                            taskSgml.SEQ = item.Attribute(SGML.Utilities.Constants.sgmlSeq) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                            taskSgml.KEYSS = item.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                            taskSgml.TASKTITLE = item.Elements(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault() != null ? item.Elements(SGML.Utilities.Constants.sgmlTittle).First().Value : "";
+                                            taskSgml.TASKCHG = item.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "No CHG" : item.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                            taskSgml.TASKNAME = "TASK " + item.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                            taskSgml.PARENTCHG = pgblkCHG;
+                                            extractSGM.lstTaskSGML.Add(taskSgml);
+
+                                        }
+                                        #endregion
+
+
+
+
+                                        var getGraph = (from p in getPgblk.Descendants()
+                                                        where p.Name.LocalName == SGML.Utilities.Constants.sgmlGraphic
+                                                        select p).ToList();
+                                        foreach (var graphItem in getGraph)
+                                        {
+
+                                            ///Put loop and save graph for abhishek in SGL_HTML PGBLK
+                                            ///
+
+
+
+
+
+                                            #region "Save Graph"
+                                            int graphChapterID = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                            int graphSecID = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                            int graphSubID = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString());
+                                            int graphCONFNBR = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlCONFNBR) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlCONFNBR).Value.ToString());
+                                            string graphKEY = graphItem.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                            int graphPGBLKNBR = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber) == null ? "0" : graphItem.Attribute("PGBLKNBR").Value.ToString());
+                                            string graphSEQ = graphItem.Attribute(SGML.Utilities.Constants.sgmlSeq) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                            string graphCHG = graphItem.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "No CHG" : graphItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                            //string graphEffect = "";
+                                            //if (graphItem.Elements("EFFECT").FirstOrDefault().Value.Contains("EFFRG") == false)
+                                            //{
+                                            //    graphEffect = graphItem.Elements("EFFECT").FirstOrDefault() != null ? graphItem.Elements("EFFECT").Attributes("EFFRG").FirstOrDefault().Value : "";
+                                            //}
+                                            //else
+                                            //{
+                                            //    graphEffect = graphItem.Elements("EFFECT").FirstOrDefault().Value.ToString();
+                                            //}
+
+                                            string graphEffect = "Rakesh";
+                                            string graphTittle = graphItem.Elements(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault() != null ? graphItem.Elements(SGML.Utilities.Constants.sgmlTittle).First().Value.ToString() : "";
+                                            graphicsgml = new GraphicSGML();
+                                            graphicsgml.ChapterID = graphChapterID;
+                                            graphicsgml.SectionID = graphSecID;
+                                            graphicsgml.SubjectID = graphSubID;
+                                            graphicsgml.GraphTittle = graphTittle;
+                                            graphicsgml.Effect = graphEffect;
+                                            graphicsgml.SEQ = graphSEQ;
+                                            graphicsgml.GraphCHG = graphCHG;
+                                            graphicsgml.KEY = graphKEY;
+                                            graphicsgml.PGBLKID = graphPGBLKNBR;
+                                            extractSGM.lstGraphicSGML.Add(graphicsgml);
+
+                                            #endregion
+
+                                            var getSheet = (from p in graphItem.Descendants()
+                                                            where p.Name.LocalName == SGML.Utilities.Constants.sgmlSheet
+                                                            select p).ToList();
+
+
+                                            #region
+                                            //int GraphChapterID = Convert.ToInt32(itemaa.Attribute("CHAPNBR").Value.ToString() != null ? "0" : itemaa.Attribute("CHAPNBR").Value.ToString());
+                                            //int GraphKEYID = Convert.ToInt32(itemqq.Attribute("KEY").Value.ToString() == null ? "0" : itemqq.Attribute("KEY").Value.ToString());
+                                            //int GraphPGBLKID = Convert.ToInt32(itemqq.Attribute("PGBLKNBR").Value.ToString() == null ? "0" : itemqq.Attribute("PGBLKNBR").Value.ToString());
+                                            //var GrapherTittle = itemaa.Elements("TITLE").FirstOrDefault() != null ? itemaa.Elements("TITLE").First().Value.ToString() : "";
+                                            //Inside Graph get all sheets 
+                                            #endregion
+
+
+                                            foreach (var sheetItem in getSheet)
+                                            {
+                                                string sheetEffect = "";
+                                                #region"Save Sheet"
+                                                string SheetCFNBR = sheetItem.Attribute(SGML.Utilities.Constants.sgmlCFNBR) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlCFNBR).Value.ToString();
+                                                string SheetGNBR = sheetItem.Attribute(SGML.Utilities.Constants.sgmlGNBR) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlGNBR).Value.ToString();
+                                                string SheetIMGAREA = sheetItem.Attribute(SGML.Utilities.Constants.sgmlIMGAREA) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlIMGAREA).Value.ToString();
+                                                string SheetKEY = sheetItem.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                                string SheetSHEETNBR = sheetItem.Attribute(SGML.Utilities.Constants.sgmlSHEETNBR) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlSHEETNBR).Value.ToString();
+                                                string sheetTittle = sheetItem.Elements(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault() != null ? sheetItem.Elements(SGML.Utilities.Constants.sgmlTittle).First().Value.ToString() : "";
+                                                if (sheetItem.Elements(SGML.Utilities.Constants.sgmlEffect).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault() != null)
+                                                {
+                                                    sheetEffect = sheetItem.Elements(SGML.Utilities.Constants.sgmlEffect).FirstOrDefault() != null ? sheetItem.Elements(SGML.Utilities.Constants.sgmlEffect).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value : "";
+                                                }
+                                                else
+                                                {
+                                                    sheetEffect = "";
+
+                                                }
+                                                string SheetCHG = sheetItem.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "No CHG" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+
+                                                sheetsgml = new SheetSGML();
+                                                sheetsgml.ChapterID = graphChapterID;
+                                                sheetsgml.SectionID = graphSecID;
+                                                sheetsgml.SubjectID = graphSubID;
+                                                sheetsgml.PGBLKID = graphPGBLKNBR;
+                                                sheetsgml.GraphID = 0;
+                                                sheetsgml.CFNBR = SheetCFNBR;
+                                                sheetsgml.GNBR = SheetGNBR;
+                                                sheetsgml.IMGAREA = SheetIMGAREA;
+                                                sheetsgml.KEY = SheetKEY;
+                                                sheetsgml.SHEETNBR = SheetSHEETNBR;
+                                                sheetsgml.Effect = sheetEffect;
+                                                sheetsgml.CHG = SheetCHG;
+                                                sheetsgml.SheetTittle = sheetTittle;
+                                                extractSGM.lstSheetSGML.Add(sheetsgml);
+                                                #endregion
+                                            }
+                                        }
+                                    }
+                                }
+                                extractSGM.lstSGMTool.Add(data);
+                                lstExtractSGM.Add(extractSGM);
+                            }
+                        }
+
+                        savesgmldata(lstExtractSGM, filename, getTypeID);
+                        extractSGM = null;
+                        lstExtractSGM = null;
+                        System.Threading.Thread.Sleep(5000);
+                    }
+                    #endregion
+
+                    #region "Small Letter"
+
+                    else
+                    {
+                        if (strXML.Contains(SGML.Utilities.Constants.variableChapter.ToLower()))
+                        {
+
+
+                            ///From Here Write The COmplete content in DatabAse
+                            ///
+
+
+                            int getChaptercount = Regex.Matches(strXML, SGML.Utilities.Constants.variableChapter.ToLower()).Count;
+                            iFileProcess++;
+                            int test = 12;
+                            // if (test == 12)
+                            // {
+                            var getAllChapter = "";
+                            if (getChaptercount > 1)
+                            {
+                                getAllChapter = strXML.Replace("<revst>", "").Replace("<revend>", "").Replace("t</", "t></").Replace("&", "");
+                                //For Getting All Chapter in A page 
+                                string[] stringSeparators2 = new string[] { "<deleted", "<taskreq", "<sbeff", "<colspec", "<spanspec", "<torvalue", "<grsymbol", "<cocend", "<cocst", "<coceff" };
+                                string[] result2 = getAllChapter.Split(stringSeparators2, StringSplitOptions.None);
+                                string sFinalXML2 = string.Empty;
+                                int ij2 = 0;
+                                bool include2 = false;
+                                var resultset2 = "";
+                                var _item2 = "";
+                                foreach (var item2 in result2)
+                                {
+                                    var newitem2 = item2;
+                                    _item2 = item2;
+
+
+                                    //for (int il = 0; il < stringSeparators2.Length; il++)
+                                    //{
+                                    //    if (_item2.Contains(stringSeparators2[il]))
+                                    //    {
+                                    //        do
+                                    //        {
+
+
+                                    //            string v2 = _item2.Substring(_item2.IndexOf(stringSeparators2[il]));
+                                    //            string x2 = v2.Substring(v2.IndexOf(stringSeparators2[il]), v2.IndexOf(">") - v2.IndexOf(stringSeparators2[il]) + 1);
+                                    //            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                    //            _item2 = _item2.Replace(x2, "");
+
+                                    //        }
+                                    //        while (_item2.Contains(stringSeparators2[il]));
+                                    //        newitem2 = _item2;
+                                    //    }
+                                    //}
+
+
+                                    #region sdfsdf
+                                    if (_item2.Contains("<colspec"))
+                                    {
+                                        do
+                                        {
+
+
+                                            string v2 = _item2.Substring(_item2.IndexOf("<colspec"));
+                                            string x2 = v2.Substring(v2.IndexOf("<colspec"), v2.IndexOf(">") - v2.IndexOf("<colspec") + 1);
+                                            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                            _item2 = _item2.Replace(x2, "");
+
+                                        }
+                                        while (_item2.Contains("<colspec"));
+                                        newitem2 = _item2;
+                                    }
+
+                                    if (_item2.Contains("<spanspec"))
+                                    {
+                                        do
+                                        {
+                                            string v2 = _item2.Substring(_item2.IndexOf("<spanspec"));
+                                            string x2 = v2.Substring(v2.IndexOf("<spanspec"), v2.IndexOf(">") - v2.IndexOf("<spanspec") + 1);
+                                            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                            _item2 = _item2.Replace(x2, "");
+                                        }
+                                        while (_item2.Contains("<spanspec"));
+                                        newitem2 = _item2;
+                                    }
+                                    #endregion
+
+
+                                    include2 = true;
+                                    if (ij2 == 0)
+                                    {
+                                        sFinalXML2 += newitem2;
+                                        ij2++;
+                                    }
+                                    else
+                                    {
+                                        int iVal2 = newitem2.IndexOf(">");
+                                        string text2 = newitem2.Insert(iVal2, "/");
+                                        sFinalXML2 += text2;
+                                    }
+                                }
+                                if (include2)
+                                    getAllChapter = sFinalXML2;
+
+
+                                string[] stringSep2 = new string[] { SGML.Utilities.Constants.variableChapter.ToLower() };
+                                string[] result12 = getAllChapter.Split(stringSep2, StringSplitOptions.None);
+                                include2 = false;
+                                foreach (var item12 in result12)
+                                {
+                                    if (!include2)
+                                    {
+                                        include2 = true;
+                                    }
+                                    else
+                                    {
+                                        getAllChapter = SGML.Utilities.Constants.sgmlFirstItem + " " + SGML.Utilities.Constants.variableChapter.ToLower() + item12;
+                                    }
+                                }
+
+                                //End
+
+
+                            }
+
+
+                            if (offsize == true)
+                            {
+                                System.Threading.Thread.Sleep(5000);
+                            }
+
+                            strXML = strXML.Replace("<revst>", "").Replace("<revend>", "").Replace("T</", "T></").Replace("&", "").Replace("</chapter>", "");
+                            //B777 Ammm we have added "<COCEND","<COCST"
+                            string[] stringSeparators1 = new string[] { "<deleted", "<taskreq", "<sbeff", "<spanspec", "<torvalue", "<grsymbol", "<chapter", "<cocend", "<cocst" };//, "<CHAPTER"
+                            string[] result = strXML.Split(stringSeparators1, StringSplitOptions.None);
+                            var sFinalXML = string.Empty;
+                            int ij = 0;
+                            bool include = false;
+
+                            var _item = "";
+                            foreach (var item in result)
+                            {
+
+                                var newitem = item;
+                                _item = item;
+                                //for (int il = 0; il < stringSeparators1.Length; il++)
+                                //{
+                                //    if (_item.Contains(stringSeparators1[il]))
+                                //    {
+                                //        do
+                                //        {
+
+
+                                //            string v2 = _item.Substring(_item.IndexOf(stringSeparators1[il]));
+                                //            string x2 = v2.Substring(v2.IndexOf(stringSeparators1[il]), v2.IndexOf(">") - v2.IndexOf(stringSeparators1[il]) + 1);
+                                //            //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                //            _item = _item.Replace(x2, "");
+
+                                //        }
+                                //        while (_item.Contains(stringSeparators1[il]));
+                                //        newitem = _item;
+                                //    }
+                                //}
+                                #region "sdads"
+                                if (_item.Contains("<colspec"))
+                                {
+                                    do
+                                    {
+
+
+                                        string v = _item.Substring(_item.IndexOf("<colspec"));
+                                        string x = v.Substring(v.IndexOf("<colspec"), v.IndexOf(">") - v.IndexOf("<colspec") + 1);
+                                        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                        _item = _item.Replace(x, "");
+
+                                    }
+                                    while (_item.Contains("<colspec"));
+                                    newitem = _item;
+                                }
+
+                                if (_item.Contains("<spanspec"))
+                                {
+                                    do
+                                    {
+                                        string v2 = _item.Substring(_item.IndexOf("<spanspec"));
+                                        string x2 = v2.Substring(v2.IndexOf("<spanspec"), v2.IndexOf(">") - v2.IndexOf("<spanspec") + 1);
+                                        //string x = item.Substring(item.IndexOf("<COLSPEC"), item.IndexOf(">") - item.IndexOf("<COLSPEC") + 1);
+                                        _item = _item.Replace(x2, "");
+                                    }
+                                    while (_item.Contains("<spanspec"));
+                                    newitem = _item;
+                                }
+                                #endregion
+
+
+                                include = true;
+                                if (ij == 0)
+                                {
+                                    sFinalXML += newitem;
+                                    ij++;
+                                }
+                                else
+                                {
+                                    int iVal = newitem.IndexOf(">");
+                                    var text = newitem.Insert(iVal, "/");
+                                    sFinalXML += text;
+                                }
+                            }
+                            if (include)
+                                strXML = sFinalXML;
+
+
+                            string[] stringSep = new string[] { SGML.Utilities.Constants.variableChapter.ToLower() };
+                            string[] result1 = strXML.Split(stringSep, StringSplitOptions.None);
+                            include = false;
+                            foreach (var item in result1)
+                            {
+                                if (!include)
+                                {
+                                    include = true;
+                                }
+                                else
+                                {
+                                    strXML = SGML.Utilities.Constants.sgmlFirstItem + " " + SGML.Utilities.Constants.variableChapter.ToLower() + item;
+                                }
+                            }
+
+
+                            if (offsize == true)
+                            {
+                                System.Threading.Thread.Sleep(5000);
+                            }
+
+                            XDocument xDoc = XDocument.Parse(strXML);
+                            XDocument xDocNew = null;
+                            if (getChaptercount > 1)
+                            {
+                                xDocNew = XDocument.Parse(getAllChapter);
+                            }
+                            IEnumerable<XElement> elList = from p in xDoc.Root.DescendantsAndSelf() select p;
+
+
+
+
+
+                            #region "Save Tittle"
+                            int ChapterID = Convert.ToInt32(elList.Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault());
+                            string strChapter = "CHAPTER " + (string)elList.Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault();
+                            string strChapterTittle = xDoc.Descendants(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault().Value.ToString();
+                            string CHG = (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault();
+                            string KEY = (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault();
+                            string chpEffect = (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value.ToString() == null ? "0" : (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value;
+                            chapter = new SGMLCHAPTER();
+                            chapter.ChapterID = ChapterID;
+                            chapter.ChapterName = strChapter;
+                            chapter.ChapterTittle = strChapterTittle;
+                            chapter.CHG = CHG;
+                            chapter.Effect = chpEffect;
+                            extractSGM.lstSGMLCHAPTER.Add(chapter);
+                            #endregion
+
+                            if (getChaptercount > 1)
+                            {
+                                var Chapt = (from p in xDocNew.Root.Descendants()
+                                             where p.Name.LocalName == SGML.Utilities.Constants.sgmlChapter.ToLower()
+                                             select p).ToList();
+                                #region"To Add remaining Chapter in case we have an extra"
+                                for (int i = 0; i < Chapt.Count(); i++)
+                                {
+
+                                    int extraChapterID = Convert.ToInt32(Chapt[i].Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault() == null ? "0" : (string)Chapt[i].Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault());
+                                    if (extraChapterID != ChapterID)
+                                    {
+                                        string extrastrChapter = "CHAPTER " + (string)Chapt[i].Attributes(SGML.Utilities.Constants.sgmlchapterNumber).FirstOrDefault();
+                                        string extrastrChapterTittle = xDoc.Descendants(SGML.Utilities.Constants.sgmlTittle).FirstOrDefault().Value.ToString();
+                                        string extraCHG = (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlChg).FirstOrDefault();
+                                        string extraKEY = (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault() == null ? "0" : (string)elList.Attributes(SGML.Utilities.Constants.sgmlKey).FirstOrDefault();
+                                        string extrachpEffect = (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value.ToString() == null ? "0" : (string)elList.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value;
+                                        chapter = new SGMLCHAPTER();
+                                        chapter.ChapterID = extraChapterID;
+                                        chapter.ChapterName = extrastrChapter;
+                                        chapter.ChapterTittle = extrastrChapterTittle;
+                                        chapter.CHG = extraCHG;
+                                        chapter.Effect = extrachpEffect;
+                                        extractSGM.lstSGMLCHAPTER.Add(chapter);
+                                    }
+
+
+                                }
+
+                                #endregion
+                            }
+                            var Section = (from p in xDoc.Root.Descendants()
+                                           where p.Name.LocalName == SGML.Utilities.Constants.sgmlSection.ToLower()
+                                           select p).ToList();
+
+                            var ChapterAgain = (from p in xDoc.Root.Descendants()
+                                                where p.Name.LocalName == SGML.Utilities.Constants.sgmlChapter.ToLower()
+                                                select p).ToList();
+
+
+
+
+                            foreach (var sectionItem in Section)
+                            {
+                                #region "Save Section"
+                                int sectionChapterID = Convert.ToInt32(sectionItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() == null ? "0" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                int sectionSecID = Convert.ToInt32(sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                string sectionName = sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : "SECTION " + sectionItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + sectionItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString();
+                                string sectionTittle = sectionItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault() != null ? sectionItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).First().Value.ToString() : "";
+                                string sectionKey = sectionItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString() == null ? "0" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                string sectionCHG = sectionItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString() == null ? "No CHG" : sectionItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+
+                                sectionsgml = new SECTIONSGML();
+                                sectionsgml.ChapterID = sectionChapterID;
+                                sectionsgml.CHG = "0";
+                                sectionsgml.KEY = sectionKey;
+                                sectionsgml.SectionID = sectionSecID;
+                                sectionsgml.SectionName = sectionName;
+                                sectionsgml.SectionTittle = sectionTittle;
+                                extractSGM.lstSECTIONSGML.Add(sectionsgml);
+
+
+
+
+                                #endregion
+                                #region
+                                ////So Title Will be inside PRCLIST1
+                                ////Section Tiittle Will be different For Every Item
+                                //string SectionTitle = item.Elements("TITLE").FirstOrDefault() != null ? item.Elements("TITLE").First().Value.ToString() : "";
+                                ////Get One Chapter
+                                //string ChapID = item.Attribute("CHAPNBR").Value.ToString() == null ? "0" : item.Attribute("CHAPNBR").Value.ToString();
+                                //string ChapterID = item.Attribute("CHAPNBR").Value.ToString() == null ? "0" : "CHAPTER" + "  " + item.Attribute("CHAPNBR").Value.ToString();
+                                /////Section ID
+                                //string SECTNBR = item.Attribute("SECTNBR").Value.ToString() == null ? "0" : "SECTION " + item.Attribute("CHAPNBR").Value.ToString() + "-" + "  " + item.Attribute("SECTNBR").Value.ToString();
+                                //string PGBLK = item.Attribute("PGBLKNBR").Value.ToString() == null ? "0" : "PGBLK " + item.Attribute("CHAPNBR").Value.ToString() + "-" + "  " + item.Attribute("SECTNBR").Value.ToString();
+
+                                //Now Get Subject AS Weel With Tittle 
+
+                                ///Query To Get Subject
+                                ///
+                                #endregion
+
+
+                                var getSubject = (from p1 in sectionItem.Descendants()
+                                                  where p1.Name.LocalName == SGML.Utilities.Constants.sgmlSubject.ToLower()
+                                                  select p1).ToList();
+                                foreach (var subjectItem in getSubject)
+                                {
+                                    #region "Save Subject"
+                                    int subjectChapterID = Convert.ToInt32(subjectItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                    int subjectSecID = Convert.ToInt32(subjectItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                    int subjectSubID = Convert.ToInt32(subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString());
+                                    string subjectName = subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() == null ? "0" : "SUBJECT " + subjectItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + subjectItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + subjectItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString();
+                                    string subjectTittle = subjectItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault() != null ? subjectItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).First().Value.ToString() : "";
+                                    string subjectKey = subjectItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString() == null ? "0" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                    string subjectCHG = subjectItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString() == null ? "No CHG" : subjectItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                    subjectsgml = new SUBJECTSGML();
+                                    subjectsgml.ChapterID = subjectChapterID;
+                                    subjectsgml.CHG = subjectCHG;
+                                    subjectsgml.KEY = subjectKey;
+                                    subjectsgml.SectionID = subjectSecID;
+                                    subjectsgml.SubjectID = subjectSubID;
+                                    subjectsgml.SubjectName = subjectName;
+                                    subjectsgml.SubjectTittle = subjectTittle;
+                                    extractSGM.lstSUBJECTSGML.Add(subjectsgml);
+
+                                    #endregion
+
+
+
+
+
+                                    var getPgblk = (from p in subjectItem.Descendants()
+                                                    where p.Name.LocalName == SGML.Utilities.Constants.sgmlPgblk.ToLower()
+                                                    select p).ToList();
+
+                                    foreach (var pgblkItem in getPgblk)
+                                    {
+                                        #region "Save Pgblk"
+                                        int pgblkChapterID = Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() == null ? "0" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                        int pgblkSecID = Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() == null ? "0" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                        int pgblkSubID = Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() == null ? "0" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString());
+                                        int pgblkID = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber) == null ? 0 : Convert.ToInt32(pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString());
+                                        string pgblkCHG = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "NO CHG" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                        string pgblkName = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString() == null ? "0" : "PGBLK " + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() + "-" + pgblkItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString();
+                                        string pgblkTittle = pgblkItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault() != null ? pgblkItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).First().Value.ToString() : "No Title";
+                                        string pgblkKey = pgblkItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString() == null ? "No Key" : pgblkItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                        string pgblkEffect = pgblkItem.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).FirstOrDefault() != null ? pgblkItem.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value : "No Value";
+                                        var completePgblk = pgblkItem.ToString();
+                                        var getAllGraphic = "";
+                                        var getGraphonetime = (from p in pgblkItem.Descendants()
+                                                               where p.Name.LocalName == SGML.Utilities.Constants.sgmlGraphic.ToLower()
+                                                               select p).ToList();
+                                        foreach (var itemGraphic in getGraphonetime)
+                                        {
+                                            getAllGraphic = getAllGraphic + itemGraphic;
+                                        }
+
+                                        pgblksgml = new PGBLKSGML();
+                                        pgblksgml.ChapterID = pgblkChapterID;
+                                        pgblksgml.SectionID = pgblkSecID;
+                                        pgblksgml.SubjectID = pgblkSubID;
+                                        pgblksgml.PGBLKID = pgblkID;
+                                        pgblksgml.PGBLKNAME = pgblkName;
+                                        pgblksgml.PGBLKTITTLE = pgblkTittle;
+                                        pgblksgml.CHG = pgblkCHG;
+                                        pgblksgml.KEY = pgblkKey;
+                                        pgblksgml.CompleteRawDAta = completePgblk;
+                                        pgblksgml.GraphicContent = getAllGraphic.ToString() == "" ? "0" : getAllGraphic.ToString();
+                                        pgblksgml.Effect = pgblkEffect;
+                                        extractSGM.lstPGBLKSGML.Add(pgblksgml);
+
+
+                                        var Tasker = (from t in pgblkItem.Descendants() where t.Name.LocalName == SGML.Utilities.Constants.sgmlTask.ToLower() select t).ToList();
+
+                                        foreach (var item in Tasker)
+                                        {
+                                            taskSgml = new TaskSGML();
+                                            taskSgml.CHAPTERID = pgblkChapterID;
+                                            taskSgml.SECTIONID = pgblkSecID;
+                                            taskSgml.SUBJECTID = pgblkSubID;
+                                            taskSgml.PGBLKID = pgblkID;
+                                            taskSgml.FUNC = item.Attribute(SGML.Utilities.Constants.sgmlFunc) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString();
+                                            taskSgml.SEQ = item.Attribute(SGML.Utilities.Constants.sgmlSeq) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                            taskSgml.KEYSS = item.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                            taskSgml.TASKTITLE = item.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault() != null ? item.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).First().Value : "";
+                                            taskSgml.TASKCHG = item.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "No CHG" : item.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                            taskSgml.TASKNAME = "TASK " + item.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                            taskSgml.PARENTCHG = pgblkCHG;
+                                            extractSGM.lstTaskSGML.Add(taskSgml);
+
+                                        }
+                                        //var pgblkPrcList = pgblkItem.Elements("PRCLIST1").FirstOrDefault() != null ? pgblkItem.Elements("PRCLIST1").First().ToString(): "No Prc List";
+                                        //var pgblkPrcList = pgblkItem.Elements("PRCLIST1").FirstOrDefault() != null ? pgblkItem.Elements("PRCLIST1").First().Value.ToString(): "No Prc List";
+
+                                        /// Here we have to find A320  Adn Replace Caution and 
+                                        /// now we have find all caution and Warning and Replace With My text 
+
+                                        //var completeCaution = (from p1 in pgblkItem.Descendants()
+                                        //                       where p1.Name.LocalName == "CAUTION"
+                                        //                       select p1).ToList();
+                                        //var completeWARNING = (from p1 in pgblkItem.Descendants()
+                                        //                       where p1.Name.LocalName == "WARNING"
+                                        //                       select p1).ToList();
+
+
+
+
+                                        //var newPgblk = pgblkItem.ToString();
+
+                                        #region "Uncomment When Caution and Warning is Outside "
+                                        //var newPgblk = pgblkItem.ToString();
+                                        //var completeCaution = (from p1 in pgblkItem.Descendants()
+                                        //                       where p1.Name.LocalName == "CAUTION"
+                                        //                       select p1).ToList();
+                                        //var completeWARNING = (from p1 in pgblkItem.Descendants()
+                                        //                       where p1.Name.LocalName == "WARNING"
+                                        //                       select p1).ToList();
+                                        //foreach (var item in completeCaution)
+                                        //{
+                                        //    var newItem = Regex.Replace(item.ToString(), @"<[^>]+>|&nbsp;", "").Trim().Replace(";", "");
+                                        //    var getcautios = from a in dsf.Tables[0].AsEnumerable() where a.Field<string>("ENTITYID") == newItem select a;
+                                        //    // newPgblk=newPgblk.Replace()
+                                        //    newPgblk = newPgblk.Replace(getcautios.FirstOrDefault().ItemArray[1].ToString(), getcautios.FirstOrDefault().ItemArray[2].ToString());
+
+                                        //}
+
+
+                                        //foreach (var item in completeWARNING)
+                                        //{
+                                        //    var newItem = Regex.Replace(item.ToString(), @"<[^>]+>|&nbsp;", "").Trim().Replace(";", "");
+                                        //    var getcautios = from a in dsf.Tables[0].AsEnumerable() where a.Field<string>("ENTITYID") == newItem select a;
+                                        //    // newPgblk=newPgblk.Replace()
+                                        //    newPgblk = newPgblk.Replace(getcautios.FirstOrDefault().ItemArray[1].ToString(), getcautios.FirstOrDefault().ItemArray[2].ToString());
+
+                                        //}
+                                        //newPgblk = newPgblk.Replace(";</WARNING>", "</WARNING>");
+                                        //newPgblk = newPgblk.Replace(";</CAUTION>", "</CAUTION>");
+
+                                        #endregion
+
+
+                                        // DataSet dsf = getDataTableData();
+
+
+                                        ///Get Data from Database 
+
+
+                                        //var pgblkPrcList = pgblkItem.Elements(SGML.Utilities.Constants.sgmlPriceList.ToLower()).FirstOrDefault() != null ? pgblkItem.Elements(SGML.Utilities.Constants.sgmlPriceList.ToLower()).FirstOrDefault().ToString() : "";
+                                        ////This one i added for B777
+                                        //if (pgblkItem.Elements(SGML.Utilities.Constants.sgmlPBFMATR.ToLower()).FirstOrDefault() != null)
+                                        //{
+                                        //    //pgblkPrcList = pgblkItem.Elements("PBFMATR").FirstOrDefault().Value.ToString();Ingored Because i want the syntax as welll..PBFMATR is added for B777
+                                        //    //New Commented Line
+                                        //    pgblkPrcList = pgblkPrcList + pgblkItem.Elements(SGML.Utilities.Constants.sgmlPBFMATR.ToLower()).FirstOrDefault().ToString();
+                                        //}
+                                        //if (pgblkItem.Elements(SGML.Utilities.Constants.sgmlPriceList.ToLower()).FirstOrDefault() == null)
+                                        //{
+                                        //    //StringBuilder sb = new StringBuilder();
+                                        //    //var Tasker = (from t in pgblkItem.Descendants() where t.Name.LocalName == SGML.Utilities.Constants.sgmlTask.ToLower() select t).ToList();
+                                        //   // var TaskGraphics = (from t in pgblkItem.Descendants() where t.Name.LocalName == SGML.Utilities.Constants.sgmlGraphic.ToLower() select t).ToList();
+
+                                        //    foreach (var item in Tasker)
+                                        //    {
+
+                                        //        var getSubTask = (from p in subjectItem.Descendants()
+                                        //                          where p.Name.LocalName == SGML.Utilities.Constants.sgmlSubTask.ToLower()
+                                        //                          select p).ToList();
+                                        //        #region "If You Need SubTask"
+                                        //        //foreach (var itemSubTask in getSubTask)
+                                        //        //{
+                                        //        //    int SubChapterID = Convert.ToInt32(itemSubTask.Attribute("CHAPNBR").Value.ToString() == null ? "0" : itemSubTask.Attribute("CHAPNBR").Value.ToString());
+                                        //        //    int SubSecID = Convert.ToInt32(itemSubTask.Attribute("SECTNBR").Value.ToString() == null ? "0" : itemSubTask.Attribute("SECTNBR").Value.ToString());
+                                        //        //    int SubSubID = Convert.ToInt32(itemSubTask.Attribute("SUBJNBR").Value.ToString() == null ? "0" : itemSubTask.Attribute("SUBJNBR").Value.ToString());
+                                        //        //    int SubpgblkID = itemSubTask.Attribute("PGBLKNBR") == null ? 0 : Convert.ToInt32(itemSubTask.Attribute("PGBLKNBR").Value.ToString());
+                                        //        //    string SubpgblkKey = itemSubTask.Attribute("KEY").Value.ToString() == null ? "No Key" : itemSubTask.Attribute("KEY").Value.ToString();
+
+                                        //        //    subtaskSGML = new SUBTaskSGML();
+                                        //        //    subtaskSGML.CHAPTERID = SubChapterID;
+                                        //        //    subtaskSGML.SECTIONID = SubSecID;
+                                        //        //    subtaskSGML.SUBJECTID = SubSubID;
+                                        //        //    subtaskSGML.PGBLKID = SubpgblkID;
+                                        //        //    subtaskSGML.FUNC = itemSubTask.Attribute("FUNC") == null ? "0" : itemSubTask.Attribute("FUNC").Value.ToString();
+                                        //        //    subtaskSGML.SEQ = itemSubTask.Attribute("SEQ") == null ? "0" : itemSubTask.Attribute("SEQ").Value.ToString();
+                                        //        //    subtaskSGML.KEYSS = SubpgblkKey;
+                                        //        //    subtaskSGML.TaskKey = item.Attribute("KEY") == null ? "0" : item.Attribute("KEY").Value.ToString();
+                                        //        //    subtaskSGML.TaskName = "TASK " + subtaskSGML.CHAPTERID + "-" + subtaskSGML.SECTIONID + "-" + subtaskSGML.SUBJECTID + "-" + subtaskSGML.PGBLKID + "-" + subtaskSGML.FUNC + "-" + subtaskSGML.SEQ;
+                                        //        //    extractSGM.lstSubTaskSGML.Add(subtaskSGML);
+                                        //        //}
+
+                                        //        #endregion
+
+
+                                        //        taskSgml = new TaskSGML();
+                                        //        taskSgml.CHAPTERID = pgblkChapterID;
+                                        //        taskSgml.SECTIONID = pgblkSecID;
+                                        //        taskSgml.SUBJECTID = pgblkSubID;
+                                        //        taskSgml.PGBLKID = pgblkID;
+                                        //        taskSgml.FUNC = item.Attribute(SGML.Utilities.Constants.sgmlFunc) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString();
+                                        //        taskSgml.SEQ = item.Attribute(SGML.Utilities.Constants.sgmlSeq) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                        //        taskSgml.KEYSS = item.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : item.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                        //        taskSgml.TASKTITLE = item.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault() != null ? item.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).First().Value : "";
+                                        //        taskSgml.TASKCHG = item.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "No CHG" : item.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                        //        taskSgml.TASKNAME = "TASK " + item.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlFunc).Value.ToString() + "-" + item.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                        //        extractSGM.lstTaskSGML.Add(taskSgml);
+                                        //        sb = sb.Append(item);
+                                        //    }
+
+                                        //    foreach (var itemGraphics in TaskGraphics)
+                                        //    {
+                                        //        sb = sb.Append(itemGraphics);
+
+                                        //    }
+                                        //  //  pgblkPrcList = pgblkPrcList + sb.ToString();
+                                        //}
+
+
+                                        //pgblksgml = new PGBLKSGML();
+                                        //pgblksgml.ChapterID = pgblkChapterID;
+                                        //pgblksgml.SectionID = pgblkSecID;
+                                        //pgblksgml.SubjectID = pgblkSubID;
+                                        //pgblksgml.PGBLKID = pgblkID;
+                                        //pgblksgml.PGBLKNAME = pgblkName;
+                                        //pgblksgml.PGBLKTITTLE = pgblkTittle;
+                                        //pgblksgml.CHG = pgblkCHG;
+                                        //pgblksgml.KEY = pgblkKey;
+                                        //pgblksgml.CompleteRawDAta = completePgblk;
+                                        //pgblksgml.Effect = pgblkEffect;
+                                        //extractSGM.lstPGBLKSGML.Add(pgblksgml);
+
+                                        #endregion
+
+
+
+
+                                        var getGraph = (from p in getPgblk.Descendants()
+                                                        where p.Name.LocalName == SGML.Utilities.Constants.sgmlGraphic.ToLower()
+                                                        select p).ToList();
+                                        foreach (var graphItem in getGraph)
+                                        {
+
+                                            #region "Save Graph"
+                                            int graphChapterID = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlchapterNumber).Value.ToString());
+                                            int graphSecID = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlSectionNumber).Value.ToString());
+                                            int graphSubID = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlSubjectNumber).Value.ToString());
+                                            int graphCONFNBR = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlCONFNBR) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlCONFNBR).Value.ToString());
+                                            string graphKEY = graphItem.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                            int graphPGBLKNBR = Convert.ToInt32(graphItem.Attribute(SGML.Utilities.Constants.sgmlPgblkNumber) == null ? "0" : graphItem.Attribute("PGBLKNBR").Value.ToString());
+                                            string graphSEQ = graphItem.Attribute(SGML.Utilities.Constants.sgmlSeq) == null ? "0" : graphItem.Attribute(SGML.Utilities.Constants.sgmlSeq).Value.ToString();
+                                            string graphCHG = graphItem.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "No CHG" : graphItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                            //string graphEffect = "";
+                                            //if (graphItem.Elements("EFFECT").FirstOrDefault().Value.Contains("EFFRG") == false)
+                                            //{
+                                            //    graphEffect = graphItem.Elements("EFFECT").FirstOrDefault() != null ? graphItem.Elements("EFFECT").Attributes("EFFRG").FirstOrDefault().Value : "";
+                                            //}
+                                            //else
+                                            //{
+                                            //    graphEffect = graphItem.Elements("EFFECT").FirstOrDefault().Value.ToString();
+                                            //}
+
+                                            string graphEffect = "Rakesh";
+                                            string graphTittle = graphItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault() != null ? graphItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).First().Value.ToString() : "";
+                                            graphicsgml = new GraphicSGML();
+                                            graphicsgml.ChapterID = graphChapterID;
+                                            graphicsgml.SectionID = graphSecID;
+                                            graphicsgml.SubjectID = graphSubID;
+                                            graphicsgml.GraphTittle = graphTittle;
+                                            graphicsgml.Effect = graphEffect;
+                                            graphicsgml.SEQ = graphSEQ;
+                                            graphicsgml.GraphCHG = graphCHG;
+                                            graphicsgml.KEY = graphKEY;
+                                            graphicsgml.PGBLKID = graphPGBLKNBR;
+                                            extractSGM.lstGraphicSGML.Add(graphicsgml);
+
+                                            #endregion
+
+                                            var getSheet = (from p in graphItem.Descendants()
+                                                            where p.Name.LocalName == SGML.Utilities.Constants.sgmlSheet.ToLower()
+                                                            select p).ToList();
+
+
+                                            #region
+                                            //int GraphChapterID = Convert.ToInt32(itemaa.Attribute("CHAPNBR").Value.ToString() != null ? "0" : itemaa.Attribute("CHAPNBR").Value.ToString());
+                                            //int GraphKEYID = Convert.ToInt32(itemqq.Attribute("KEY").Value.ToString() == null ? "0" : itemqq.Attribute("KEY").Value.ToString());
+                                            //int GraphPGBLKID = Convert.ToInt32(itemqq.Attribute("PGBLKNBR").Value.ToString() == null ? "0" : itemqq.Attribute("PGBLKNBR").Value.ToString());
+                                            //var GrapherTittle = itemaa.Elements("TITLE").FirstOrDefault() != null ? itemaa.Elements("TITLE").First().Value.ToString() : "";
+                                            //Inside Graph get all sheets 
+                                            #endregion
+
+
+                                            foreach (var sheetItem in getSheet)
+                                            {
+                                                #region"Save Sheet"
+                                                string SheetCFNBR = sheetItem.Attribute(SGML.Utilities.Constants.sgmlCFNBR) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlCFNBR).Value.ToString();
+                                                string SheetGNBR = sheetItem.Attribute(SGML.Utilities.Constants.sgmlGNBR) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlGNBR).Value.ToString();
+                                                string SheetIMGAREA = sheetItem.Attribute(SGML.Utilities.Constants.sgmlIMGAREA) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlIMGAREA).Value.ToString();
+                                                string SheetKEY = sheetItem.Attribute(SGML.Utilities.Constants.sgmlKey) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlKey).Value.ToString();
+                                                string SheetSHEETNBR = sheetItem.Attribute(SGML.Utilities.Constants.sgmlSHEETNBR) == null ? "0" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlSHEETNBR).Value.ToString();
+                                                string sheetTittle = sheetItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).FirstOrDefault() != null ? sheetItem.Elements(SGML.Utilities.Constants.sgmlTittle.ToLower()).First().Value.ToString() : "";
+                                                string sheetEffect = sheetItem.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).FirstOrDefault() != null ? sheetItem.Elements(SGML.Utilities.Constants.sgmlEffect.ToLower()).Attributes(SGML.Utilities.Constants.sgmlEffrg).FirstOrDefault().Value : "";
+                                                string SheetCHG = sheetItem.Attribute(SGML.Utilities.Constants.sgmlChg) == null ? "No CHG" : sheetItem.Attribute(SGML.Utilities.Constants.sgmlChg).Value.ToString();
+                                                sheetsgml = new SheetSGML();
+                                                sheetsgml.ChapterID = graphChapterID;
+                                                sheetsgml.SectionID = graphSecID;
+                                                sheetsgml.SubjectID = graphSubID;
+                                                sheetsgml.PGBLKID = graphPGBLKNBR;
+                                                sheetsgml.GraphID = 0;
+                                                sheetsgml.CFNBR = SheetCFNBR;
+                                                sheetsgml.GNBR = SheetGNBR;
+                                                sheetsgml.IMGAREA = SheetIMGAREA;
+                                                sheetsgml.KEY = SheetKEY;
+                                                sheetsgml.SHEETNBR = SheetSHEETNBR;
+                                                sheetsgml.Effect = sheetEffect;
+                                                sheetsgml.CHG = SheetCHG;
+                                                sheetsgml.SheetTittle = sheetTittle;
+                                                extractSGM.lstSheetSGML.Add(sheetsgml);
+
+                                                #endregion
+                                            }
+                                        }
+                                    }
+                                }
+                                extractSGM.lstSGMTool.Add(data);
+                                lstExtractSGM.Add(extractSGM);
+                            }
+                        }
+                        savesgmldata(lstExtractSGM, filename, getTypeID);
+                        extractSGM = null;
+                        lstExtractSGM = null;
+                        System.Threading.Thread.Sleep(5000);
+                    }
+                    #endregion
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+
+
+                throw ex;
+            }
+        }
+
+        private DataSet getDataTableData()
+        {
+            BOSGML obj = new BOSGML();
+            return obj.getDataTableData();
+        }
+        public string savedataBeforeEntry(string flightType, string DocumentName, string VersionDate, string vistion, string Revdate)
+        {
+
+
+            BOSGML obj = new BOSGML();
+            return obj.saveBeforeEntry(flightType, DocumentName, VersionDate, vistion, Revdate);
+        }
+        public string savedataAfterEntry(string flightType, string message, string activeStatus)
+        {
+            BOSGML obj = new BOSGML();
+            return obj.saveAfterEntry(flightType, message, activeStatus);
+        }
+
+        public string SaveCautionWarning(List<ExtractSGM> cautionData)
+        {
+            BOSGML obj = new BOSGML();
+            return obj.SaveCautionWarning(cautionData);
+        }
+
+        public void savesgmldata(List<ExtractSGM> sgmlData, string fileName, string flightTypeID)
+        {
+            BOSGML obj = new BOSGML();
+            obj.savesgmldata(sgmlData, fileName, flightTypeID);
+        }
+        public void ProcessExtraction( string FilePath )
+        {
+            try
+            {
+                string sgmlFile = Directory.GetFiles(FilePath, "*." + ConfigurationManager.AppSettings["FileExtensionType"])
+                                       .Select(path => Path.GetFileName(path))
+                                       .FirstOrDefault();
+                BOWebExtraction objExt = new BOWebExtraction();
+                var actypes = objExt.getACTypes();
+                var documentTypes = objExt.getDocumentTypes();
+
+                // Finding the version number and rev date
+                string date = "", version = "", line;
+                //bool bDateStatus = false, bVersionStatus = false;
+
+                SgmlReader reader = new SgmlReader();
+                reader.DocType = "SGM";
+                reader.Href = FilePath + sgmlFile;
+                reader.IgnoreDtd = false;
+                //reader.WhitespaceHandling = WhitespaceHandling.All;
+                //reader.CaseFolding = Sgml.CaseFolding.ToLower;
+
+                // create document
+                XmlDocument doc = new XmlDocument();
+                doc.PreserveWhitespace = true;
+                doc.XmlResolver = null;
+                doc.Load(reader);
+                doc.Save(FilePath + sgmlFile +".xml");
+
+                var xmlreader = XmlReader.Create(FilePath + sgmlFile + ".xml");
+                // xmlreader.WhitespaceHandling = WhitespaceHandling.None;
+                while (xmlreader.Read())
+                {
+                    if (string.IsNullOrEmpty(date))
+                        date = xmlreader.GetAttribute("REVDATE");
+
+                    if (string.IsNullOrEmpty(version))
+                        version = xmlreader.GetAttribute("TSN");
+                }
+
+                //System.IO.StreamReader file1 = new System.IO.StreamReader(sourceFileName + "A330_AMM.SGM");
+                //while ((line = file1.ReadLine()) != null)
+                //{
+                //    if (line.Contains("Rev Date"))
+                //    {
+                //        if (bDateStatus == false)
+                //        {
+                //            bDateStatus = true;
+                //            date = line.Replace("<!-- Rev Date", "").Replace(":", "").Replace("-->", "").Trim();
+                //        }
+                //    }
+                //    if (line.Contains("<!-- 1) Increased the"))
+                //    {
+                //        if (bVersionStatus == false)
+                //        {
+                //            bVersionStatus = true;
+                //            version = line.Replace("<!-- 1) Increased the ", "").Replace("VER", "").Replace("number to", "").Replace("-->", "").Substring(4,4).Trim();
+                //        }
+                //    }
+                //}
+
+                //file1.Close();
+
+
+                //foreach (var file in sgmlFiles)
+                //{
+
+                    var actype = sgmlFile.Split('_')[0];
+                    if (!actypes.Where(a => a.AC_TYPE == actype.ToUpper()).Any())
+                    {
+                        ExceptionLogger.LogDBInfo("ProcessExtraction", "Invalid Ac Type:" + actype);
+                        throw new ApplicationException("Invalid Ac Type:" + actype);
+                    }
+
+                    if (sgmlFile.Split('_').Length < 2)
+                    {
+                        ExceptionLogger.LogDBInfo("ProcessExtraction", "Invalid Document Type");
+                        throw new ApplicationException("Invalid Document Type");
+                    }
+                    var documentType = sgmlFile.Split('_')[1].Split('.')[0];
+
+
+
+                    if (!documentTypes.Where(a => a.DOCUMENT_NAME == documentType.ToUpper()).Any())
+                    {
+                        ExceptionLogger.LogDBInfo("ProcessExtraction", "Invalid Document Type:" + documentType);
+                        throw new ApplicationException("Invalid Document Type:" + documentType);
+                    }
+
+                    BOSGML objSGML = new BOSGML();
+
+                    var EODoc = objSGML.getDocumentInfo(actype.ToUpper(), documentType.ToUpper()).SingleOrDefault();
+
+
+                    FileInfo fin = new FileInfo(FilePath + "\\" + sgmlFile);
+
+
+
+                    if (objSGML.isDocumentexists(actype.ToUpper(), documentType.ToUpper(), fin.LastWriteTime.ToString("yyyyMMddHHmmss")) > 0)
+                    {
+                        //do nothing
+
+                    }
+                    else
+                    {
+
+                        if (EODoc != null)
+                        {
+
+                            string sgml_id = string.Empty;
+                            try
+                            {
+                                sgml_id = savedataBeforeEntry(actype, documentType, fin.LastWriteTime.ToString("yyyyMMddHHmmss"), version, date);
+
+
+                                if (!Directory.Exists(EODoc.EXTRACTION_PATH))
+                                {
+                                    Directory.CreateDirectory(EODoc.EXTRACTION_PATH);
+                                }
+                                if (!Directory.Exists(EODoc.EXTRACTION_PATH + EODoc.EXTRACTION_FOLDER))
+                                {
+                                    Directory.CreateDirectory(EODoc.EXTRACTION_PATH + EODoc.EXTRACTION_FOLDER);
+                                }
+
+                                string FinalPath = EODoc.EXTRACTION_PATH + EODoc.EXTRACTION_FOLDER + "\\" + EODoc.HOMEPAGEFOLDERNAME;
+                                if (!Directory.Exists(FinalPath))
+                                {
+                                    Directory.CreateDirectory(FinalPath);
+                                }
+
+                                System.IO.DirectoryInfo downloadedMessageInfo = new DirectoryInfo(FinalPath);
+                                foreach (FileInfo fl in downloadedMessageInfo.GetFiles())
+                                {
+                                    fl.Delete();
+                                }
+
+
+
+                                string destinationFileName = FinalPath + @"\" + EODoc.HTMLPAGEFOLDERNAME + "-{0}." + ConfigurationManager.AppSettings["FileExtensionType"];
+                                const int bufferSize = 1024 * 3;
+
+                                string SectionStart = "<" + ConfigurationManager.AppSettings["StartingTag"];
+                                string SectionEnd = "</" + ConfigurationManager.AppSettings["StartingTag"] + ">";
+                                if (EODoc.READINGMETHOD == "S")
+                                {
+                                    SectionStart = SectionStart.ToLower();
+                                    SectionEnd = SectionEnd.ToLower();
+                                }
+                                else if (EODoc.READINGMETHOD == "C")
+                                {
+                                    SectionStart = SectionStart.ToUpper();
+                                    SectionEnd = SectionEnd.ToUpper();
+                                }
+                                else if (EODoc.READINGMETHOD == "")
+                                {
+
+                                }
+
+                                var sb = new StringBuilder();
+                                var buffer = new Char[bufferSize];
+                                var length = 0L;
+                                var totalRead = 0L;
+                                var count = bufferSize;
+
+                                bool sExtract = false;
+                                int NumberofList = 0;
+                                int ivalStart = 0;
+
+
+                                using (var sourceFile = new StreamReader(FilePath + "\\" + sgmlFile))
+                                {
+                                    length = sourceFile.BaseStream.Length;
+                                    var fileCounter = 0;
+                                    var destinationFile = new StreamWriter(
+                                        string.Format(destinationFileName, fileCounter + 1));
+                                    try
+                                    {
+                                        while (count > 0)
+                                        {
+
+                                            count = sourceFile.Read(buffer, 0, bufferSize);
+                                            sb.Append(buffer, 0, count);
+                                            totalRead += count;
+
+                                            if (sExtract == false)
+                                            {
+                                                if (sb.ToString().Contains(SectionStart))
+                                                {
+                                                    sExtract = true;
+                                                    int ival = sb.ToString().IndexOf(SectionStart);
+                                                    string temp = sb.ToString();
+                                                    string sVal = temp.Substring(ival, temp.Length - ival);
+                                                    destinationFile.Write("<SGMTOOL> " + sVal);
+                                                    sb.Clear();
+                                                }
+                                                else
+                                                {
+                                                    if (sb.ToString().Contains(SectionStart.ToUpper()))
+                                                    {
+                                                        sExtract = true;
+                                                        int ival = sb.ToString().IndexOf(SectionStart.ToUpper());
+                                                        string temp = sb.ToString();
+                                                        string sVal = temp.Substring(ival, temp.Length - ival);
+                                                        destinationFile.Write("<SGMTOOL> " + sVal);
+                                                        sb.Clear();
+                                                    }
+                                                }
+                                            }
+                                            else if (sExtract)
+                                            {
+                                                if (sb.ToString().Contains(SectionEnd))
+                                                {
+                                                    NumberofList++;
+                                                }
+                                                else
+                                                {
+                                                    if (sb.ToString().Contains(SectionEnd.ToUpper()))
+                                                    {
+                                                        NumberofList++;
+                                                    }
+                                                }
+
+                                                if (sb.ToString().Contains(SectionEnd) && NumberofList == 1)
+                                                {
+                                                    int ival = sb.ToString().IndexOf(SectionEnd);
+                                                    string sVal = sb.ToString().Substring(0, ival) + SectionEnd;
+                                                    if (ivalStart == -1)
+                                                    {
+                                                        destinationFile.Write("<SGMTOOL> " + sVal + " </SGMTOOL>");
+                                                    }
+                                                    else
+                                                    {
+                                                        destinationFile.Write(sVal + " </SGMTOOL>");
+                                                    }
+
+                                                    fileCounter++;
+
+                                                    destinationFile.Dispose();
+                                                    destinationFile = new StreamWriter(
+                                                        string.Format(destinationFileName, fileCounter + 1));
+
+                                                    ivalStart = sb.ToString().IndexOf(SectionStart);
+                                                    if (ivalStart != -1)
+                                                    {
+                                                        string sValStart = sb.ToString().Substring(ivalStart, sb.ToString().Length - ivalStart);
+                                                        destinationFile.Write("<SGMTOOL> " + sValStart);
+
+                                                    }
+                                                    NumberofList = 0;
+
+
+                                                    sb.Clear();
+
+                                                }
+                                                else if (sb.ToString().Contains(SectionEnd.ToUpper()) && NumberofList == 1)
+                                                {
+                                                    int ival = sb.ToString().IndexOf(SectionEnd.ToUpper());
+                                                    string sVal = sb.ToString().Substring(0, ival) + SectionEnd.ToUpper();
+                                                    if (ivalStart == -1)
+                                                    {
+                                                        destinationFile.Write("<SGMTOOL> " + sVal + " </SGMTOOL>");
+                                                    }
+                                                    else
+                                                    {
+                                                        destinationFile.Write(sVal + " </SGMTOOL>");
+                                                    }
+
+                                                    fileCounter++;
+
+                                                    destinationFile.Dispose();
+                                                    destinationFile = new StreamWriter(
+                                                        string.Format(destinationFileName, fileCounter + 1));
+
+                                                    ivalStart = sb.ToString().IndexOf(SectionStart.ToUpper());
+                                                    if (ivalStart != -1)
+                                                    {
+                                                        string sValStart = sb.ToString().Substring(ivalStart, sb.ToString().Length - ivalStart);
+                                                        destinationFile.Write("<SGMTOOL> " + sValStart);
+
+                                                    }
+                                                    NumberofList = 0;
+
+
+                                                    sb.Clear();
+
+                                                }
+
+                                                else
+                                                {
+                                                    if (ivalStart == -1)
+                                                    {
+                                                        destinationFile.Write("<SGMTOOL> " + sb.ToString());
+                                                        ivalStart = 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        destinationFile.Write(sb.ToString());
+                                                    }
+                                                    sb.Clear();
+
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                    finally
+                                    {
+                                        destinationFile.Dispose();
+                                    }
+                                }
+                                ImportTask(sgml_id, FinalPath, actype, documentType, fin.LastWriteTime.ToString("yyyyMMddHHmmss"));
+
+                                savedataAfterEntry(sgml_id, "COMPLETED", "N");
+                            }
+                            catch (Exception ex)
+                            {
+
+                                ExceptionLogger.LogDBInfo("ProcessExtraction", ex.Message, "SGMLID: " + sgml_id);
+                                savedataAfterEntry(sgml_id, "ERROR", "N");
+                                throw ex;
+
+                            }
+
+
+
+                        }
+
+                    }
+
+
+                //}
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+
+        }
+
+        private void ExtractSection()
+        {
+            ///Here Lets Save Warining Note Caution and Section Sequantially in database.
+            string cautionPath = ConfigurationManager.AppSettings["CautionPath"];
+            string warningPath = ConfigurationManager.AppSettings["WarningPath"];
+            /// string[] files = Directory.GetFiles(cautionPath);
+            var readCaution = System.IO.File.ReadAllText(cautionPath);
+            //readCaution=readCaution.
+            ExtractCautions cautions = null;
+            ExtractSGM extractSGM = new ExtractSGM();
+            List<ExtractSGM> lstExtractSGM = new List<ExtractSGM>();
+            // I have y
+
+
+            //string[] split=readCaution.Split(new char[]{ ' ' },StringSplitOptions.RemoveEmptyEntries);
+            string[] getCaution = Regex.Split(readCaution, "<!ENTITY");
+            char[] removeItem = new char[] { '>' };
+            foreach (var item in getCaution)
+            {
+                if (item != null && item != "")
+                {
+                    if (item == "W.2105")
+                    {
+
+                    }
+                    var newitem = item.Replace("<REVST>", "").Replace("<REVEND>", "").Replace("T</", "T></").Replace("&", "").Replace("</CHAPTER>", "");//.Replace("<COLSPEC", "<");
+                    string entityName = Regex.Split(newitem, "<PARA>")[0].ToString().Replace(" ", "").Replace("\"", "").Trim();
+                    //string entityPara = Regex.Split(item, "<PARA>")[1].ToString().Replace(">", "").Replace("</PARA", "").Replace("\"", "").Trim().TrimEnd(removeItem);
+                    string entityPara = "";
+                    if (Regex.Matches(newitem, "<PARA>").Count > 1)
+                    {
+                        for (int i = 1; i < Regex.Split(newitem, "<PARA>").Count(); i++)
+                        {
+                            entityPara = entityPara + i.ToString() + ")" + Regex.Split(newitem, "<PARA>")[i].ToString().Replace("</PARA>", "").Replace("\"", "").TrimEnd(removeItem);
+                            if (Regex.Split(newitem, "<PARA>").Count() - 1 != i)
+                            {
+                                entityPara = entityPara + "<br/>";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        entityPara = Regex.Split(newitem, "<PARA>")[1].ToString().Replace("</PARA>", "").Replace("\"", "").TrimEnd(removeItem);
+                    }
+                    entityPara = entityPara.Substring(0, entityPara.Length - 2);
+                    if (entityPara.ToString().Contains("UNLIST"))
+                    {
+                        entityPara = entityPara.Replace("<UNLIST>", "<ul>").Replace("<UNLITEM>", "<li>").Replace("</UNLITEM>", "</li>").Replace("</UNLIST>", "</ul>");
+                    }
+                    //  entityPara = entityPara.EndsWith(">") ? entityPara.Substring(0, entityPara.Length - 1) : entityPara;
+
+                    cautions = new ExtractCautions();
+                    cautions.ENTITY = entityName;
+                    cautions.PARA = entityPara;
+                    extractSGM.lstExtractCaution.Add(cautions);
+                }
+
+            }
+
+
+            var readWarning = System.IO.File.ReadAllText(warningPath);
+            string[] getWarning = Regex.Split(readWarning, "<!ENTITY");
+            foreach (var itemWarning in getWarning)
+            {
+                if (itemWarning != null && itemWarning != "")
+                {
+                    if (itemWarning == "W.2105")
+                    {
+
+                    }
+                    var newitem = itemWarning.Replace("<REVST>", "").Replace("<REVEND>", "").Replace("T</", "T></").Replace("&", "").Replace("</CHAPTER>", "");//.Replace("<COLSPEC", "<");
+                    string itemWarningentityName = Regex.Split(itemWarning, "<PARA>")[0].ToString().Replace(" ", "").Replace("\"", "").Trim();
+                    //string itemWarningentityPara = Regex.Split(itemWarning, "<PARA>")[1].ToString().Replace(">", "").Replace("</PARA", "").Replace("\"", "").Trim();
+                    string itemWarningentityPara = "";
+                    if (Regex.Matches(newitem, "<PARA>").Count > 1)
+                    {
+                        for (int i = 1; i < Regex.Split(newitem, "<PARA>").Count(); i++)
+                        {
+                            itemWarningentityPara = itemWarningentityPara + i.ToString() + ")" + Regex.Split(newitem, "<PARA>")[i].ToString().Replace("</PARA>", "").Replace("\"", "").TrimEnd(removeItem);
+                            if (Regex.Split(newitem, "<PARA>").Count() - 1 != i)
+                            {
+                                itemWarningentityPara = itemWarningentityPara + "<br/>";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        itemWarningentityPara = Regex.Split(newitem, "<PARA>")[1].ToString().Replace("</PARA>", "").Replace("\"", "").TrimEnd(removeItem);
+                    }
+                    itemWarningentityPara = itemWarningentityPara.Substring(0, itemWarningentityPara.Length - 2);
+                    if (itemWarningentityPara.ToString().Contains("UNLIST"))
+                    {
+                        itemWarningentityPara = itemWarningentityPara.Replace("<UNLIST>", "<ul>").Replace("<UNLITEM>", "<li>").Replace("</UNLITEM>", "</li>").Replace("</UNLIST>", "</ul>");
+                    }
+                    cautions = new ExtractCautions();
+                    cautions.ENTITY = itemWarningentityName;
+                    cautions.PARA = itemWarningentityPara;
+                    extractSGM.lstExtractCaution.Add(cautions);
+                }
+
+            }
+
+
+            lstExtractSGM.Add(extractSGM);
+            /// SaveCautionWarning(lstExtractSGM);
+
+
+
+
+            //XDocument xDoc = XDocument.Parse(readCaution);
+            //XDocument xDocNew = null;
+            //xDocNew = XDocument.Parse(readCaution);
+            //var Chapt = (from p in xDocNew.Root.Descendants()
+            //             where p.Name.LocalName == "ENTITY"
+            //             select p).ToList();
+
+
+
+        }
+
+
+        //private static void ExtractSGMFiles()
+        //{
+        //    string SourceSGML = ConfigurationManager.AppSettings["SourceSGML"];
+        //    string SourcePDF = ConfigurationManager.AppSettings["SourcePDF"];
+        //    string SourceImage = ConfigurationManager.AppSettings["SourceImage"];
+        //    bool onlyPdf = false;
+        //    bool onlyImage = true;
+
+        //    if (onlyPdf == true)
+        //    {
+        //        #region "Convert Pdf First"
+        //        string[] files = System.IO.Directory.GetFiles(SourceSGML);
+        //        foreach (var item in files)
+        //        {
+        //            var fileName = System.IO.Path.GetFileName(item);
+        //            var PdffileName = System.IO.Path.GetFileNameWithoutExtension(item);
+        //            Aspose.Pdf.CgmLoadOptions options = new Aspose.Pdf.CgmLoadOptions();
+        //            Aspose.Pdf.Document doc = new Document(SourceSGML + fileName, options);
+        //            doc.PageInfo.IsLandscape = true;
+        //            if (doc.Pages.Count > 0)
+        //            {
+        //                doc.Pages[1].PageInfo.Height = 400;
+        //                doc.Pages[1].PageInfo.Width = 400;
+
+        //            }
+        //            doc.Save(SourcePDF + PdffileName + ".pdf");
+        //            //doc.Save("c:/Newpdftest/" + PdffileName + ".jpg");
+
+        //        }
+
+
+        //        #endregion
+        //    }
+
+
+        //    if (onlyImage == true)
+        //    {
+        //        #region Convert To Image
+
+
+        //        string[] getfiles = System.IO.Directory.GetFiles(SourcePDF);
+        //        foreach (var item in getfiles)
+        //        {
+        //            Document pdfDocument = new Document(item);
+
+        //            for (int pageCount = 1; pageCount <= pdfDocument.Pages.Count; pageCount++)
+        //            {
+        //                using (FileStream imageStream = new FileStream("image" + pageCount + ".jpg", FileMode.Create))
+        //                {
+        //                    var fileNamess = System.IO.Path.GetFileName(item);
+        //                    var TempfileNamess = System.IO.Path.GetFileNameWithoutExtension(item);
+        //                    // Create Resolution object
+        //                    Resolution resolution = new Resolution(300);
+        //                    // Create JPEG device with specified attributes (Width, Height, Resolution, Quality)
+        //                    // where Quality [0-100], 100 is Maximum
+        //                    JpegDevice jpegDevice = new JpegDevice(resolution, 10);
+
+        //                    // Convert a particular page and save the image to stream
+        //                    jpegDevice.Process(pdfDocument.Pages[pageCount], imageStream);
+        //                    // Close stream
+
+
+        //                    System.Drawing.Image img = System.Drawing.Image.FromStream(imageStream);
+
+        //                    img.Save(SourceImage + TempfileNamess + ".jpg", ImageFormat.Jpeg);
+
+        //                    imageStream.Close();
+
+
+
+
+        //                    //Aspose.Pdf.Document doc = new Document(@"C:\pdftest\" + fileNamess);
+        //                    //doc.PageInfo.IsLandscape = true;
+        //                    //doc.Pages[1].PageInfo.Height = 400;
+        //                    //doc.Pages[1].PageInfo.Width = 400;
+        //                    //doc.Save("c:/Newpdftest/" + TempfileNamess + ".jpg");
+        //                }
+        //            }
+        //        }
+        //        #endregion
+        //    }
+
+
+
+
+
+
+
+
+
+
+
+        //}
+    }
+}
